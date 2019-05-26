@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" styleClass="root-pane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <left>
+      <ToolBar id="tools" orientation="VERTICAL" prefHeight="600.0" prefWidth="54.0" styleClass="root-tools" BorderPane.alignment="CENTER">
+         <items>
+            <ToggleButton id="books" mnemonicParsing="false" prefHeight="38.0" prefWidth="38.0" text="书" />
+            <ToggleButton id="read" mnemonicParsing="false" prefHeight="38.0" prefWidth="38.0" text="阅" />
+            <ToggleButton id="conf" mnemonicParsing="false" prefHeight="38.0" prefWidth="38.0" text="设" />
+         </items>
+      </ToolBar>
+   </left>
+</BorderPane>

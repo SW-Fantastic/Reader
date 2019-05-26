@@ -1,0 +1,118 @@
+.root-pane {
+    -fx-background-size: cover;
+}
+.root-tools {
+    -fx-background-color: rgba(253,255,223, 0.8);
+}
+.root-tools .toggle-button {
+    -fx-background-color: rgba(0,0,0,0);
+    -fx-text-fill: rgb(122,60,54);
+}
+.root-tools .toggle-button:selected {
+    -fx-border-color: rgb(122, 60, 54);
+    -fx-border-style: dashed;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgb(255,163,163), 8, 0, 0, 0);
+}
+.history-list {
+    -fx-background-color: rgba(0,0,0,0);
+    -fx-border-style: dashed;
+    -fx-border-width: 0 1 0 1;
+    -fx-border-color: linear-gradient(to bottom, rgba(0,0,0,0) 5%, rgb(115,91,78), rgba(0,0,0,0) 95%);
+}
+.history-list .list-cell {
+    -fx-background-color: rgba(0,0,0,0);
+}
+.history-list .list-cell .cell-content {
+    -fx-background-color: rgba(255,255,255,0.9);
+    -fx-background-radius: 8;
+    -fx-text-fill: #000;
+}
+.history-list .list-cell:selected .label {
+    -fx-text-fill: #FFF;
+}
+.history-list .list-cell:selected .cell-content{
+    -fx-background-color: rgb(120,106,123);
+}
+.history-list .list-cell .btn-cell {
+    -fx-background-color:  rgba(120,106,123,0);
+    -fx-text-fill:  rgba(120,106,123,1);
+    -fx-background-radius: 999;
+    -fx-effect: dropshadow(three-pass-box, rgba(120,106,123,1), 16, 0, 0, 0);
+}
+.history-list .list-cell:selected .btn-cell {
+    -fx-text-fill: #FFF;
+}
+.history-list .list-cell .btn-cell:hover {
+    -fx-text-fill: #FFF;
+}
+.scene {
+    -fx-background-color: rgba(254,238,224,0.6);
+}
+.txt {
+    -fx-border-style: solid;
+    -fx-border-width: 0 0 1.5 0;
+    -fx-border-color: rgb(191, 134, 174);
+    -fx-background-color: rgba(255,255,255,0.6);
+}
+.btn {
+    -fx-background-color: rgba(0,0,0,0);
+    -fx-border-color: rgba(0,0,0,0);
+    -fx-border-style: dashed;
+    -fx-border-width: 1px;
+    -fx-text-fill: rgb(134, 63, 75);
+}
+.btn:hover {
+    -fx-effect: dropshadow(three-pass-box,rgb(191, 134, 174), 12, 0, 0, 0);
+    -fx-border-color: rgb(134, 63, 75);
+    -fx-border-style: dashed;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8;
+}
+.book-card {
+    -fx-background-color: rgba(255,255,255,0.8);
+}
+.book-card .btn-card {
+     -fx-background-color: rgba(0,0,0,0);
+     -fx-border-color: rgb(120,106,123);
+     -fx-text-fill: rgb(120,106,123);
+     -fx-border-style: dashed;
+     -fx-border-width: 1px;
+     -fx-border-radius: 999;
+ }
+.book-card .btn-card:hover {
+    -fx-background-color: rgb(120,106,123);
+    -fx-border-color: rgba(0,0,0,0);
+    -fx-text-fill: rgb(255,255,255);
+    -fx-background-radius: 999;
+    -fx-border-width: 1px;
+}
+.btn-txt {
+    -fx-background-color:rgb(120,106,123) ;
+    -fx-text-fill: #FFF;
+    -fx-border-radius: 0;
+}
+.scene-dlg {
+    -fx-background-color: rgb(245,238,232);
+}
+.comb{
+    -fx-background-color: rgba(255,255,255,0.7);
+    -fx-prompt-text-fill: rgba(120,106,123, 0.6) ;
+    -fx-text-fill: rgb(120,106,123) ;
+    -fx-border-color: rgb(120,106,123);
+    -fx-border-width: 0 0 2 0;
+}
+.comb > *{
+    -fx-text-fill: rgb(120,106,123) ;
+}
+.comb .combo-box-popup,.comb .combo-box-popup .list-view{
+    -fx-background-color: rgba(253,255,223,0.8);
+}
+.comb .list-cell{
+    -fx-background-color: rgba(0,0,0,0);
+    -fx-text-fill:rgb(120,106,123) ;
+}
+.comb .list-cell:hover{
+    -fx-background-color: #FFFFFF;
+}

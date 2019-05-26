@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="210.0" prefWidth="170.0" styleClass="book-card" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <top>
+      <HBox alignment="CENTER" prefHeight="60.0" prefWidth="170.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label id="title" alignment="CENTER" prefWidth="137.0" text="Title" textAlignment="CENTER" wrapText="true" />
+         </children>
+      </HBox>
+   </top>
+   <bottom>
+      <HBox alignment="CENTER" prefHeight="43.0" prefWidth="191.0" spacing="6.0">
+         <children>
+            <Button id="btnOpen" alignment="CENTER" mnemonicParsing="false" styleClass="btn-card" text="O" HBox.hgrow="ALWAYS" />
+            <Button id="btnContents" mnemonicParsing="false" styleClass="btn-card" text="C" />
+            <Button id="btnMark" mnemonicParsing="false" styleClass="btn-card" text="M" />
+            <Button id="btnEdit" layoutX="113.0" layoutY="20.0" mnemonicParsing="false" styleClass="btn-card" text="E" />
+         </children>
+      </HBox>
+   </bottom>
+   <center>
+      <GridPane BorderPane.alignment="CENTER">
+        <columnConstraints>
+          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label text="大小：" />
+            <Label id="fileSize" text="KB" GridPane.columnIndex="1" />
+         </children>
+      </GridPane>
+   </center>
+</BorderPane>

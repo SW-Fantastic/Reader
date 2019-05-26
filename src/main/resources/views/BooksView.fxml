@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="scene" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.swdc.reader.ui.controllers.BookController">
+   <left>
+      <ListView id="typelist" fx:id="typeListView" prefHeight="506.0" prefWidth="231.0" styleClass="history-list" BorderPane.alignment="CENTER">
+         <padding>
+            <Insets right="8.0" top="12.0" />
+         </padding>
+         <BorderPane.margin>
+            <Insets right="8.0" />
+         </BorderPane.margin></ListView>
+   </left>
+   <center>
+      <BorderPane prefHeight="497.0" prefWidth="400.0" BorderPane.alignment="CENTER">
+         <top>
+            <HBox alignment="CENTER_RIGHT" prefHeight="61.0" prefWidth="536.0" BorderPane.alignment="CENTER">
+               <children>
+                  <HBox alignment="CENTER" prefHeight="61.0" prefWidth="161.0">
+                     <children>
+                        <Button id="btnType" mnemonicParsing="false" onAction="#onAddType" styleClass="btn" text="type">
+                           <HBox.margin>
+                              <Insets right="8.0" />
+                           </HBox.margin>
+                        </Button>
+                        <Button id="btnOpen" mnemonicParsing="false" styleClass="btn" text="import">
+                           <HBox.margin>
+                              <Insets right="8.0" />
+                           </HBox.margin>
+                        </Button>
+                        <Button id="btnRefresh" mnemonicParsing="false" onAction="#onSyncFiles" styleClass="btn" text="refresh" />
+                     </children></HBox>
+                  <HBox prefHeight="61.0" prefWidth="81.0" HBox.hgrow="ALWAYS" />
+                  <TextField prefHeight="29.0" prefWidth="258.0" styleClass="txt">
+                     <HBox.margin>
+                        <Insets right="8.0" />
+                     </HBox.margin>
+                  </TextField>
+                  <Button id="btnSearch" mnemonicParsing="false" prefHeight="31.0" prefWidth="40.0" styleClass="btn" text="搜索">
+                     <HBox.margin>
+                        <Insets right="8.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+         </top>
+      </BorderPane>
+   </center>
+   <opaqueInsets>
+      <Insets />
+   </opaqueInsets>
+</BorderPane>
