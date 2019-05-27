@@ -5,6 +5,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -12,11 +14,14 @@ import org.swdc.reader.entity.Book;
 import org.swdc.reader.entity.BookType;
 import org.swdc.reader.event.TypeRefreshEvent;
 import org.swdc.reader.services.BookService;
+import org.swdc.reader.ui.ApplicationConfig;
 import org.swdc.reader.ui.views.dialog.BookEditDialog;
+import org.swdc.reader.utils.UIUtils;
 
 import javax.annotation.PostConstruct;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 /**
@@ -30,6 +35,9 @@ public class BookEditDialogController implements Initializable {
 
     @Autowired
     private BookEditDialog view;
+
+    @Autowired
+    private ApplicationConfig config;
 
     @FXML
     protected ComboBox<BookType> cbxType;
@@ -65,12 +73,20 @@ public class BookEditDialogController implements Initializable {
 
     @FXML
     protected void onDelete() {
-
+        Book book = view.getBook();
+        Optional<ButtonType> selected = UIUtils.showAlertDialog("确定要删除《" + book.getTitle() + "》吗？",
+                "提示", Alert.AlertType.CONFIRMATION, config);
+        selected.ifPresent(type -> {
+            if (type.equals(ButtonType.OK)) {
+                service.deleteBook(book);
+                view.close();
+            }
+        });
     }
 
     @FXML
     protected void onCancel() {
-
+        view.close();
     }
 
 }

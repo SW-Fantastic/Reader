@@ -24,7 +24,7 @@ public class BookType {
 
     @Getter
     @Setter
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "type",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "type",fetch = FetchType.EAGER)
     private List<Book> books;
 
     @Override

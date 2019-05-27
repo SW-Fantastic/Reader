@@ -1,18 +1,22 @@
 package org.swdc.reader.services;
 
 import net.sf.jmimemagic.*;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.swdc.reader.entity.Book;
+import org.swdc.reader.entity.BookMark;
 import org.swdc.reader.entity.BookType;
+import org.swdc.reader.entity.ContentsItem;
 import org.swdc.reader.repository.BookRepository;
 import org.swdc.reader.repository.BookTypeRepository;
+import org.swdc.reader.repository.ContentsRepository;
+import org.swdc.reader.repository.MarksRepository;
 import org.swdc.reader.utils.DataUtil;
 
 import java.io.File;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by lenovo on 2019/5/22.
@@ -25,6 +29,12 @@ public class BookService {
 
     @Autowired
     private BookTypeRepository typeRepository;
+
+    @Autowired
+    private ContentsRepository contentsRepository;
+
+    @Autowired
+    private MarksRepository marksRepository;
 
     /**
      * 更新书籍数据，和文件夹的内容同步
@@ -94,6 +104,24 @@ public class BookService {
 
     public void modifyBook(Book modifiedBook) {
         bookRepository.save(modifiedBook);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteBook(Book target) {
+        Book deleteTarget = bookRepository.getOne(target.getId());
+        Set<BookMark> marks = deleteTarget.getMarks();
+        Set<ContentsItem> contentsItems = deleteTarget.getContentsItems();
+        if (marks != null && marks.size() > 0) {
+            marksRepository.deleteAll(marks);
+        }
+        if (contentsItems != null && contentsItems.size() > 0) {
+            contentsRepository.deleteAll(contentsItems);
+        }
+        File file = new File("./data/library/" + deleteTarget.getName());
+        if (!file.delete()) {
+            file.deleteOnExit();
+        }
+        bookRepository.delete(deleteTarget);
     }
 
 }

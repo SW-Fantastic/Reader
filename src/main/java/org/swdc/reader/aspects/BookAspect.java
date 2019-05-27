@@ -2,6 +2,7 @@ package org.swdc.reader.aspects;
 
 import lombok.extern.apachecommons.CommonsLog;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,7 @@ import org.swdc.reader.event.BooksRefreshEvent;
 import org.swdc.reader.event.TypeRefreshEvent;
 
 /**
- * Created by lenovo on 2019/5/25.
+ * 发送界面的列表刷新事件的aspect。
  */
 
 @Aspect
@@ -42,6 +43,26 @@ public class BookAspect {
             log.error(throwable);
         }
         return null;
+    }
+
+    @Around("execution(* org.swdc.reader.services.BookService.delete*(..))")
+    protected Object onDelete(ProceedingJoinPoint point) {
+        try {
+            this.publishRefreshEvent(point.getSignature().getName());
+            return point.proceed(point.getArgs());
+        } catch (Throwable throwable) {
+            log.error(throwable);
+        }
+        return null;
+    }
+
+    @AfterReturning("execution(* org.swdc.reader.services.BookService.sync*(..))")
+    protected void onSync() {
+        try {
+            context.publishEvent(new BooksRefreshEvent());
+        } catch (Throwable throwable) {
+            log.error(throwable);
+        }
     }
 
     private void publishRefreshEvent(String name) {

@@ -2,9 +2,12 @@ package org.swdc.reader.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 书
@@ -45,7 +48,7 @@ public class Book {
     @Getter
     @Setter
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "markFor")
-    private List<BookMark> marks;
+    private Set<BookMark> marks;
 
     /**
      * 目录
@@ -53,7 +56,7 @@ public class Book {
     @Getter
     @Setter
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "located")
-    private List<ContentsItem> contentsItems;
+    private Set<ContentsItem> contentsItems;
 
     /**
      * 文件大小
