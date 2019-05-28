@@ -1,6 +1,8 @@
 package org.swdc.reader.services;
 
+import lombok.extern.apachecommons.CommonsLog;
 import net.sf.jmimemagic.*;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +17,7 @@ import org.swdc.reader.repository.MarksRepository;
 import org.swdc.reader.utils.DataUtil;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -22,6 +25,7 @@ import java.util.Set;
  * Created by lenovo on 2019/5/22.
  */
 @Service
+@CommonsLog
 public class BookService {
 
     @Autowired
@@ -90,6 +94,60 @@ public class BookService {
     public List<Book> getBooks(BookType type) {
         BookType bookType = typeRepository.getOne(type.getId());
         return bookType.getBooks();
+    }
+
+    public Book fromFile(File file) {
+        BookType defaultType = typeRepository.getDefault();
+        if (defaultType == null) {
+            defaultType = new BookType();
+            defaultType.setName("未分类");
+            defaultType = typeRepository.save(defaultType);
+        }
+        String sha = DataUtil.getFileShaCode(file);
+        Book book = new Book();
+        book.setTitle(file.getName().split("[.]")[0]);
+        book.setName(file.getName());
+        book.setShaCode(sha);
+        book.setSize(DataUtil.getPrintSize(file.length()));
+        try {
+            book.setType(defaultType);
+            MagicMatch magicMatch = Magic.getMagicMatch(file,true,false);
+            book.setMimeData(magicMatch.getMimeType());
+            return book;
+        }catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void createBook(Book book, File sourceFile) {
+        Long count = bookRepository.countByShaCode(book.getShaCode());
+        if (count > 0) {
+            return;
+        }
+        if (book.getTitle() == null || book.getTitle().trim().equals("")) {
+            return;
+        }
+        if (book.getName() == null || book.getName().trim().equals("")) {
+            return;
+        }
+        if (book.getType() == null) {
+            BookType defaultType = typeRepository.getDefault();
+            if (defaultType == null) {
+                defaultType = new BookType();
+                defaultType.setName("未分类");
+                defaultType = typeRepository.save(defaultType);
+            }
+            book.setType(defaultType);
+        }
+        if (book.getMimeData() == null || book.getMimeData().trim().equals("")) {
+            return;
+        }
+        try {
+            FileUtils.copyFile(sourceFile, new File("./data/library/" + sourceFile.getName()));
+            bookRepository.save(book);
+        } catch (IOException e) {
+            log.error(e);
+        }
     }
 
     public BookType createType(String name) {

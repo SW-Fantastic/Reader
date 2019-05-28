@@ -1,6 +1,7 @@
 package org.swdc.reader.ui.controllers;
 
 import de.felixroske.jfxsupport.FXMLController;
+import de.felixroske.jfxsupport.GUIState;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -8,6 +9,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
+import javafx.stage.FileChooser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.event.EventListener;
@@ -18,9 +20,11 @@ import org.swdc.reader.event.TypeRefreshEvent;
 import org.swdc.reader.services.BookService;
 import org.swdc.reader.ui.ApplicationConfig;
 import org.swdc.reader.ui.views.BooksView;
+import org.swdc.reader.ui.views.dialog.BookImportView;
 import org.swdc.reader.ui.views.dialog.TypeAddDialog;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
 import java.net.URL;
 import java.util.List;
 import java.util.Observable;
@@ -40,6 +44,9 @@ public class BookController implements Initializable{
 
     @Autowired
     private TypeAddDialog addDialog;
+
+    @Autowired
+    private BookImportView importView;
 
     @FXML
     private ListView<BookType>  typeListView;
@@ -76,6 +83,18 @@ public class BookController implements Initializable{
     @FXML
     protected void onAddType() {
         addDialog.show();
+    }
+
+    @FXML
+    protected void onOpen() {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("打开");
+        File target = chooser.showOpenDialog(GUIState.getStage());
+        if (target == null || !target.exists() || target.isDirectory()) {
+            return;
+        }
+        importView.setBook(target);
+        importView.show();
     }
 
     private void typeChange(ObservableValue<? extends BookType> typeObservableValue, BookType old, BookType newVal) {

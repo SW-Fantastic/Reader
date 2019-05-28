@@ -27,7 +27,7 @@
                               <Insets right="8.0" />
                            </HBox.margin>
                         </Button>
-                        <Button id="btnOpen" mnemonicParsing="false" styleClass="btn" text="import">
+                        <Button id="btnOpen" mnemonicParsing="false" onAction="#onOpen" styleClass="btn" text="import">
                            <HBox.margin>
                               <Insets right="8.0" />
                            </HBox.margin>
