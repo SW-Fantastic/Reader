@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="470.0" prefWidth="637.0" styleClass="scene" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.swdc.reader.ui.controllers.ReadViewController">
+   <top>
+      <HBox alignment="CENTER_RIGHT" prefHeight="53.0" prefWidth="637.0" spacing="6.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button mnemonicParsing="false" prefHeight="24.0" prefWidth="58.0" styleClass="btn-txt" text="上一页" />
+            <Button mnemonicParsing="false" prefHeight="24.0" prefWidth="58.0" styleClass="btn-txt" text="下一页" />
+            <Button layoutX="88.0" layoutY="30.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="58.0" styleClass="btn-txt" text="书签" />
+            <HBox prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+            <TextField prefHeight="26.0" prefWidth="99.0" styleClass="txt" />
+            <Button mnemonicParsing="false" prefHeight="24.0" prefWidth="58.0" styleClass="btn-txt" text="跳转" />
+            <Button mnemonicParsing="false" prefHeight="24.0" prefWidth="58.0" styleClass="btn-txt" text="目录" />
+         </children>
+         <padding>
+            <Insets left="12.0" right="12.0" top="12.0" />
+         </padding>
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
+      </HBox>
+   </top>
+</BorderPane>

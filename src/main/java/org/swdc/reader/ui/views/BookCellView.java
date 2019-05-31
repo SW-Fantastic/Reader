@@ -14,6 +14,8 @@ import javafx.scene.layout.HBox;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.swdc.reader.entity.Book;
+import org.swdc.reader.event.DocumentOpenEvent;
+import org.swdc.reader.event.ViewChangeEvent;
 import org.swdc.reader.ui.ApplicationConfig;
 import org.swdc.reader.ui.AwsomeIconData;
 import org.swdc.reader.ui.views.dialog.BookEditDialog;
@@ -55,7 +57,8 @@ public class BookCellView extends AbstractFxmlView{
     }
 
     private void onOpen(ActionEvent event) {
-
+        config.publishEvent(new ViewChangeEvent("read"));
+        config.publishEvent(new DocumentOpenEvent(this.book));
     }
 
     private void onContents(ActionEvent event) {

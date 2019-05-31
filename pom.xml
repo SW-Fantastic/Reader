@@ -72,6 +72,13 @@
 			<artifactId>commons-io</artifactId>
 			<version>2.6</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/net.sourceforge.cpdetector/cpdetector -->
+		<dependency>
+			<groupId>net.sourceforge.cpdetector</groupId>
+			<artifactId>cpdetector</artifactId>
+			<version>1.0.7</version>
+			<systemPath>${project.basedir}/libs/cpdetector-1.0.7.jar</systemPath>
+		</dependency>
 	</dependencies>
 
 	<build>

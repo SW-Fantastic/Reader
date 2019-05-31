@@ -9,6 +9,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
 import org.swdc.reader.event.ViewChangeEvent;
 import org.swdc.reader.ui.ApplicationConfig;
 import org.swdc.reader.ui.AwsomeIconData;
@@ -30,6 +31,9 @@ public class ReaderView extends AbstractFxmlView {
     @Autowired
     private BooksView booksView;
 
+    @Autowired
+    private ReadView readView;
+
     private ToggleGroup group = new ToggleGroup();
 
     private ObservableList<Node> toolBarButtons;
@@ -46,6 +50,21 @@ public class ReaderView extends AbstractFxmlView {
 
         this.initWidthHeight();
         pane.setStyle(pane.getStyle() + "-fx-background-image:url("  + ApplicationConfig.getConfigLocation() + "images/" + config.getBackground() + ");");
+    }
+
+    @EventListener(ViewChangeEvent.class)
+    protected void onViewChange(ViewChangeEvent event) {
+        BorderPane pane = (BorderPane)this.getView();
+        switch (event.getSource()) {
+            case "books":
+                pane.setCenter(booksView.getView());
+                group.selectToggle(findById("books", toolBarButtons));
+                break;
+            case "read":
+                pane.setCenter(readView.getView());
+                group.selectToggle(findById("read", toolBarButtons));
+                break;
+        }
     }
 
     private void initTools() {
@@ -66,6 +85,10 @@ public class ReaderView extends AbstractFxmlView {
         BorderPane bookPanel = (BorderPane)booksView.getView();
         bookPanel.setPrefWidth(pane.getPrefWidth() - toolBar.getPrefWidth() - 12);
         bookPanel.setPrefHeight(pane.getPrefHeight() - 8);
+
+        BorderPane readPane = (BorderPane)readView.getView();
+        readPane.setPrefWidth(pane.getPrefWidth() - toolBar.getPrefWidth() - 12);
+        readPane.setPrefHeight(pane.getPrefHeight() - 8);
     }
 
     private void initToggleBtn(ToggleButton button, String name, ChangeListener<Boolean> onChange) {
@@ -102,14 +125,22 @@ public class ReaderView extends AbstractFxmlView {
     private void onWidthChange(ObservableValue<? extends  Number> observable, Number oldVal, Number newVal) {
         ToolBar toolBar = (ToolBar) this.getView().lookup("#tools");
         BorderPane pane = (BorderPane) this.getView();
+
         BorderPane bookPane = (BorderPane)booksView.getView();
         bookPane.setPrefWidth(pane.getWidth() - toolBar.getPrefWidth() - 12);
+
+        BorderPane readPane = (BorderPane)readView.getView();
+        readPane.setPrefWidth(pane.getWidth() - toolBar.getPrefWidth() - 12);
     }
 
     private void onHeightChange(ObservableValue<? extends  Number> observable, Number oldVal, Number newVal) {
         BorderPane pane = (BorderPane) this.getView();
+
         BorderPane bookPanel = (BorderPane)booksView.getView();
         bookPanel.setPrefHeight(pane.getHeight() + 10);
+
+        BorderPane readPane = (BorderPane)readView.getView();
+        readPane.setPrefHeight(pane.getHeight() + 10);
     }
 
 }
