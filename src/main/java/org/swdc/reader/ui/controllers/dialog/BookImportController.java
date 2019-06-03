@@ -1,6 +1,7 @@
 package org.swdc.reader.ui.controllers.dialog;
 
 import de.felixroske.jfxsupport.FXMLController;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -63,10 +64,12 @@ public class BookImportController implements Initializable{
     }
 
     @EventListener(TypeRefreshEvent.class)
-    protected void refreshTypes () {
-        List<BookType> types = service.listTypes();
-        typeList.clear();
-        typeList.addAll(types);
+    public void refreshTypes () {
+        Platform.runLater(() -> {
+            List<BookType> types = service.listTypes();
+            typeList.clear();
+            typeList.addAll(types);
+        });
     }
 
 }

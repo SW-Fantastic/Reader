@@ -46,6 +46,10 @@ public class BookService {
     @Transactional(rollbackFor = Exception.class)
     public void syncBookFolder() throws Exception {
         File file = new File("./data/library");
+        if (!file.exists()) {
+            file.mkdir();
+            return;
+        }
         File[] books = file.listFiles();
         for (File bookFile: books) {
 
@@ -82,7 +86,12 @@ public class BookService {
     }
 
     public BookType getDefaultType() {
-        return typeRepository.getDefault();
+        BookType defaultType = typeRepository.getDefault();
+        if (defaultType == null) {
+            this.createType("未分类");
+            defaultType = typeRepository.getDefault();
+        }
+        return defaultType;
     }
 
     public boolean isTypeExist(String name) {

@@ -119,7 +119,7 @@ public class BookController implements Initializable{
     }
 
     @EventListener(TypeRefreshEvent.class)
-    private void onTypeRefresh() {
+    public void onTypeRefresh() {
         Platform.runLater(() -> {
             List<BookType> types = service.listTypes();
             bookTypes.clear();
