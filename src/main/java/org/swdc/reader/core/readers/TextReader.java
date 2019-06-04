@@ -1,6 +1,6 @@
 package org.swdc.reader.core.readers;
 
-import javafx.scene.Node;
+import info.monitorenter.cpdetector.io.CodepageDetectorProxy;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.web.WebView;
 import lombok.Getter;
@@ -8,8 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.swdc.reader.core.BookLocator;
 import org.swdc.reader.core.BookReader;
+import org.swdc.reader.core.configs.TextConfig;
 import org.swdc.reader.core.locators.TextLocator;
-import org.swdc.reader.core.views.WebRenderView;
+import org.swdc.reader.core.views.TextRenderView;
 import org.swdc.reader.entity.Book;
 
 /**
@@ -18,9 +19,14 @@ import org.swdc.reader.entity.Book;
 @Component
 public class TextReader implements BookReader<String>{
 
+    @Autowired
+    private TextRenderView view;
 
     @Autowired
-    private WebRenderView view;
+    private CodepageDetectorProxy encodeDescriptor;
+
+    @Autowired
+    private TextConfig config;
 
     @Getter
     private BookLocator<String> locator;
@@ -28,9 +34,10 @@ public class TextReader implements BookReader<String>{
     @Override
     public void setBook(Book book) {
         if (locator != null) {
+            locator.finalizeResources();
             locator = null;
         }
-        locator = new TextLocator(book);
+        locator = new TextLocator(book, encodeDescriptor, config);
     }
 
     @Override

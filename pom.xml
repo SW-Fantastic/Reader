@@ -77,8 +77,8 @@
 			<groupId>net.sourceforge.cpdetector</groupId>
 			<artifactId>cpdetector</artifactId>
 			<version>1.0.7</version>
-			<systemPath>${project.basedir}/libs/cpdetector-1.0.7.jar</systemPath>
 		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -89,5 +89,15 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<repositories>
+		<repository>
+			<id>encodeRepo</id>
+			<url>http://maven.nuiton.org/release/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
+	</repositories>
 
 </project>

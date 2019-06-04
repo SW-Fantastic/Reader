@@ -26,4 +26,8 @@ public class ContentsItem {
     @Setter
     private String location;
 
+    @Getter
+    @Setter
+    private String title;
+
 }
