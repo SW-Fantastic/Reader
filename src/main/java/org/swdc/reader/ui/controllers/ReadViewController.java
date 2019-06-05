@@ -5,13 +5,16 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.swdc.reader.core.BookLocator;
 import org.swdc.reader.core.BookReader;
+import org.swdc.reader.event.ContentItemFoundEvent;
 import org.swdc.reader.event.DocumentOpenEvent;
+import org.swdc.reader.services.BookService;
 import org.swdc.reader.ui.views.ReadView;
 
 import java.net.URL;
@@ -30,15 +33,29 @@ public class ReadViewController implements Initializable {
     @Autowired
     private List<BookReader<?>> readers;
 
+    @Autowired
+    private BookService service;
+
     private BookReader currentReader;
+
+    @FXML
+    private TextField txtTitle;
+
+    @FXML
+    private TextField txtLocation;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
     }
 
+    @EventListener(ContentItemFoundEvent.class)
+    public void contentItemFound(ContentItemFoundEvent event) {
+        service.createContentItems(event.getSource());
+    }
+
     @EventListener(DocumentOpenEvent.class)
-    protected void bookOpenRequested(DocumentOpenEvent event) {
+    public void bookOpenRequested(DocumentOpenEvent event) {
         if (this.currentReader != null) {
             currentReader = null;
         }
@@ -50,7 +67,11 @@ public class ReadViewController implements Initializable {
             this.currentReader = reader;
             reader.setBook(event.getSource());
             BookLocator locator = reader.getLocator();
-            Platform.runLater(() -> reader.renderPage(locator.nextPage(), (BorderPane) view.getView()));
+            Platform.runLater(() -> {
+                reader.renderPage(locator.nextPage(), (BorderPane) view.getView());
+                txtTitle.setText(locator.getTitle());
+                txtLocation.setText(locator.getLocation());
+            });
         });
     }
 
@@ -62,6 +83,8 @@ public class ReadViewController implements Initializable {
         BookLocator locator = currentReader.getLocator();
         Object data = locator.prevPage();
         currentReader.renderPage(data, (BorderPane) view.getView());
+        txtTitle.setText(locator.getTitle());
+        txtLocation.setText(locator.getLocation());
     }
 
     @FXML
@@ -72,6 +95,8 @@ public class ReadViewController implements Initializable {
         BookLocator locator = currentReader.getLocator();
         Object data = locator.nextPage();
         currentReader.renderPage(data, (BorderPane) view.getView());
+        txtTitle.setText(locator.getTitle());
+        txtLocation.setText(locator.getLocation());
     }
 
 }

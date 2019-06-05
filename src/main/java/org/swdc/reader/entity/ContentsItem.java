@@ -30,4 +30,8 @@ public class ContentsItem {
     @Setter
     private String title;
 
+    @Override
+    public String toString() {
+        return title;
+    }
 }

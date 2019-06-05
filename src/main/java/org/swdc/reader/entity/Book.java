@@ -55,7 +55,7 @@ public class Book {
      */
     @Getter
     @Setter
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "located")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "located",fetch = FetchType.EAGER)
     private Set<ContentsItem> contentsItems;
 
     /**

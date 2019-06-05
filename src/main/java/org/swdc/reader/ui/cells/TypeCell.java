@@ -20,7 +20,7 @@ public class TypeCell extends ListCell<BookType> {
     protected void updateItem(BookType item, boolean empty) {
         super.updateItem(item, empty);
         BorderPane pane = (BorderPane)view.getView();
-        pane.setPrefWidth(getListView().getPrefWidth() - 24);
+        pane.setPrefWidth(getListView().getPrefWidth() - 28);
         if (empty) {
             setGraphic(null);
             return;

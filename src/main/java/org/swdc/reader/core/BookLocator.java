@@ -24,6 +24,10 @@ public interface BookLocator<T> {
      */
     T toPage(String location);
 
+    String getTitle();
+
+    String getLocation();
+
     /**
      * 读取当前页
      * @return

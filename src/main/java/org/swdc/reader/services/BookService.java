@@ -14,6 +14,7 @@ import org.swdc.reader.repository.BookRepository;
 import org.swdc.reader.repository.BookTypeRepository;
 import org.swdc.reader.repository.ContentsRepository;
 import org.swdc.reader.repository.MarksRepository;
+import org.swdc.reader.ui.ApplicationConfig;
 import org.swdc.reader.utils.DataUtil;
 
 import java.io.File;
@@ -39,6 +40,9 @@ public class BookService {
 
     @Autowired
     private MarksRepository marksRepository;
+
+    @Autowired
+    private ApplicationConfig config;
 
     /**
      * 更新书籍数据，和文件夹的内容同步
@@ -100,7 +104,7 @@ public class BookService {
     }
 
     @Transactional
-    public List<Book> getBooks(BookType type) {
+    public Set<Book> getBooks(BookType type) {
         BookType bookType = typeRepository.getOne(type.getId());
         return bookType.getBooks();
     }
@@ -126,6 +130,10 @@ public class BookService {
         }catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Book getBook(Long id) {
+        return bookRepository.findById(id).orElse(null);
     }
 
     public void createBook(Book book, File sourceFile) {
@@ -189,6 +197,25 @@ public class BookService {
             file.deleteOnExit();
         }
         bookRepository.delete(deleteTarget);
+    }
+
+    @Transactional
+    public void createContentItems(ContentsItem item) {
+        if (item.getLocated() == null) {
+            return;
+        }
+        if (item.getLocation() == null || item.getLocation().trim().equals("")) {
+            return;
+        }
+        if (item.getTitle() == null || item.getTitle().trim().equals("")) {
+            return;
+        }
+        Book book = bookRepository.getOne(item.getLocated().getId());
+        ContentsItem existed = contentsRepository.findByLocationAndLocated(item.getLocation(), book);
+        if (existed == null) {
+            item.setLocated(book);
+            contentsRepository.save(item);
+        }
     }
 
 }

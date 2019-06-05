@@ -1,17 +1,18 @@
 package org.swdc.reader.core.locators;
 
 import info.monitorenter.cpdetector.io.CodepageDetectorProxy;
+import javafx.scene.text.Font;
 import lombok.extern.apachecommons.CommonsLog;
 import org.swdc.reader.core.BookLocator;
 import org.swdc.reader.core.configs.TextConfig;
 import org.swdc.reader.entity.Book;
+import org.swdc.reader.entity.ContentsItem;
+import org.swdc.reader.event.ContentItemFoundEvent;
+import org.swdc.reader.ui.CommonComponents;
 
 import java.io.*;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,6 +41,11 @@ public class TextLocator implements BookLocator<String> {
     private List<Pattern> chapterPatterns;
 
     /**
+     * 当前适用的章节正则
+     */
+    private Pattern patternForChapter;
+
+    /**
      * 当前章节名
      */
     private String chapterName = "序章";
@@ -53,10 +59,24 @@ public class TextLocator implements BookLocator<String> {
 
     private BufferedReader reader;
 
+    private String backgroundImageData;
+
     public TextLocator(Book book, CodepageDetectorProxy codepageDetectorProxy, TextConfig config) {
         File bookFile = new File("./data/library/" + book.getName());
+        this.bookEntity = book;
         this.config = config;
         try {
+            if (config.getEnableBackgroundImage()) {
+                ByteArrayOutputStream bot = new ByteArrayOutputStream();
+                DataInputStream backgroundInput = new DataInputStream(new FileInputStream(new File("configs/images/" + config.getBackgroundImage())));
+                byte[] data = new byte[1024];
+                while (backgroundInput.read(data) != -1) {
+                    bot.write(data);
+                }
+                bot.flush();
+                backgroundInput.close();
+                backgroundImageData = Base64.getEncoder().encodeToString(bot.toByteArray());
+            }
             Charset charset = codepageDetectorProxy.detectCodepage(bookFile.toURI().toURL());
             if (charset != null) {
                 reader = new BufferedReader(new InputStreamReader(new FileInputStream(bookFile),charset));
@@ -90,28 +110,72 @@ public class TextLocator implements BookLocator<String> {
             if (data != null) {
                 return data;
             }
-            // 当前页内容不存在
+            // 当前页内容不存在，读取文件并渲染样式
             if (chapterNext != null) {
                 this.chapterName = chapterNext;
                 chapterNext = null;
-            } else {
-                this.locationTitleMap.put(1, this.chapterName);
             }
             String line = chapterName.equals("序章") ? "" : chapterName;
-            StringBuilder sb = new StringBuilder("<h2>" + line + "</h2>");
+            StringBuilder sb = new StringBuilder("<!docutype html><html><head><style>");
+            sb.append("body {")
+                    .append("font-family: \"")
+                    .append(CommonComponents.getFontMap().containsKey(config.getFontPath()) ? CommonComponents.getFontMap().get(config.getFontPath()):"Microsoft YaHei").append("\";")
+                    .append("font-color:").append(config.getFontColor()).append(";")
+                    .append("font-size:").append(config.getFontSize()).append("px;")
+                    .append("background-color:").append(config.getFontColor()).append(";")
+                    .append("padding: 18px;");
+            if (config.getEnableBackgroundImage()) {
+                sb.append("background-image: url(data:image/png;base64,").append(backgroundImageData).append(");");
+            }
+            sb.append("}");
+            if (config.getEnableBackgroundImage()) {
+                sb.append("div{")
+                        .append("background-color: rgba(255,255,255,0.8);")
+                        .append("padding: 36px;")
+                        .append("}");
+            }
+            sb.append("p {")
+                    .append("line-height: 2;")
+                    .append("text-indent: ").append(config.getFontSize() *2 + "px;")
+                    .append("letter-spacing: 1.2px;");
+            if (config.getEnableTextShadow()){
+                sb.append("text-shadow: 0px 0px 5px ").append(config.getShadowColor()).append(";");
+            }
+            sb.append("}")
+                    .append("</style></head><body><div>")
+                    .append("<p><h2 style=\"text-align: center\">")
+                    .append(line)
+                    .append("</h2></p>");
             sb.append("\n");
             readerLoop: while ((line = reader.readLine()) != null) {
-                for (Pattern pattern: chapterPatterns) {
-                    Matcher matcher = pattern.matcher(line);
+                if (patternForChapter == null){
+                    // 查找合用的章节正则
+                    for (Pattern pattern: chapterPatterns) {
+                        Matcher matcher = pattern.matcher(line);
+                        if (matcher.find()) {
+                            patternForChapter = pattern;
+                            this.locationTitleMap.put(currentPage, chapterName);
+                            this.chapterNext = line;
+                            break readerLoop;
+                        }
+                    }
+                } else {
+                    Matcher matcher = patternForChapter.matcher(line);
                     if (matcher.find()) {
-                        this.locationTitleMap.put(currentPage, line);
+                        this.locationTitleMap.put(currentPage, chapterName);
                         this.chapterNext = line;
-                        break readerLoop;
+                        break;
                     }
                 }
                 sb.append("<p>").append(line).append("</p>");
             }
+            sb.append("</div></body></html>");
             locationTextMap.put(currentPage, sb.toString());
+            ContentsItem item = new ContentsItem();
+            item.setLocated(bookEntity);
+            item.setLocation(currentPage + "");
+            item.setTitle(chapterName);
+            config.getApplicationConfig().publishEvent(new ContentItemFoundEvent(item));
             return sb.toString();
         } catch (IOException e) {
             log.error(e);
@@ -132,7 +196,27 @@ public class TextLocator implements BookLocator<String> {
 
     @Override
     public String toPage(String location) {
-        return null;
+        int page = Integer.valueOf(location);
+        if (page > currentPage) {
+            while (page > currentPage) {
+                this.nextPage();
+            }
+        } else if (page < currentPage) {
+            while (page < currentPage) {
+                this.prevPage();
+            }
+        }
+        return currentPage();
+    }
+
+    @Override
+    public String getTitle() {
+        return chapterName;
+    }
+
+    @Override
+    public String getLocation() {
+        return currentPage + "";
     }
 
     @Override

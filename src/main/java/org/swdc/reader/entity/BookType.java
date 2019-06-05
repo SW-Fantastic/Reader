@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by lenovo on 2019/5/23.
@@ -25,7 +26,7 @@ public class BookType {
     @Getter
     @Setter
     @OneToMany(mappedBy = "type",fetch = FetchType.EAGER)
-    private List<Book> books;
+    private Set<Book> books;
 
     @Override
     public String toString() {
