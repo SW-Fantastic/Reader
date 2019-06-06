@@ -10,14 +10,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.swdc.reader.entity.Book;
 import org.swdc.reader.entity.ContentsItem;
+import org.swdc.reader.event.BookLocationEvent;
 import org.swdc.reader.event.ContentItemChangeEvent;
+import org.swdc.reader.event.DocumentOpenEvent;
+import org.swdc.reader.event.ViewChangeEvent;
 import org.swdc.reader.services.BookService;
+import org.swdc.reader.ui.ApplicationConfig;
+import org.swdc.reader.ui.views.dialog.ContentsItemView;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 /**
- * Created by lenovo on 2019/6/5.
+ * 目录对话框的控制器
  */
 @FXMLController
 public class ContentsViewController implements Initializable {
@@ -26,7 +31,13 @@ public class ContentsViewController implements Initializable {
     protected ListView<ContentsItem> itemList;
 
     @Autowired
+    private ContentsItemView view;
+
+    @Autowired
     private BookService service;
+
+    @Autowired
+    private ApplicationConfig config;
 
     private ObservableList<ContentsItem> items = FXCollections.observableArrayList();
 
@@ -41,6 +52,27 @@ public class ContentsViewController implements Initializable {
         this.items.clear();
         this.items.addAll(book.getContentsItems());
         this.items.sort((itemA, itemB) -> itemA.getId().intValue() - itemB.getId().intValue());
+    }
+
+    @FXML
+    protected void onCancel() {
+        view.close();
+    }
+
+    @FXML
+    protected void onOK() {
+        ContentsItem item = this.itemList.getSelectionModel().getSelectedItem();
+        if (item == null) {
+            return;
+        }
+        Book targetBook = item.getLocated();
+        // 切换文档
+        config.publishEvent(new DocumentOpenEvent(targetBook));
+        // 切换位置
+        config.publishEvent(new BookLocationEvent(item));
+        // 切换视图
+        config.publishEvent(new ViewChangeEvent("read"));
+        view.close();
     }
 
 }

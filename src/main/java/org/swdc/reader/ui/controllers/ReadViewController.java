@@ -12,10 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.swdc.reader.core.BookLocator;
 import org.swdc.reader.core.BookReader;
+import org.swdc.reader.entity.ContentsItem;
+import org.swdc.reader.event.BookLocationEvent;
 import org.swdc.reader.event.ContentItemFoundEvent;
 import org.swdc.reader.event.DocumentOpenEvent;
 import org.swdc.reader.services.BookService;
+import org.swdc.reader.ui.ApplicationConfig;
 import org.swdc.reader.ui.views.ReadView;
+import org.swdc.reader.ui.views.dialog.ContentsItemView;
 
 import java.net.URL;
 import java.util.List;
@@ -36,6 +40,12 @@ public class ReadViewController implements Initializable {
     @Autowired
     private BookService service;
 
+    @Autowired
+    private ContentsItemView contentsItemView;
+
+    @Autowired
+    private ApplicationConfig config;
+
     private BookReader currentReader;
 
     @FXML
@@ -54,15 +64,32 @@ public class ReadViewController implements Initializable {
         service.createContentItems(event.getSource());
     }
 
+    @EventListener(BookLocationEvent.class)
+    public void onLocationRequest(BookLocationEvent event) {
+        Platform.runLater(() -> {
+            if (currentReader == null) {
+                return;
+            }
+            ContentsItem item = event.getSource();
+            String location = item.getLocation();
+            BookLocator locator = currentReader.getLocator();
+            Object data = locator.toPage(location);
+            currentReader.renderPage(data, (BorderPane)view.getView());
+            txtTitle.setText(locator.getTitle());
+            txtLocation.setText(locator.getLocation());
+        });
+    }
+
     @EventListener(DocumentOpenEvent.class)
     public void bookOpenRequested(DocumentOpenEvent event) {
-        if (this.currentReader != null) {
-            currentReader = null;
-        }
         readers.stream().filter(reader -> reader.isSupport(event.getSource()))
                 .findFirst().ifPresent((BookReader reader) -> {
-            if (currentReader != null && currentReader != reader) {
-                currentReader.finalizeResources();
+            if (currentReader != null) {
+                if (event.getSource().getId().longValue() == currentReader.getBook().getId().longValue()) {
+                    return;
+                } else if (currentReader != null && currentReader != reader) {
+                    currentReader.finalizeResources();
+                }
             }
             this.currentReader = reader;
             reader.setBook(event.getSource());
@@ -85,6 +112,22 @@ public class ReadViewController implements Initializable {
         currentReader.renderPage(data, (BorderPane) view.getView());
         txtTitle.setText(locator.getTitle());
         txtLocation.setText(locator.getLocation());
+    }
+
+    @FXML
+    public void onContentsItem() {
+        contentsItemView.show();
+    }
+
+    @FXML
+    public void onPageTo(){
+        if (currentReader == null) {
+            return;
+        }
+        ContentsItem item = new ContentsItem();
+        item.setLocation(txtLocation.getText());
+        item.setLocated(currentReader.getBook());
+        config.publishEvent(new BookLocationEvent(item));
     }
 
     @FXML

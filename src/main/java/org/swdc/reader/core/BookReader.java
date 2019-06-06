@@ -18,6 +18,12 @@ public interface BookReader<T> {
     void setBook(Book book);
 
     /**
+     * 获取当前的book
+     * @return
+     */
+    Book getBook();
+
+    /**
      * 在View中进行页面渲染
      * @param pageData
      * @param view

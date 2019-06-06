@@ -31,6 +31,8 @@ public class TextReader implements BookReader<String>{
     @Getter
     private BookLocator<String> locator;
 
+    private Book currentBook;
+
     @Override
     public void setBook(Book book) {
         if (locator != null) {
@@ -38,6 +40,12 @@ public class TextReader implements BookReader<String>{
             locator = null;
         }
         locator = new TextLocator(book, encodeDescriptor, config);
+        this.currentBook = book;
+    }
+
+    @Override
+    public Book getBook() {
+        return currentBook;
     }
 
     @Override
