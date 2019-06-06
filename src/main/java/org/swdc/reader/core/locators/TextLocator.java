@@ -84,8 +84,8 @@ public class TextLocator implements BookLocator<String> {
                 reader = new BufferedReader(new InputStreamReader(new FileInputStream(bookFile)));
             }
             this.chapterPatterns = new ArrayList<>();
-            this.chapterPatterns.add(Pattern.compile("第[^章]+章[\\s\\S]*?(?:(?=第[^章]+章)|$)"));
-            this.chapterPatterns.add(Pattern.compile("第[^回]+回[\\s\\S]*?(?:(?=回[^回]+回)|$)"));
+            this.chapterPatterns.add(Pattern.compile("^第[^章]+章[\\s\\S]*?(?:(?=第[^章]+章)|$)"));
+            this.chapterPatterns.add(Pattern.compile("^第[^回]+回[\\s\\S]*?(?:(?=回[^回]+回)|$)"));
         } catch (IOException e) {
             log.error(e);
         }
