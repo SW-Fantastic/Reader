@@ -69,7 +69,7 @@ public class ContentsViewController implements Initializable {
         // 切换文档
         config.publishEvent(new DocumentOpenEvent(targetBook));
         // 切换位置
-        config.publishEvent(new BookLocationEvent(item));
+        config.publishEvent(new BookLocationEvent(item.getLocation()));
         // 切换视图
         config.publishEvent(new ViewChangeEvent("read"));
         view.close();

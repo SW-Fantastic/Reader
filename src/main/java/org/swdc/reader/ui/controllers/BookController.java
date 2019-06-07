@@ -11,6 +11,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -31,6 +32,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Observable;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 /**
  * Created by lenovo on 2019/5/22.
@@ -52,6 +54,9 @@ public class BookController implements Initializable{
 
     @FXML
     private ListView<BookType>  typeListView;
+
+    @FXML
+    private TextField txtSearch;
 
     @Autowired
     private ApplicationConfig config;
@@ -85,6 +90,24 @@ public class BookController implements Initializable{
     @FXML
     protected void onAddType() {
         addDialog.show();
+    }
+
+    @FXML
+    protected void onSearch() {
+        if (txtSearch.getText().trim().equals("")) {
+            return;
+        }
+        Set<Book> bookSearched = service.searchByName(txtSearch.getText());
+        books.clear();
+        books.addAll(bookSearched);
+    }
+
+    @FXML
+    protected void onTextSearchChange() {
+        if (txtSearch.getText().trim().equals("")) {
+            books.clear();
+            config.publishEvent(new BooksRefreshEvent());
+        }
     }
 
     @FXML

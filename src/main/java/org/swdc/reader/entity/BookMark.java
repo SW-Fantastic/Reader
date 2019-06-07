@@ -23,7 +23,15 @@ public class BookMark {
 
     @Getter
     @Setter
-    @ManyToOne(cascade = CascadeType.DETACH)
+    @ManyToOne(cascade = CascadeType.DETACH,fetch = FetchType.EAGER)
     private Book markFor;
 
+    @Getter
+    @Setter
+    private String description;
+
+    @Override
+    public String toString() {
+        return description;
+    }
 }

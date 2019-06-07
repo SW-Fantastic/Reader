@@ -47,7 +47,7 @@ public class Book {
      */
     @Getter
     @Setter
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "markFor")
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "markFor",fetch = FetchType.EAGER)
     private Set<BookMark> marks;
 
     /**

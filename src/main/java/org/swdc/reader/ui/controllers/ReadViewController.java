@@ -20,6 +20,7 @@ import org.swdc.reader.services.BookService;
 import org.swdc.reader.ui.ApplicationConfig;
 import org.swdc.reader.ui.views.ReadView;
 import org.swdc.reader.ui.views.dialog.ContentsItemView;
+import org.swdc.reader.ui.views.dialog.MarkAddDialog;
 
 import java.net.URL;
 import java.util.List;
@@ -46,6 +47,9 @@ public class ReadViewController implements Initializable {
     @Autowired
     private ApplicationConfig config;
 
+    @Autowired
+    private MarkAddDialog markAddDialog;
+
     private BookReader currentReader;
 
     @FXML
@@ -70,8 +74,7 @@ public class ReadViewController implements Initializable {
             if (currentReader == null) {
                 return;
             }
-            ContentsItem item = event.getSource();
-            String location = item.getLocation();
+            String location = event.getSource();
             BookLocator locator = currentReader.getLocator();
             Object data = locator.toPage(location);
             currentReader.renderPage(data, (BorderPane)view.getView());
@@ -124,10 +127,13 @@ public class ReadViewController implements Initializable {
         if (currentReader == null) {
             return;
         }
-        ContentsItem item = new ContentsItem();
-        item.setLocation(txtLocation.getText());
-        item.setLocated(currentReader.getBook());
-        config.publishEvent(new BookLocationEvent(item));
+        config.publishEvent(new BookLocationEvent(txtLocation.getText()));
+    }
+
+    @FXML
+    public void onAddMarks() {
+        markAddDialog.setBook(currentReader);
+        markAddDialog.show();
     }
 
     @FXML

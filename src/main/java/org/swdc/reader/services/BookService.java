@@ -41,9 +41,6 @@ public class BookService {
     @Autowired
     private MarksRepository marksRepository;
 
-    @Autowired
-    private ApplicationConfig config;
-
     /**
      * 更新书籍数据，和文件夹的内容同步
      */
@@ -107,6 +104,10 @@ public class BookService {
     public Set<Book> getBooks(BookType type) {
         BookType bookType = typeRepository.getOne(type.getId());
         return bookType.getBooks();
+    }
+
+    public Set<Book> searchByName(String name) {
+        return bookRepository.findByNameContaining(name);
     }
 
     public Book fromFile(File file) {
@@ -216,6 +217,34 @@ public class BookService {
             item.setLocated(book);
             contentsRepository.save(item);
         }
+    }
+
+    public void createBookMark(BookMark mark) {
+        if (mark.getLocation() == null || mark.getLocation().trim().equals("")) {
+            return;
+        }
+        if (mark.getDescription() == null || mark.getDescription().trim().equals("")) {
+            return;
+        }
+        Book book = bookRepository.getOne(mark.getMarkFor().getId());
+        BookMark existed = marksRepository.findByMarkForAndLocation(book, mark.getLocation());
+        if (existed == null) {
+            mark.setMarkFor(book);
+            marksRepository.save(mark);
+        } else {
+            existed.setDescription(mark.getDescription());
+            marksRepository.save(existed);
+        }
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteMark(BookMark mark) {
+        marksRepository.findById(mark.getId()).ifPresent(bookMark -> {
+            Book book = bookRepository.getOne(bookMark.getMarkFor().getId());
+            book.getMarks().remove(bookMark);
+            bookRepository.save(book);
+            marksRepository.delete(bookMark);
+        });
     }
 
 }

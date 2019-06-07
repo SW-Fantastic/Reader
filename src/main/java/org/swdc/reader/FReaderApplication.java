@@ -24,7 +24,7 @@ public class FReaderApplication extends AbstractJavaFxApplicationSupport {
 	@Override
 	public void beforeInitialView(Stage stage, ConfigurableApplicationContext ctx) {
 		stage.getIcons().addAll(AwsomeIconData.getImageIcons());
-		stage.setMinHeight(630);
+		stage.setMinHeight(680);
 		stage.setMinWidth(1000);
 		stage.setTitle("幻想藏书阁");
 	}

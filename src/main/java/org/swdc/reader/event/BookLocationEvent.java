@@ -8,12 +8,12 @@ import org.swdc.reader.entity.ContentsItem;
  */
 public class BookLocationEvent extends ApplicationEvent {
 
-    public BookLocationEvent(ContentsItem source) {
-        super(source);
+    public BookLocationEvent(String location) {
+        super(location);
     }
 
     @Override
-    public ContentsItem getSource() {
-        return (ContentsItem)super.getSource();
+    public String getSource() {
+        return (String)super.getSource();
     }
 }

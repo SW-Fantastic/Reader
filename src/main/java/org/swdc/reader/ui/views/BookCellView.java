@@ -16,11 +16,13 @@ import org.springframework.context.annotation.Scope;
 import org.swdc.reader.entity.Book;
 import org.swdc.reader.event.ContentItemChangeEvent;
 import org.swdc.reader.event.DocumentOpenEvent;
+import org.swdc.reader.event.MarkItemChangeEvent;
 import org.swdc.reader.event.ViewChangeEvent;
 import org.swdc.reader.ui.ApplicationConfig;
 import org.swdc.reader.ui.AwsomeIconData;
 import org.swdc.reader.ui.views.dialog.BookEditDialog;
 import org.swdc.reader.ui.views.dialog.ContentsItemView;
+import org.swdc.reader.ui.views.dialog.MarksDialog;
 import org.swdc.reader.utils.UIUtils;
 
 import javax.annotation.PostConstruct;
@@ -41,6 +43,9 @@ public class BookCellView extends AbstractFxmlView{
     @Autowired
     private ContentsItemView contentsItemView;
 
+    @Autowired
+    private MarksDialog marksDialog;
+
     protected Book book;
 
     @PostConstruct
@@ -57,22 +62,35 @@ public class BookCellView extends AbstractFxmlView{
     }
 
     private void onBookEdit(ActionEvent event) {
+        if (book == null) {
+            return;
+        }
         editDialog.setBook(book);
         editDialog.show();
     }
 
     private void onOpen(ActionEvent event) {
+        if (book == null) {
+            return;
+        }
         config.publishEvent(new ViewChangeEvent("read"));
         config.publishEvent(new DocumentOpenEvent(this.book));
     }
 
     private void onContents(ActionEvent event) {
+        if (book == null) {
+            return;
+        }
         config.publishEvent(new ContentItemChangeEvent(book));
         contentsItemView.show();
     }
 
     private void onTag(ActionEvent event) {
-
+        if (book == null) {
+            return;
+        }
+        config.publishEvent(new MarkItemChangeEvent(book));
+        marksDialog.show();
     }
 
     private void setButtonIcon(String id, String iconName, ObservableList<Node> childs, EventHandler<ActionEvent> handler) {

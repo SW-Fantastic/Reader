@@ -5,6 +5,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.swdc.reader.entity.Book;
 
+import java.util.Set;
+
 /**
  * Created by lenovo on 2019/5/22.
  */
@@ -13,6 +15,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     Long countByShaCode(@Param("shaCode")String shaCode);
 
-    Book findByShaCode(@Param("shaCode")String shaCode);
+    Set<Book> findByNameContaining(@Param("name") String name);
 
 }

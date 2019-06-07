@@ -11,7 +11,7 @@
          <children>
             <Button mnemonicParsing="false" onAction="#onPrevPage" prefHeight="24.0" prefWidth="58.0" styleClass="btn-txt" text="上一页" />
             <Button mnemonicParsing="false" onAction="#onNextPage" prefHeight="24.0" prefWidth="58.0" styleClass="btn-txt" text="下一页" />
-            <Button layoutX="88.0" layoutY="30.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="58.0" styleClass="btn-txt" text="书签" />
+            <Button layoutX="88.0" layoutY="30.0" mnemonicParsing="false" onAction="#onAddMarks" prefHeight="24.0" prefWidth="58.0" styleClass="btn-txt" text="书签" />
             <TextField fx:id="txtTitle" editable="false" prefHeight="27.0" prefWidth="151.0" styleClass="txt" />
             <HBox prefHeight="41.0" prefWidth="152.0" HBox.hgrow="ALWAYS" />
             <TextField fx:id="txtLocation" prefHeight="26.0" prefWidth="104.0" styleClass="txt" />

@@ -35,12 +35,12 @@
                         <Button id="btnRefresh" mnemonicParsing="false" onAction="#onSyncFiles" styleClass="btn" text="refresh" />
                      </children></HBox>
                   <HBox prefHeight="61.0" prefWidth="81.0" HBox.hgrow="ALWAYS" />
-                  <TextField prefHeight="29.0" prefWidth="258.0" styleClass="txt">
+                  <TextField fx:id="txtSearch" onKeyTyped="#onTextSearchChange" prefHeight="29.0" prefWidth="258.0" styleClass="txt">
                      <HBox.margin>
                         <Insets right="8.0" />
                      </HBox.margin>
                   </TextField>
-                  <Button id="btnSearch" mnemonicParsing="false" prefHeight="31.0" prefWidth="40.0" styleClass="btn" text="搜索">
+                  <Button id="btnSearch" mnemonicParsing="false" onAction="#onSearch" prefHeight="31.0" prefWidth="40.0" styleClass="btn" text="搜索">
                      <HBox.margin>
                         <Insets right="8.0" />
                      </HBox.margin>

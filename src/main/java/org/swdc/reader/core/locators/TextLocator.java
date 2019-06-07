@@ -86,6 +86,7 @@ public class TextLocator implements BookLocator<String> {
             this.chapterPatterns = new ArrayList<>();
             this.chapterPatterns.add(Pattern.compile("^第[^章]+章[\\s\\S]*?(?:(?=第[^章]+章)|$)"));
             this.chapterPatterns.add(Pattern.compile("^第[^回]+回[\\s\\S]*?(?:(?=回[^回]+回)|$)"));
+            this.chapterPatterns.add(Pattern.compile("第[^章]+章[\\s\\S]*?(?:(?=第[^章]+章)|$)"));
         } catch (IOException e) {
             log.error(e);
         }
@@ -97,14 +98,17 @@ public class TextLocator implements BookLocator<String> {
         String data = chapterAt(currentPage);
         if (data != null) {
             return data;
+        } else {
+            // 没有下一页，返回上一页
+            this.currentPage ++;
+            return chapterAt(currentPage);
         }
-        return "";
     }
 
     @Override
     public String nextPage() {
-        currentPage ++;
         try {
+            currentPage ++;
             // 当前页内容已经存在
             String data = chapterAt(currentPage);
             if (data != null) {
@@ -123,6 +127,8 @@ public class TextLocator implements BookLocator<String> {
                     .append("font-color:").append(config.getFontColor()).append(";")
                     .append("font-size:").append(config.getFontSize()).append("px;")
                     .append("background-color:").append(config.getFontColor()).append(";")
+                    .append("overflow-wrap: break-word;")
+                    .append("word-wrap: break-word;")
                     .append("padding: 18px;");
             if (config.getEnableBackgroundImage()) {
                 sb.append("background-image: url(data:image/png;base64,").append(backgroundImageData).append(");");
@@ -155,7 +161,7 @@ public class TextLocator implements BookLocator<String> {
                         if (matcher.find()) {
                             patternForChapter = pattern;
                             this.locationTitleMap.put(currentPage, chapterName);
-                            this.chapterNext = line;
+                            this.chapterNext = line.trim();
                             break readerLoop;
                         }
                     }
@@ -179,7 +185,11 @@ public class TextLocator implements BookLocator<String> {
             return sb.toString();
         } catch (IOException e) {
             log.error(e);
-            return "";
+            StringWriter swr = new StringWriter();
+            e.printStackTrace(new PrintWriter(swr));
+            this.currentPage --;
+            this.chapterName = "读取出现异常";
+            return swr.toString();
         }
     }
 
@@ -197,6 +207,9 @@ public class TextLocator implements BookLocator<String> {
     @Override
     public String toPage(String location) {
         int page = Integer.valueOf(location);
+        if (page <= 0) {
+            return toPage("1");
+        }
         if (page > currentPage) {
             while (page > currentPage) {
                 this.nextPage();
