@@ -34,6 +34,9 @@ public class ReaderView extends AbstractFxmlView {
     @Autowired
     private ReadView readView;
 
+    @Autowired
+    private ConfigView configView;
+
     private ToggleGroup group = new ToggleGroup();
 
     private ObservableList<Node> toolBarButtons;
@@ -64,6 +67,10 @@ public class ReaderView extends AbstractFxmlView {
                 pane.setCenter(readView.getView());
                 group.selectToggle(findById("read", toolBarButtons));
                 break;
+            case "config":
+                pane.setCenter(configView.getView());
+                group.selectToggle(findById("conf", toolBarButtons));
+                break;
         }
     }
 
@@ -89,6 +96,10 @@ public class ReaderView extends AbstractFxmlView {
         BorderPane readPane = (BorderPane)readView.getView();
         readPane.setPrefWidth(pane.getPrefWidth() - toolBar.getPrefWidth() - 12);
         readPane.setPrefHeight(pane.getPrefHeight() - 8);
+
+        BorderPane configPane = (BorderPane)configView.getView();
+        configPane.setPrefWidth(pane.getPrefWidth() - toolBar.getPrefWidth() - 12);
+        configPane.setPrefHeight(pane.getPrefHeight() - 8);
     }
 
     private void initToggleBtn(ToggleButton button, String name, ChangeListener<Boolean> onChange) {
@@ -131,6 +142,9 @@ public class ReaderView extends AbstractFxmlView {
 
         BorderPane readPane = (BorderPane)readView.getView();
         readPane.setPrefWidth(pane.getWidth() - toolBar.getPrefWidth() - 12);
+
+        BorderPane configPane = (BorderPane)configView.getView();
+        configPane.setPrefWidth(pane.getWidth() - toolBar.getPrefWidth() - 12);
     }
 
     private void onHeightChange(ObservableValue<? extends  Number> observable, Number oldVal, Number newVal) {
@@ -141,6 +155,9 @@ public class ReaderView extends AbstractFxmlView {
 
         BorderPane readPane = (BorderPane)readView.getView();
         readPane.setPrefHeight(pane.getHeight() + 10);
+
+        BorderPane configPane = (BorderPane)configView.getView();
+        configPane.setPrefHeight(pane.getHeight() + 10);
     }
 
 }

@@ -12,3 +12,8 @@ include RSS （Feeds），based javaFX and SpringBoot
 
  - [x] 基础结构搭建（Basic Data Structs)
  - [ ] 基础UI的设计和美化 (UI Design)
+ - [x] 数据结构建模（DataStruct Design）
+ - [x] 核心接口（Core interface）
+ - [x] 文本阅读的实现（Text reader implemented）
+ - [ ] PDF阅读的实现（Adobe PDF reader implement）
+ - [ ] EPublic阅读的实现（EPUB File Reader implement）

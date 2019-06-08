@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @CommonsLog
 public class ViewMethodAspect {
 
-    @Around("@annotation(org.swdc.reader.aspects.anno.UIMethod)")
+    @Around("@annotation(org.swdc.reader.anno.UIMethod)")
     public Object withPlatformThread(ProceedingJoinPoint point) {
         MethodSignature methodSignature = (MethodSignature)point.getSignature();
         Class<?> returnType = methodSignature.getReturnType();

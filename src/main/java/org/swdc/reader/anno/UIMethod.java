@@ -1,4 +1,4 @@
-package org.swdc.reader.aspects.anno;
+package org.swdc.reader.anno;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

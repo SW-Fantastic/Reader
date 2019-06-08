@@ -68,7 +68,7 @@ public class TextLocator implements BookLocator<String> {
         try {
             if (config.getEnableBackgroundImage()) {
                 ByteArrayOutputStream bot = new ByteArrayOutputStream();
-                DataInputStream backgroundInput = new DataInputStream(new FileInputStream(new File("configs/images/" + config.getBackgroundImage())));
+                DataInputStream backgroundInput = new DataInputStream(new FileInputStream(new File("configs/readerResources/text/" + config.getBackgroundImage())));
                 byte[] data = new byte[1024];
                 while (backgroundInput.read(data) != -1) {
                     bot.write(data);
@@ -126,7 +126,7 @@ public class TextLocator implements BookLocator<String> {
                     .append(CommonComponents.getFontMap().containsKey(config.getFontPath()) ? CommonComponents.getFontMap().get(config.getFontPath()):"Microsoft YaHei").append("\";")
                     .append("font-color:").append(config.getFontColor()).append(";")
                     .append("font-size:").append(config.getFontSize()).append("px;")
-                    .append("background-color:").append(config.getFontColor()).append(";")
+                    .append("background-color:").append(config.getBackgroundColor()).append(";")
                     .append("overflow-wrap: break-word;")
                     .append("word-wrap: break-word;")
                     .append("padding: 18px;");

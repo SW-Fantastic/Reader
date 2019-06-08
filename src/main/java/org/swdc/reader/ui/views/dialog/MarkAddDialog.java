@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.swdc.reader.aspects.anno.UIMethod;
+import org.swdc.reader.anno.UIMethod;
 import org.swdc.reader.core.BookReader;
 import org.swdc.reader.ui.ApplicationConfig;
 import org.swdc.reader.ui.AwsomeIconData;
