@@ -25,7 +25,7 @@ public class BookType {
 
     @Getter
     @Setter
-    @OneToMany(mappedBy = "type",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "type",fetch = FetchType.EAGER,cascade = CascadeType.REMOVE)
     private Set<Book> books;
 
     @Override

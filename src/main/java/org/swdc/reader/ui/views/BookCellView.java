@@ -31,7 +31,7 @@ import javax.annotation.PostConstruct;
  * Created by lenovo on 2019/5/22.
  */
 @Scope("prototype")
-@FXMLView("/views/BookCellView.fxml")
+@FXMLView("/views/cells/BookCellView.fxml")
 public class BookCellView extends AbstractFxmlView{
 
     @Autowired

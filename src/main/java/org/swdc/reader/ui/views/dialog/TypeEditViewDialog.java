@@ -5,14 +5,15 @@ import de.felixroske.jfxsupport.FXMLView;
 import de.felixroske.jfxsupport.GUIState;
 import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.swdc.reader.aspects.anno.UIMethod;
-import org.swdc.reader.core.BookReader;
+import org.swdc.reader.entity.BookType;
 import org.swdc.reader.ui.ApplicationConfig;
 import org.swdc.reader.ui.AwsomeIconData;
 import org.swdc.reader.utils.UIUtils;
@@ -20,29 +21,28 @@ import org.swdc.reader.utils.UIUtils;
 import javax.annotation.PostConstruct;
 
 /**
- * Created by lenovo on 2019/6/7.
+ * Created by lenovo on 2019/6/8.
  */
-@FXMLView("/views/dialogs/MarkCreateDialog.fxml")
-public class MarkAddDialog extends AbstractFxmlView {
+@FXMLView("/views/dialogs/TypeEditView.fxml")
+public class TypeEditViewDialog extends AbstractFxmlView {
 
     @Autowired
     private ApplicationConfig config;
 
+    @Getter
+    private BookType type;
+
     private Stage stage;
 
-    @Setter
-    @Getter
-    private BookReader book;
-
     @PostConstruct
-    protected void initUI() throws Exception {
+    public void initUI() throws Exception{
         UIUtils.configUI((BorderPane)getView(), config);
         Platform.runLater(() -> {
             stage = new Stage();
-            Scene scene = new Scene(this.getView());
+            Scene scene = new Scene(getView());
             stage.setScene(scene);
+            stage.setTitle("分类编辑");
             stage.setResizable(false);
-            stage.setTitle("添加书签");
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.initOwner(GUIState.getStage());
             stage.getIcons().addAll(AwsomeIconData.getImageIcons());
@@ -63,6 +63,16 @@ public class MarkAddDialog extends AbstractFxmlView {
         if (stage.isShowing()) {
             stage.close();
         }
+    }
+
+    public void setType(BookType type) {
+        BorderPane pane = (BorderPane)getView();
+        GridPane gridPane = (GridPane)pane.getCenter();
+        TextField txtName = (TextField)gridPane.lookup("#txtName");
+        TextField txtCount = (TextField)gridPane.lookup("#txtCount");
+        txtName.setText(type.getName());
+        txtCount.setText(type.getBooks().size() + "");
+        this.type = type;
     }
 
 }

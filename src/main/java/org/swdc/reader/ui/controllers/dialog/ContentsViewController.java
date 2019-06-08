@@ -1,6 +1,7 @@
 package org.swdc.reader.ui.controllers.dialog;
 
 import de.felixroske.jfxsupport.FXMLController;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -48,10 +49,12 @@ public class ContentsViewController implements Initializable {
 
     @EventListener(ContentItemChangeEvent.class)
     public void onItemsChange(ContentItemChangeEvent event) {
-        Book book = service.getBook(event.getSource().getId());
-        this.items.clear();
-        this.items.addAll(book.getContentsItems());
-        this.items.sort((itemA, itemB) -> itemA.getId().intValue() - itemB.getId().intValue());
+        Platform.runLater(() -> {
+            Book book = service.getBook(event.getSource().getId());
+            this.items.clear();
+            this.items.addAll(book.getContentsItems());
+            this.items.sort((itemA, itemB) -> itemA.getId().intValue() - itemB.getId().intValue());
+        });
     }
 
     @FXML

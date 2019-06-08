@@ -12,6 +12,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.swdc.reader.aspects.anno.UIMethod;
 import org.swdc.reader.entity.Book;
 import org.swdc.reader.entity.BookType;
 import org.swdc.reader.services.BookService;
@@ -25,7 +26,7 @@ import java.io.File;
 /**
  * Created by lenovo on 2019/5/28.
  */
-@FXMLView("/views/BookImport.fxml")
+@FXMLView("/views/dialogs/BookImport.fxml")
 public class BookImportView extends AbstractFxmlView {
 
     @Autowired
@@ -57,14 +58,13 @@ public class BookImportView extends AbstractFxmlView {
         });
     }
 
+    @UIMethod
     public void show() {
-        Platform.runLater(() -> {
-            if (stage.isShowing()) {
+        if (stage.isShowing()) {
                 stage.requestFocus();
-            } else {
+        } else {
                 stage.showAndWait();
-            }
-        });
+        }
     }
 
     public void setBook(File bookFile) {
@@ -83,13 +83,12 @@ public class BookImportView extends AbstractFxmlView {
         this.book = book;
     }
 
+    @UIMethod
     public void close() {
-        Platform.runLater(() -> {
-            if (stage.isShowing()) {
-                stage.close();
-                setBook(null);
-            }
-        });
+        if (stage.isShowing()) {
+            stage.close();
+            setBook(null);
+        }
     }
 
 }

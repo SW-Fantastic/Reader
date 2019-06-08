@@ -18,6 +18,8 @@ import org.swdc.reader.services.BookService;
 
 /**
  * 发送界面的列表刷新事件的aspect。
+ *
+ * an aspect send refresh event to views
  */
 
 @Aspect

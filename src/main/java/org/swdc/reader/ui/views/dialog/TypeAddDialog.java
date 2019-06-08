@@ -9,6 +9,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.swdc.reader.aspects.anno.UIMethod;
 import org.swdc.reader.ui.ApplicationConfig;
 import org.swdc.reader.ui.AwsomeIconData;
 import org.swdc.reader.utils.UIUtils;
@@ -18,7 +19,7 @@ import javax.annotation.PostConstruct;
 /**
  * Created by lenovo on 2019/5/25.
  */
-@FXMLView("/views/TypeAddDialog.fxml")
+@FXMLView("/views/dialogs/TypeAddDialog.fxml")
 public class TypeAddDialog extends AbstractFxmlView {
 
     @Autowired
@@ -41,6 +42,7 @@ public class TypeAddDialog extends AbstractFxmlView {
         });
     }
 
+    @UIMethod
     public void show() {
         if (stage.isShowing()) {
             stage.requestFocus();
@@ -49,6 +51,7 @@ public class TypeAddDialog extends AbstractFxmlView {
         }
     }
 
+    @UIMethod
     public void close() {
         if (stage.isShowing()) {
             stage.close();

@@ -9,6 +9,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.swdc.reader.aspects.anno.UIMethod;
 import org.swdc.reader.ui.ApplicationConfig;
 import org.swdc.reader.ui.AwsomeIconData;
 import org.swdc.reader.utils.UIUtils;
@@ -18,7 +19,7 @@ import javax.annotation.PostConstruct;
 /**
  *  用来显示目录的对话框
  */
-@FXMLView("/views/ContentsView.fxml")
+@FXMLView("/views/dialogs/ContentsView.fxml")
 public class ContentsItemView extends AbstractFxmlView {
 
     @Autowired
@@ -41,6 +42,7 @@ public class ContentsItemView extends AbstractFxmlView {
         });
     }
 
+    @UIMethod
     public void show() {
         if (this.stage.isShowing()) {
             stage.requestFocus();
@@ -49,6 +51,7 @@ public class ContentsItemView extends AbstractFxmlView {
         }
     }
 
+    @UIMethod
     public void close() {
         if (this.stage.isShowing()) {
             stage.close();

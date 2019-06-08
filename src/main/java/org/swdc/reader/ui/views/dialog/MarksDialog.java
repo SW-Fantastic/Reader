@@ -9,6 +9,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.swdc.reader.aspects.anno.UIMethod;
 import org.swdc.reader.ui.ApplicationConfig;
 import org.swdc.reader.ui.AwsomeIconData;
 import org.swdc.reader.utils.UIUtils;
@@ -18,7 +19,7 @@ import javax.annotation.PostConstruct;
 /**
  * Created by lenovo on 2019/6/7.
  */
-@FXMLView("/views/MarksDialog.fxml")
+@FXMLView("/views/dialogs/MarksDialog.fxml")
 public class MarksDialog extends AbstractFxmlView {
 
     @Autowired
@@ -41,22 +42,20 @@ public class MarksDialog extends AbstractFxmlView {
         });
     }
 
+    @UIMethod
     public void show() {
-        Platform.runLater(() -> {
-            if(stage.isShowing()) {
+        if(stage.isShowing()) {
                 stage.requestFocus();
-            } else {
+        } else {
                 stage.show();
-            }
-        });
+        }
     }
 
+    @UIMethod
     public void close() {
-        Platform.runLater(() -> {
-            if (stage.isShowing()) {
-                stage.close();
-            }
-        });
+        if (stage.isShowing()) {
+            stage.close();
+        }
     }
 
 }

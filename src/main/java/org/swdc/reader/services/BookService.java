@@ -247,4 +247,38 @@ public class BookService {
         });
     }
 
+    public void modifyType(BookType type) {
+        typeRepository.findById(type.getId()).ifPresent(bookType -> {
+            if (bookType.getName().equals("未分类")) {
+                return;
+            }
+            bookType.setName(type.getName());
+            typeRepository.save(bookType);
+        });
+    }
+
+    public void exportType(File targetFolder,  BookType type) {
+        typeRepository.findById(type.getId()).ifPresent(bookType -> {
+            try {
+                Set<Book> books = type.getBooks();
+                for (Book book : books) {
+                    File bookFile = new File("data/library/" + book.getName());
+                    File target = new File(targetFolder.getPath() + "/" + book.getName());
+                    FileUtils.copyFile(bookFile, target);
+                }
+            } catch (Exception e) {
+                log.error(e);
+            }
+        });
+    }
+
+    @Transactional
+    public void deleteType(BookType type) {
+        typeRepository.findById(type.getId()).ifPresent(bookType -> {
+            Set<Book> books = type.getBooks();
+            books.forEach(this::deleteBook);
+            typeRepository.delete(bookType);
+        });
+    }
+
 }
