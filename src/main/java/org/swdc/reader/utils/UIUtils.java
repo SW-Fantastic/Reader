@@ -60,7 +60,7 @@ public class UIUtils {
         return list;
     }
 
-    public static PropertyEditor<?> getEditor(PropertySheet.Item prop) {
+    public static PropertyEditor<?> getEditor(PropertySheet.Item prop, ApplicationConfig config) {
         if (!(prop instanceof ConfigProperty)) {
             return null;
         }
@@ -68,7 +68,7 @@ public class UIUtils {
         ConfigProp propData = property.getPropData();
         switch (propData.type()) {
             case FILE_SELECT_IMPORTABLE:
-                return PropertyEditors.createFileImportableEditor(property);
+                return PropertyEditors.createFileImportableEditor(property, config);
             case FOLDER_SELECT_IMPORTABLE:
                 return PropertyEditors.createFolderImportableEditor(property);
             case CHECK:

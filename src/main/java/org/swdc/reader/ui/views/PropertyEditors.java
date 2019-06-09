@@ -1,6 +1,6 @@
 package org.swdc.reader.ui.views;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
+import de.felixroske.jfxsupport.GUIState;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
@@ -9,42 +9,71 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
+import lombok.extern.apachecommons.CommonsLog;
+import org.aspectj.util.FileUtil;
 import org.controlsfx.property.editor.PropertyEditor;
 import org.swdc.reader.anno.ConfigProp;
 import org.swdc.reader.core.ConfigProperty;
-import org.swdc.reader.entity.Book;
+import org.swdc.reader.ui.ApplicationConfig;
 import org.swdc.reader.ui.AwsomeIconData;
+import org.swdc.reader.utils.UIUtils;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by lenovo on 2019/6/8.
  */
+@CommonsLog
 public class PropertyEditors {
 
-    public static PropertyEditor<?> createFileImportableEditor(ConfigProperty property) {
+    public static PropertyEditor<?> createFileImportableEditor(ConfigProperty property, ApplicationConfig config) {
         ConfigProp propData = property.getPropData();
         ObservableList<String> files = FXCollections.observableArrayList();
 
         HBox hBox = new HBox();
+        hBox.setSpacing(8);
         hBox.setAlignment(Pos.CENTER);
 
         ComboBox<String> comboBox = new ComboBox<>();
         comboBox.setItems(files);
         comboBox.setPrefHeight(28);
+        comboBox.getStyleClass().add("comb");
         HBox.setHgrow(comboBox, Priority.ALWAYS);
 
         Button buttonImport = new Button();
+        buttonImport.getStyleClass().add("btn");
         buttonImport.setFont(AwsomeIconData.getFontIconSmall());
         buttonImport.setText(AwsomeIconData.getAwesomeMap().get("folder_open") + "");
 
         files.clear();
         File folder = new File(propData.value());
         for(File file : folder.listFiles()) {
-            files.add(file.getName());
+            if (file.isFile()) {
+                files.add(file.getName());
+            }
         }
 
         buttonImport.setOnAction(e -> {
+            FileChooser chooser = new FileChooser();
+            chooser.setTitle("导入");
+            File target = chooser.showOpenDialog(GUIState.getStage());
+            if (target == null || !target.exists()) {
+                return;
+            }
+            try {
+                FileUtil.copyFile(target, new File(folder.getPath() + "/" + target.getName()));
+                files.clear();
+                for(File file : folder.listFiles()) {
+                    if (file.isFile()) {
+                        files.add(file.getName());
+                    }
+                }
+            } catch (IOException ex) {
+                log.error(ex);
+                UIUtils.showAlertDialog("导入资源失败", "提示", Alert.AlertType.ERROR, config);
+            }
         });
 
         hBox.getChildren().addAll(comboBox, buttonImport);
@@ -75,14 +104,17 @@ public class PropertyEditors {
         ObservableList<String> files = FXCollections.observableArrayList();
 
         HBox hBox = new HBox();
+        hBox.setSpacing(8);
         hBox.setAlignment(Pos.CENTER);
 
         ComboBox<String> comboBox = new ComboBox<>();
         comboBox.setItems(files);
         comboBox.setPrefHeight(28);
+        comboBox.getStyleClass().add("comb");
         HBox.setHgrow(comboBox, Priority.ALWAYS);
 
         Button buttonImport = new Button();
+        buttonImport.getStyleClass().add("btn");
         buttonImport.setFont(AwsomeIconData.getFontIconSmall());
         buttonImport.setText(AwsomeIconData.getAwesomeMap().get("folder_open") + "");
 
@@ -123,6 +155,7 @@ public class PropertyEditors {
     public static PropertyEditor<?> createCheckedEditor(ConfigProperty property) {
         CheckBox check = new CheckBox();
         check.setSelected((Boolean)property.getValue());
+        check.getStyleClass().add("check");
         check.selectedProperty().addListener((observable, oldValue, newValue) -> {
             property.setValue(newValue);
         });
@@ -147,6 +180,7 @@ public class PropertyEditors {
 
     public static PropertyEditor<?> createColorEditor(ConfigProperty property){
         HBox hbox = new HBox();
+        hbox.setSpacing(8);
         ColorPicker picker = new ColorPicker();
         TextField text = new TextField();
 
@@ -159,6 +193,7 @@ public class PropertyEditors {
 
         picker.setPrefHeight(28);
         text.setPrefHeight(28);
+        text.getStyleClass().add("txt");
 
         picker.valueProperty().addListener((observable, oldValue, newValue) -> {
             picker.setValue(newValue);
@@ -166,6 +201,8 @@ public class PropertyEditors {
             text.setText(data);
             property.setValue(data);
         });
+
+        picker.getStyleClass().add("comb");
 
         text.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue.length() > 6) {
@@ -202,6 +239,7 @@ public class PropertyEditors {
     public static PropertyEditor<?> createNumberRangeEditor(ConfigProperty property) {
         ConfigProp prop = property.getPropData();
         HBox hBox = new HBox();
+        hBox.setSpacing(8);
         hBox.setAlignment(Pos.CENTER);
 
         Slider slider = new Slider();
@@ -213,6 +251,7 @@ public class PropertyEditors {
         HBox.setHgrow(slider, Priority.ALWAYS);
 
         TextField text = new TextField();
+        text.getStyleClass().add("txt");
         text.setText(property.getValue().toString());
         text.setPrefHeight(28);
         text.setPrefWidth(80);

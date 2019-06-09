@@ -8,8 +8,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * Created by lenovo on 2019/5/19.
@@ -27,6 +29,11 @@ public class CommonComponents {
             fonts.mkdir();
         }
         try {
+            FileInputStream fConfig = new FileInputStream("configs/config.properties");
+            Properties properties = new Properties();
+            properties.load(fConfig);
+            Font.loadFont(new File("configs/theme/" + properties.getProperty("app.theme") + "/system.ttf").toURI().toURL().toExternalForm(), 18);
+            fConfig.close();
             for(File fontFile : fonts.listFiles()){
                 Font font = Font.loadFont(fontFile.toURI().toURL().toExternalForm(), 18);
                 fontMap.put(fontFile.getName(), font);

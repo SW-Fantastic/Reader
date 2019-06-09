@@ -1,5 +1,6 @@
 .root-pane {
     -fx-background-size: cover;
+    -fx-font-family: "FZMiaoWuS-GB";
 }
 .root-tools {
     -fx-background-color: rgba(253,255,223, 0.8);
@@ -16,6 +17,7 @@
     -fx-effect: dropshadow(three-pass-box, rgb(255,163,163), 8, 0, 0, 0);
 }
 .history-list {
+    -fx-font-size: 15;
     -fx-background-color: rgba(0,0,0,0);
     -fx-border-style: dashed;
     -fx-border-width: 0 1 0 1;
@@ -48,7 +50,9 @@
     -fx-text-fill: #FFF;
 }
 .scene {
+    -fx-font-family: "FZMiaoWuS-GB";
     -fx-background-color: rgba(254,238,224,0.6);
+    -fx-font-size: 13;
 }
 .txt {
     -fx-border-style: solid;
@@ -72,6 +76,7 @@
 }
 .book-card {
     -fx-background-color: rgba(255,255,255,0.8);
+    -fx-font-size: 16;
 }
 .book-card .btn-card {
      -fx-background-color: rgba(0,0,0,0);
@@ -94,6 +99,8 @@
     -fx-border-radius: 0;
 }
 .scene-dlg {
+    -fx-font-family: "FZMiaoWuS-GB";
+    -fx-font-size: 13;
     -fx-background-color: rgb(245,238,232);
 }
 .comb{
@@ -117,6 +124,7 @@
     -fx-background-color: #FFFFFF;
 }
 .list-text {
+    -fx-font-size: 14;
     -fx-background-color: rgba(0,0,0,0);
 }
 .list-text .list-cell:selected {
@@ -131,5 +139,55 @@
     -fx-border-width: 0 0 0.6 0;
     -fx-border-color: rgba(120,106,123,0.4);
 }
-.config-panels {
+.config-sheet {
+    -fx-background: rgba(255,255,255,0.2);
+    -fx-font-size: 14;
+}
+.config-sheet .tool-bar {
+    -fx-background-color: rgba(120,106,123,0.4);
+}
+.config-sheet .tool-bar .text-field {
+    -fx-border-style: dashed;
+    -fx-border-width: 0px;
+    -fx-border-color: rgba(0,0,0,0);
+    -fx-background-color: rgba(255,255,255,0.8);
+}
+.config-panels .tab-header-background {
+    -fx-background-color: rgba(255,255,255,0.4);
+}
+.config-panels .tab:selected{
+    -fx-background-color: rgba(120,106,123,0.4);
+}
+.config-panels .tab:selected .tab-label {
+    -fx-text-fill: #FFF;
+}
+.config-panels .tab{
+    -fx-border-insets: 0;
+    -fx-background-color: rgba(255,255,255,0.8);
+    -fx-border-color: rgba(120,106,123,0.4);
+    -fx-border-radius: 8 8 0 0;
+    -fx-background-radius: 8 8 0 0;
+    -fx-border-style: dashed;
+    -fx-border-width: 1px;
+    -fx-outline: none;
+}
+
+.check .box{
+    -fx-background-color: rgba(255,255,255, 0.6);
+    -fx-border-style: solid;
+    -fx-border-width: 1px;
+    -fx-border-color:rgb(120,106,123);
+}
+.check:selected .box .mark{
+    fx-background-color: rgba(199,179,229,0.8);
+}
+.slider .thumb{
+    -fx-background-color:rgb(253,255,223);
+    -fx-effect:dropshadow(three-pass-box, rgba(120,106,123,1),10,0,0,0);
+}
+.slider .track {
+    -fx-background-color:rgba(120,106,123,0.4);
+    -fx-border-radius: 99;
+    -fx-border-width: 0.4px;
+    -fx-border-color:rgb(120,106,123);
 }

@@ -23,6 +23,6 @@
       <Pane prefHeight="20.0" prefWidth="707.0" BorderPane.alignment="CENTER" />
    </bottom>
    <center>
-      <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER" />
+      <TabPane prefHeight="200.0" prefWidth="200.0" styleClass="config-panels" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER" />
    </center>
 </BorderPane>

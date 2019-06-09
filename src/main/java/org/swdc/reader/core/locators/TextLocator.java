@@ -123,12 +123,13 @@ public class TextLocator implements BookLocator<String> {
             StringBuilder sb = new StringBuilder("<!docutype html><html><head><style>");
             sb.append("body {")
                     .append("font-family: \"")
-                    .append(CommonComponents.getFontMap().containsKey(config.getFontPath()) ? CommonComponents.getFontMap().get(config.getFontPath()):"Microsoft YaHei").append("\";")
+                    .append(CommonComponents.getFontMap().containsKey(config.getFontPath()) ? CommonComponents.getFontMap().get(config.getFontPath()).getFamily():"Microsoft YaHei").append("\";")
                     .append("font-color:").append(config.getFontColor()).append(";")
                     .append("font-size:").append(config.getFontSize()).append("px;")
                     .append("background-color:").append(config.getBackgroundColor()).append(";")
                     .append("overflow-wrap: break-word;")
                     .append("word-wrap: break-word;")
+                    .append("-webkit-font-smoothing: antialiased;")
                     .append("padding: 18px;");
             if (config.getEnableBackgroundImage()) {
                 sb.append("background-image: url(data:image/png;base64,").append(backgroundImageData).append(");");

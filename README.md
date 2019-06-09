@@ -11,7 +11,7 @@ include RSS （Feeds），based javaFX and SpringBoot
 ## 进度 Process
 
  - [x] 基础结构搭建（Basic Data Structs)
- - [ ] 基础UI的设计和美化 (UI Design)
+ - [x] 基础UI的设计和美化 (UI Design)
  - [x] 数据结构建模（DataStruct Design）
  - [x] 核心接口（Core interface）
  - [x] 文本阅读的实现（Text reader implemented）

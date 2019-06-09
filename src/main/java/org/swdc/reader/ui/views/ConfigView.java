@@ -35,13 +35,15 @@ public class ConfigView extends AbstractFxmlView {
         TabPane configTabs = (TabPane) pane.getCenter();
 
         PropertySheet configSheet = new PropertySheet(UIUtils.getProperties(config));
-        configSheet.setPropertyEditorFactory(UIUtils::getEditor);
+        configSheet.getStyleClass().add("config-sheet");
+        configSheet.setPropertyEditorFactory(item -> UIUtils.getEditor(item, config));
         configSheet.setModeSwitcherVisible(false);
         configTabs.getTabs().add(new Tab("通用配置", configSheet));
 
         PropertySheet textReaderSheet = new PropertySheet(UIUtils.getProperties(textConfig));
-        textReaderSheet.setPropertyEditorFactory(UIUtils::getEditor);
+        textReaderSheet.setPropertyEditorFactory(item -> UIUtils.getEditor(item, config));
         textReaderSheet.setModeSwitcherVisible(false);
+        textReaderSheet.getStyleClass().add("config-sheet");
         configTabs.getTabs().add(new Tab("文本", textReaderSheet));
     }
 
