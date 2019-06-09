@@ -103,6 +103,9 @@
     -fx-font-family: "FZMiaoWuS-GB";
     -fx-background-color: rgb(245,238,232);
 }
+.scene-dlg .label {
+    -fx-font-size: 14;
+}
 .comb{
     -fx-background-color: rgba(255,255,255,0.7);
     -fx-prompt-text-fill: rgba(120,106,123, 0.6) ;
