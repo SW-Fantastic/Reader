@@ -28,4 +28,9 @@ public class FReaderApplication extends AbstractJavaFxApplicationSupport {
 		stage.setMinWidth(1000);
 		stage.setTitle("幻想藏书阁");
 	}
+
+	@Override
+	public void beforeShowingSplash(Stage splashStage) {
+		splashStage.getIcons().addAll(AwsomeIconData.getImageIcons());
+	}
 }

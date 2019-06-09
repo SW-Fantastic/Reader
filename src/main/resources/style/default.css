@@ -52,13 +52,13 @@
 .scene {
     -fx-font-family: "FZMiaoWuS-GB";
     -fx-background-color: rgba(254,238,224,0.6);
-    -fx-font-size: 13;
 }
 .txt {
     -fx-border-style: solid;
     -fx-border-width: 0 0 1.5 0;
     -fx-border-color: rgb(191, 134, 174);
     -fx-background-color: rgba(255,255,255,0.6);
+    -fx-font-size: 15;
 }
 .btn {
     -fx-background-color: rgba(0,0,0,0);
@@ -97,10 +97,10 @@
     -fx-background-color:rgb(120,106,123) ;
     -fx-text-fill: #FFF;
     -fx-border-radius: 0;
+    -fx-font-size: 13;
 }
 .scene-dlg {
     -fx-font-family: "FZMiaoWuS-GB";
-    -fx-font-size: 13;
     -fx-background-color: rgb(245,238,232);
 }
 .comb{
@@ -109,6 +109,10 @@
     -fx-text-fill: rgb(120,106,123) ;
     -fx-border-color: rgb(120,106,123);
     -fx-border-width: 0 0 2 0;
+    -fx-font-size: 15;
+}
+.comb * .label{
+    -fx-font-size: 15;
 }
 .comb > *{
     -fx-text-fill: rgb(120,106,123) ;
@@ -124,7 +128,6 @@
     -fx-background-color: #FFFFFF;
 }
 .list-text {
-    -fx-font-size: 14;
     -fx-background-color: rgba(0,0,0,0);
 }
 .list-text .list-cell:selected {
@@ -133,6 +136,7 @@
     -fx-background-radius: 6;
 }
 .list-text .list-cell {
+    -fx-font-size: 14;
     -fx-background-color: rgba(255,255,255,0.6);
     -fx-text-fill: rgb(120,106,123);
     -fx-border-style: dashed;
@@ -141,6 +145,8 @@
 }
 .config-sheet {
     -fx-background: rgba(255,255,255,0.2);
+}
+.config-sheet .label{
     -fx-font-size: 14;
 }
 .config-sheet .tool-bar {
@@ -170,6 +176,7 @@
     -fx-border-style: dashed;
     -fx-border-width: 1px;
     -fx-outline: none;
+    -fx-font-size: 14;
 }
 
 .check .box{

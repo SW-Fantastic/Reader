@@ -77,6 +77,8 @@ public class UIUtils {
                 return PropertyEditors.createColorEditor(property);
             case NUMBER_SELECTABLE:
                 return PropertyEditors.createNumberRangeEditor(property);
+            case NUMBER:
+                return PropertyEditors.createNumberEditor(property);
         }
         return null;
     }

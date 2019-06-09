@@ -6,6 +6,7 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
@@ -259,16 +260,34 @@ public class PropertyEditors {
         hBox.getChildren().addAll(slider, text);
 
         slider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            text.setText(newValue.intValue() + "");
-            property.setValue(newValue.intValue());
+            if (property.getType() == Integer.class || property.getType() == int.class) {
+                text.setText(newValue.intValue() + "");
+                property.setValue(newValue.intValue());
+            } else if (property.getType() == Float.class || property.getType() == float.class){
+                text.setText(newValue.floatValue() + "");
+                property.setValue(newValue.floatValue());
+            } else if (property.getType() == Double.class || property.getType() == double.class) {
+                text.setText(newValue.doubleValue() +  "");
+                property.setValue(newValue.doubleValue());
+            }
         });
 
         text.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.trim().equals("")) {
-                return;
+            try {
+                if (newValue.trim().equals("")) {
+                    return;
+                }
+                slider.setValue(Double.valueOf(newValue));
+                if (property.getType() == Integer.class || property.getType() == int.class) {
+                    property.setValue(Integer.valueOf(newValue));
+                } else if (property.getType() == Float.class || property.getType() == float.class){
+                    property.setValue(Float.valueOf(newValue));
+                } else if (property.getType() == Double.class || property.getType() == double.class) {
+                    property.setValue(Double.valueOf(newValue));
+                }
+            } catch (Exception e) {
+                log.error(e);
             }
-            slider.setValue(Double.valueOf(newValue));
-            property.setValue(Double.valueOf(newValue).intValue());
         });
 
         return new PropertyEditor() {
@@ -286,6 +305,43 @@ public class PropertyEditors {
             public void setValue(Object o) {
                 slider.setValue(Double.valueOf(o.toString()));
                 text.setText(o.toString());
+            }
+        };
+    }
+
+    public static PropertyEditor<?> createNumberEditor(ConfigProperty property) {
+        TextField textField = new TextField();
+        textField.getStyleClass().add("txt");
+        textField.textProperty().addListener(((observable, oldValue, newValue) -> {
+            if (textField.getText().trim().equals("")) {
+                return;
+            }
+            try {
+                if (property.getType() == Integer.class || property.getType() == int.class) {
+                    property.setValue(Integer.valueOf(newValue));
+                } else if (property.getType() == Float.class || property.getType() == float.class){
+                    property.setValue(Float.valueOf(newValue));
+                } else if (property.getType() == Double.class || property.getType() == double.class) {
+                    property.setValue(Double.valueOf(newValue));
+                }
+            } catch (Exception ex){
+                textField.setText("");
+            }
+        }));
+        return new PropertyEditor() {
+            @Override
+            public Node getEditor() {
+                return textField;
+            }
+
+            @Override
+            public Object getValue() {
+                return textField.getText();
+            }
+
+            @Override
+            public void setValue(Object o) {
+                textField.setText(o.toString());
             }
         };
     }

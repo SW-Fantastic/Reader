@@ -10,6 +10,7 @@ import javafx.scene.layout.BorderPane;
 import org.controlsfx.control.PropertySheet;
 import org.controlsfx.property.BeanPropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.swdc.reader.core.configs.PDFConfig;
 import org.swdc.reader.core.configs.TextConfig;
 import org.swdc.reader.ui.ApplicationConfig;
 import org.swdc.reader.utils.UIUtils;
@@ -28,6 +29,9 @@ public class ConfigView extends AbstractFxmlView {
     @Autowired
     private TextConfig textConfig;
 
+    @Autowired
+    private PDFConfig pdfConfig;
+
     @PostConstruct
     protected void initUI() throws Exception {
         UIUtils.configUI((BorderPane)getView(), config);
@@ -44,7 +48,13 @@ public class ConfigView extends AbstractFxmlView {
         textReaderSheet.setPropertyEditorFactory(item -> UIUtils.getEditor(item, config));
         textReaderSheet.setModeSwitcherVisible(false);
         textReaderSheet.getStyleClass().add("config-sheet");
-        configTabs.getTabs().add(new Tab("文本", textReaderSheet));
+        configTabs.getTabs().add(new Tab("文本渲染", textReaderSheet));
+
+        PropertySheet pdfReaderSheet = new PropertySheet(UIUtils.getProperties(pdfConfig));
+        pdfReaderSheet.setPropertyEditorFactory(item -> UIUtils.getEditor(item, config));
+        pdfReaderSheet.setModeSwitcherVisible(false);
+        pdfReaderSheet.getStyleClass().add("config-sheet");
+        configTabs.getTabs().add(new Tab("Adobe PDF渲染", pdfReaderSheet));
     }
 
 }
