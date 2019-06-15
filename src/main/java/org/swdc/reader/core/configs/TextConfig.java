@@ -8,6 +8,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import org.swdc.reader.anno.ConfigProp;
 import org.swdc.reader.anno.PropType;
+import org.swdc.reader.core.ReaderConfig;
 import org.swdc.reader.ui.ApplicationConfig;
 
 /**
@@ -16,7 +17,10 @@ import org.swdc.reader.ui.ApplicationConfig;
 @Component
 @ConfigurationProperties(prefix = "text")
 @PropertySource("file:configs/text.reader.properties")
-public class TextConfig {
+public class TextConfig implements ReaderConfig{
+
+    @Getter
+    private String name = "文本渲染";
 
     @Getter
     @Autowired

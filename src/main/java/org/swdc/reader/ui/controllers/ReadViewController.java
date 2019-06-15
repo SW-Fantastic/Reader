@@ -1,13 +1,17 @@
 package org.swdc.reader.ui.controllers;
 
 import de.felixroske.jfxsupport.FXMLController;
+import de.felixroske.jfxsupport.GUIState;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import javafx.util.Duration;
 import lombok.Getter;
+import org.controlsfx.control.Notifications;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.event.EventListener;
@@ -101,6 +105,15 @@ public class ReadViewController implements Initializable {
                         currentReader.finalizeResources();
                     }
                 }
+                Platform.runLater(() -> {
+                    Notifications.create()
+                            .owner(GUIState.getStage())
+                            .hideCloseButton()
+                            .hideAfter(Duration.millis(2000))
+                            .text("正在载入《" + event.getSource().getTitle() + "》")
+                            .position(Pos.CENTER)
+                            .show();
+                });
                 this.currentReader = reader;
                 reader.setBook(event.getSource());
                 BookLocator locator = reader.getLocator();
@@ -140,6 +153,9 @@ public class ReadViewController implements Initializable {
 
     @FXML
     public void onAddMarks() {
+        if (currentReader == null) {
+            return;
+        }
         markAddDialog.setBook(currentReader);
         markAddDialog.show();
     }

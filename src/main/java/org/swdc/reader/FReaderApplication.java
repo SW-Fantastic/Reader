@@ -1,21 +1,26 @@
 package org.swdc.reader;
 
 import de.felixroske.jfxsupport.AbstractJavaFxApplicationSupport;
-import javafx.scene.text.Font;
+import de.felixroske.jfxsupport.GUIState;
+import javafx.application.Platform;
 import javafx.stage.Stage;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
+import lombok.extern.apachecommons.CommonsLog;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.swdc.reader.event.RestartEvent;
 import org.swdc.reader.ui.ApplicationConfig;
 import org.swdc.reader.ui.AwsomeIconData;
 import org.swdc.reader.ui.views.ReaderView;
 import org.swdc.reader.ui.views.SplashView;
 
 import java.io.File;
+import java.net.MalformedURLException;
 
 @EnableAsync
+@CommonsLog
 @SpringBootApplication
 public class FReaderApplication extends AbstractJavaFxApplicationSupport {
 
@@ -29,6 +34,30 @@ public class FReaderApplication extends AbstractJavaFxApplicationSupport {
 		stage.setMinHeight(680);
 		stage.setMinWidth(1000);
 		stage.setTitle("幻想藏书阁");
+		stage.showingProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue != null && newValue && GUIState.getScene().getStylesheets().size() == 0) {
+				ApplicationConfig config = ctx.getBean(ApplicationConfig.class);
+				try {
+					GUIState.getScene().getStylesheets().add(new File("./configs/theme/" + config.getTheme() + "/stage.css").toURI().toURL().toExternalForm());
+				} catch (MalformedURLException e) {
+					log.error(e);
+				}
+			}
+		});
+	}
+
+	@EventListener(RestartEvent.class)
+	public void onRestart() {
+		Platform.runLater(() -> {
+			try {
+				GUIState.getStage().close();
+				this.stop();
+				this.init();
+				this.start(new Stage());
+			} catch (Exception e){
+				log.error(e);
+			}
+		});
 	}
 
 	@Override

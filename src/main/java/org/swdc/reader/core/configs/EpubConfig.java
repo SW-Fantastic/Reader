@@ -8,6 +8,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import org.swdc.reader.anno.ConfigProp;
 import org.swdc.reader.anno.PropType;
+import org.swdc.reader.core.ReaderConfig;
 import org.swdc.reader.entity.Book;
 import org.swdc.reader.ui.ApplicationConfig;
 
@@ -17,11 +18,14 @@ import org.swdc.reader.ui.ApplicationConfig;
 @PropertySource("file:configs/epub.reader.properties")
 @ConfigurationProperties(prefix = "epub")
 @Component
-public class EpubConfig {
+public class EpubConfig implements ReaderConfig {
 
     @Getter
     @Autowired
     private ApplicationConfig config;
+
+    @Getter
+    private String name = "E-Public";
 
     @Getter
     @Setter

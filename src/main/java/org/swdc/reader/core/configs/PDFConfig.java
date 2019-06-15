@@ -8,6 +8,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import org.swdc.reader.anno.ConfigProp;
 import org.swdc.reader.anno.PropType;
+import org.swdc.reader.core.ReaderConfig;
 import org.swdc.reader.ui.ApplicationConfig;
 
 /**
@@ -16,7 +17,10 @@ import org.swdc.reader.ui.ApplicationConfig;
 @PropertySource("file:configs/pdf.reader.properties")
 @ConfigurationProperties(prefix = "pdf")
 @Component
-public class PDFConfig {
+public class PDFConfig implements ReaderConfig {
+
+    @Getter
+    private String name = "Adobe-PDF";
 
     @Getter
     @Autowired
@@ -24,7 +28,7 @@ public class PDFConfig {
 
     @Getter
     @Setter
-    @ConfigProp(name = "缓冲大小",  type = PropType.NUMBER_SELECTABLE,
+    @ConfigProp(name = "缓存大小",  type = PropType.NUMBER_SELECTABLE,
             value = "40", tooltip = "缓存一部分页面以加快翻阅时的载入速度")
     private Integer renderMapSize;
 

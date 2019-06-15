@@ -1,11 +1,18 @@
 package org.swdc.reader.utils;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.PropertySource;
+import org.swdc.reader.anno.ConfigProp;
+
+import java.beans.PropertyDescriptor;
 import java.io.*;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Created by lenovo on 2019/5/22.
@@ -99,6 +106,24 @@ public class DataUtil {
             result.add(part);
         }
         return result.stream().reduce((partA, partB) -> partA + "/" + partB).orElse("");
+    }
+
+    public static void saveConfigFile(Object config) throws Exception {
+        Field[] fields = config.getClass().getDeclaredFields();
+        ConfigurationProperties prop = config.getClass().getAnnotation(ConfigurationProperties.class);
+        PropertySource propSource = config.getClass().getAnnotation(PropertySource.class);
+        String name = propSource.value()[0].substring(propSource.value()[0].lastIndexOf("/"));
+        String prefix = prop.prefix();
+        Properties props = new Properties();
+        props.load(new FileInputStream("./configs/" + name));
+        for(Field field: fields) {
+            if (field.getAnnotation(ConfigProp.class) == null) {
+                continue;
+            }
+            PropertyDescriptor desc = new PropertyDescriptor(field.getName(),config.getClass());
+           props.setProperty(prefix + field.getName(), desc.getReadMethod().invoke(config).toString());
+        }
+        props.store(new FileOutputStream("./configs/" + name), "");
     }
 
 }
