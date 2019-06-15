@@ -43,6 +43,6 @@ public class PDFRenderView extends AbstractFxmlView implements BookView {
 
     @Override
     public void initToolsView(HBox toolBox) {
-
+        toolBox.getChildren().clear();
     }
 }

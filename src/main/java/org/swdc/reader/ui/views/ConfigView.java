@@ -10,6 +10,7 @@ import javafx.scene.layout.BorderPane;
 import org.controlsfx.control.PropertySheet;
 import org.controlsfx.property.BeanPropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.swdc.reader.core.configs.EpubConfig;
 import org.swdc.reader.core.configs.PDFConfig;
 import org.swdc.reader.core.configs.TextConfig;
 import org.swdc.reader.ui.ApplicationConfig;
@@ -31,6 +32,9 @@ public class ConfigView extends AbstractFxmlView {
 
     @Autowired
     private PDFConfig pdfConfig;
+
+    @Autowired
+    private EpubConfig epubConfig;
 
     @PostConstruct
     protected void initUI() throws Exception {
@@ -55,6 +59,12 @@ public class ConfigView extends AbstractFxmlView {
         pdfReaderSheet.setModeSwitcherVisible(false);
         pdfReaderSheet.getStyleClass().add("config-sheet");
         configTabs.getTabs().add(new Tab("Adobe PDF渲染", pdfReaderSheet));
+
+        PropertySheet epubSheet = new PropertySheet(UIUtils.getProperties(epubConfig));
+        epubSheet.setPropertyEditorFactory(item -> UIUtils.getEditor(item, config));
+        epubSheet.setModeSwitcherVisible(false);
+        epubSheet.getStyleClass().add("config-sheet");
+        configTabs.getTabs().add(new Tab("E-Public", epubSheet));
     }
 
 }

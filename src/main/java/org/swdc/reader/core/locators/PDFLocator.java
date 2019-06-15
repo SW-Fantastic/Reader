@@ -143,9 +143,10 @@ public class PDFLocator implements BookLocator<Image> {
     public void finalizeResources() {
         try {
             document.close();
-            locationDataMap.clear();
-            locationDataMap = null;
-
+            if (locationDataMap != null) {
+                locationDataMap.clear();
+                locationDataMap = null;
+            }
         } catch (IOException e) {
             log.error(e);
         }

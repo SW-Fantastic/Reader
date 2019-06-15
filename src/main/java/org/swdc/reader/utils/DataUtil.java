@@ -3,6 +3,9 @@ package org.swdc.reader.utils;
 import java.io.*;
 import java.math.BigDecimal;
 import java.security.MessageDigest;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by lenovo on 2019/5/22.
@@ -74,6 +77,28 @@ public class DataUtil {
             value = new BigDecimal(value / 1024).setScale(2, BigDecimal.ROUND_DOWN).doubleValue();
             return String.valueOf(value) + "GB";
         }
+    }
+
+    public static String resolveRelativePath(String base, String target) {
+        // 获取base的基目录
+        String[] baseParts = base.split("/");
+        String baseDir = base;
+        if (baseParts[baseParts.length - 1].split("[.]").length > 0) {
+            baseDir = base.substring(0, base.lastIndexOf("/"));
+        }
+        // 拼接
+        String targetPath = baseDir + "/" + target;
+        List<String> targetParts = Arrays.asList(targetPath.split("/"));
+        LinkedList<String> result = new LinkedList<>();
+        for (int idx = 0; idx < targetParts.size(); idx ++) {
+            String part = targetParts.get(idx);
+            if (part.equals("..")) {
+                 result.remove(idx - 1);
+                continue;
+            }
+            result.add(part);
+        }
+        return result.stream().reduce((partA, partB) -> partA + "/" + partB).orElse("");
     }
 
 }

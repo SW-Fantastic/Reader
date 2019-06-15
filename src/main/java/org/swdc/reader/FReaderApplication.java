@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.swdc.reader.ui.ApplicationConfig;
 import org.swdc.reader.ui.AwsomeIconData;
 import org.swdc.reader.ui.views.ReaderView;
@@ -14,6 +15,7 @@ import org.swdc.reader.ui.views.SplashView;
 
 import java.io.File;
 
+@EnableAsync
 @SpringBootApplication
 public class FReaderApplication extends AbstractJavaFxApplicationSupport {
 

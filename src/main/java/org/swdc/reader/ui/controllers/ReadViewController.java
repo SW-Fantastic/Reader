@@ -9,6 +9,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.event.EventListener;
 import org.swdc.reader.core.BookLocator;
 import org.swdc.reader.core.BookReader;
@@ -25,12 +26,17 @@ import org.swdc.reader.ui.views.dialog.MarkAddDialog;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.Executor;
 
 /**
  * Created by lenovo on 2019/5/31.
  */
 @FXMLController
 public class ReadViewController implements Initializable {
+
+    @Autowired
+    @Qualifier("asyncExecutor")
+    private Executor executor;
 
     @Autowired
     private ReadView view;
@@ -85,24 +91,26 @@ public class ReadViewController implements Initializable {
 
     @EventListener(DocumentOpenEvent.class)
     public void bookOpenRequested(DocumentOpenEvent event) {
-        readers.stream().filter(reader -> reader.isSupport(event.getSource()))
-                .findFirst().ifPresent((BookReader reader) -> {
-            if (currentReader != null) {
-                if (event.getSource().getId().longValue() == currentReader.getBook().getId().longValue()) {
-                    return;
-                } else if (currentReader != null && currentReader != reader) {
-                    currentReader.finalizeResources();
+        executor.execute(() ->
+            readers.stream().filter(reader -> reader.isSupport(event.getSource()))
+                    .findFirst().ifPresent((BookReader reader) -> {
+                if (currentReader != null) {
+                    if (event.getSource().getId().longValue() == currentReader.getBook().getId().longValue()) {
+                        return;
+                    } else if (currentReader != null && currentReader != reader) {
+                        currentReader.finalizeResources();
+                    }
                 }
-            }
-            this.currentReader = reader;
-            reader.setBook(event.getSource());
-            BookLocator locator = reader.getLocator();
-            Platform.runLater(() -> {
-                reader.renderPage(locator.nextPage(), (BorderPane) view.getView());
-                txtTitle.setText(locator.getTitle());
-                txtLocation.setText(locator.getLocation());
-            });
-        });
+                this.currentReader = reader;
+                reader.setBook(event.getSource());
+                BookLocator locator = reader.getLocator();
+                Platform.runLater(() -> {
+                    reader.renderPage(locator.nextPage(), (BorderPane) view.getView());
+                    txtTitle.setText(locator.getTitle());
+                    txtLocation.setText(locator.getLocation());
+                });
+            })
+        );
     }
 
     @FXML

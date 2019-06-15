@@ -4,6 +4,7 @@ import lombok.extern.apachecommons.CommonsLog;
 import net.sf.jmimemagic.*;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.swdc.reader.entity.Book;
@@ -44,6 +45,7 @@ public class BookService {
     /**
      * 更新书籍数据，和文件夹的内容同步
      */
+    @Async
     @Transactional(rollbackFor = Exception.class)
     public void syncBookFolder() throws Exception {
         File file = new File("./data/library");

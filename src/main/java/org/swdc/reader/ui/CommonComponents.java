@@ -12,6 +12,9 @@ import java.io.FileInputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by lenovo on 2019/5/19.
@@ -51,5 +54,9 @@ public class CommonComponents {
         return codepageDetectorProxy;
     }
 
+    @Bean
+    public Executor asyncExecutor() {
+        return Executors.newFixedThreadPool(5);
+    }
 
 }

@@ -75,6 +75,7 @@ public class BookCellView extends AbstractFxmlView{
         }
         config.publishEvent(new ViewChangeEvent("read"));
         config.publishEvent(new DocumentOpenEvent(this.book));
+        config.publishEvent(new ContentItemChangeEvent(this.book));
     }
 
     private void onContents(ActionEvent event) {

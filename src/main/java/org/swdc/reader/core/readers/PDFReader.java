@@ -104,4 +104,11 @@ public class PDFReader implements BookReader<Image> {
         return locator;
     }
 
+    @Override
+    public void finalizeResources() {
+        locator.finalizeResources();
+        ScrollPane pane = (ScrollPane) view.getView();
+        pane.widthProperty().removeListener(this::onResize);
+        pane.heightProperty().removeListener(this::onResize);
+    }
 }

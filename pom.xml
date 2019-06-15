@@ -84,6 +84,38 @@
 			<artifactId>pdfbox</artifactId>
 			<version>2.0.15</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/jaxen/jaxen -->
+		<dependency>
+			<groupId>jaxen</groupId>
+			<artifactId>jaxen</artifactId>
+			<version>1.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>nl.siegmann.epublib</groupId>
+			<artifactId>epublib-core</artifactId>
+			<version>3.1</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-simple</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.github.chimenchen</groupId>
+			<artifactId>jchmlib</artifactId>
+			<version>0.5.4</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
+		<dependency>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>1.12.1</version>
+		</dependency>
 
 	</dependencies>
 
@@ -97,6 +129,14 @@
 	</build>
 
 	<repositories>
+		<repository>
+			<id>psiegman-repo</id>
+			<url>https://github.com/psiegman/mvn-repo/raw/master/releases</url>
+		</repository>
+		<repository>
+			<id>jitpack</id>
+			<url>https://jitpack.io</url>
+		</repository>
 		<repository>
 			<id>encodeRepo</id>
 			<url>http://maven.nuiton.org/release/</url>
