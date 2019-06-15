@@ -1,18 +1,13 @@
 package org.swdc.reader.core.locators;
 
-import info.monitorenter.cpdetector.io.CodepageDetectorProxy;
 import lombok.extern.apachecommons.CommonsLog;
 import nl.siegmann.epublib.domain.Resource;
 import nl.siegmann.epublib.domain.Spine;
-import nl.siegmann.epublib.domain.SpineReference;
 import nl.siegmann.epublib.domain.TOCReference;
 import nl.siegmann.epublib.epub.EpubReader;
-import org.dom4j.*;
-import org.dom4j.Document;
-import org.dom4j.Element;
-import org.dom4j.Node;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.*;
+import org.jsoup.select.Elements;
 import org.swdc.reader.core.BookLocator;
 import org.swdc.reader.core.configs.EpubConfig;
 import org.swdc.reader.core.configs.TextConfig;
@@ -113,29 +108,20 @@ public class EpubLocator implements BookLocator<String> {
     }
 
     private Element preparImages(Document doc) throws IOException{
-        List<Node> elems;
-        Element elemRoot = doc.getRootElement();
-        Element elem = elemRoot.element("body");
-        String nsURI = elemRoot.getNamespaceURI();
-        if(nsURI!=null&&!nsURI.trim().equals("")){
-            HashMap<String, String> map = new HashMap<>();
-            map.put("xmlns", nsURI);
-            XPath x = doc.createXPath("//xmlns:img");
-            x.setNamespaceURIs(map);
-            elems = x.selectNodes(elem);
-        }else{
-            elems = elem.selectNodes("//img");
-        }
+        Element elem = doc.body();
+
+        List<Element> elems = elem.getElementsByTag("img");
+
         if (elems.size()>0) {
-            for (Node node : elems) {
-                Element element = (Element)node;
-                if(element.attribute("src").getStringValue().startsWith("http")){
-                    elem.remove(element);
+            for (Element element : elems) {
+                if(element.attr("src").startsWith("http")){
+                    element.parent().children().remove(element);
                     continue;
                 }else{
-                    Resource res = epubBook.getResources().getByHref(element.attributeValue("src").replace("../", ""));
+                    String path = epubBook.getSpine().getResource(pageIndex).getHref();
+                    Resource res = epubBook.getResources().getByHref(DataUtil.resolveRelativePath(path, element.attr("src")));
                     Base64.Encoder enc = Base64.getEncoder();
-                    element.attribute("src").setValue("data:image/png;base64,"+enc.encodeToString(res.getData()));
+                    element.attr("src", "data:image/png;base64,"+enc.encodeToString(res.getData()));
                 }
             }
         }
@@ -156,8 +142,8 @@ public class EpubLocator implements BookLocator<String> {
     }
 
     private String renderPage(Element elem) {
-        org.jsoup.nodes.Element elemJ = Jsoup.parse(elem.asXML());
-        elemJ.getElementsByTag("a").forEach(link -> {
+        Element element = elem;
+        element.getElementsByTag("a").forEach(link -> {
             if (link.text().length() > 20) {
                 link.tagName("p");
                 link.removeAttr("href");
@@ -212,14 +198,14 @@ public class EpubLocator implements BookLocator<String> {
                 .append("}.bind(links[idx]);")
                 .append("}")
                 .append("};");
-        if (elem.elements("div").size() <= 0) {
+        if (elem.getElementsByTag("div").size() <= 0) {
             return HTML5 + "<html><head><style>" + sb.toString()
                     + "</style></head><body><div>"
-                    + elemJ.html() + "</div>" +
+                    + element.html() + "</div>" +
                     "<script>" + scriptbbuilder.toString() + "</script></body></html>";
         }
         return HTML5 + "<html><head><style>" + sb.toString() + "</style></head><body>"
-                + elemJ.html() + "<script>" + scriptbbuilder.toString() + "</script></body></html>";
+                + element.html() + "<script>" + scriptbbuilder.toString() + "</script></body></html>";
     }
 
     @Override
@@ -235,7 +221,7 @@ public class EpubLocator implements BookLocator<String> {
                 Resource resource = chapterList.getResource(pageIndex);
                 String data = new String(resource.getData(),resource.getInputEncoding());
                 data = this.replaceHeader(data);
-                Document document = DocumentHelper.parseText(data);
+                Document document = Jsoup.parse(data);
                 String location = resource.getHref();
                 data = renderPage(preparImages(document));
                 locationIndexMap.put(location, pageIndex);
@@ -258,7 +244,7 @@ public class EpubLocator implements BookLocator<String> {
             Resource resource = chapterList.getResource(pageIndex);
             String data = new String(resource.getData(),resource.getInputEncoding());
             data = this.replaceHeader(data);
-            Document document = DocumentHelper.parseText(data);
+            Document document = Jsoup.parse(data);
             data = renderPage(preparImages(document));
 
             String location = resource.getHref();
@@ -303,7 +289,7 @@ public class EpubLocator implements BookLocator<String> {
         try {
             String data = new String(resource.getData(),resource.getInputEncoding());
             data = this.replaceHeader(data);
-            Document document = DocumentHelper.parseText(data);
+            Document document = Jsoup.parse(data);
             data = renderPage(preparImages(document));
 
             locationIndexMap.put(location, index);

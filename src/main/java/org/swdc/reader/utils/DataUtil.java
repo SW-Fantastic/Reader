@@ -90,7 +90,7 @@ public class DataUtil {
         // 获取base的基目录
         String[] baseParts = base.split("/");
         String baseDir = base;
-        if (baseParts[baseParts.length - 1].split("[.]").length > 0) {
+        if (baseParts[baseParts.length - 1].split("[.]").length > 1  && baseParts.length > 1) {
             baseDir = base.substring(0, base.lastIndexOf("/"));
         } else {
             return target;
