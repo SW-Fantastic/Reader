@@ -32,7 +32,7 @@ public class TextConfig implements ReaderConfig{
     @Getter
     @Setter
     @ConfigProp(name = "阅读字体", type = PropType.FILE_SELECT_IMPORTABLE,
-            value = "configs/fonts", tooltip = "这是文本文件阅读的时候的字体样式")
+            value = "configs/fonts", tooltip = "这是文本文件阅读的时候的字体样式", propName = "font-path")
     private String fontPath;
 
     /**
@@ -41,7 +41,7 @@ public class TextConfig implements ReaderConfig{
     @Getter
     @Setter
     @ConfigProp(name = "阅读背景图", type = PropType.FILE_SELECT_IMPORTABLE,
-            value = "configs/readerResources/text", tooltip = "文本阅读的时候的背景图片")
+            value = "configs/readerResources/text",propName = "background-image", tooltip = "文本阅读的时候的背景图片")
     private String backgroundImage;
 
     /**
@@ -50,7 +50,7 @@ public class TextConfig implements ReaderConfig{
     @Getter
     @Setter
     @ConfigProp(name = "使用阅读背景图", type = PropType.CHECK,
-            value = "", tooltip = "是否在阅读时使用背景图")
+            value = "", tooltip = "是否在阅读时使用背景图", propName = "enable-background-image")
     private Boolean enableBackgroundImage;
 
     /**
@@ -58,7 +58,8 @@ public class TextConfig implements ReaderConfig{
      */
     @Getter
     @Setter
-    @ConfigProp(name = "阅读背景色", type = PropType.COLOR, value = "", tooltip = "阅读使用的背景颜色")
+    @ConfigProp(name = "阅读背景色", type = PropType.COLOR, value = "",
+            tooltip = "阅读使用的背景颜色", propName = "background-color")
     private String backgroundColor;
 
     /**
@@ -67,7 +68,7 @@ public class TextConfig implements ReaderConfig{
     @Getter
     @Setter
     @ConfigProp(name = "文字大小", type = PropType.NUMBER_SELECTABLE, value = "42",
-            tooltip = "阅读时的文字大小")
+            tooltip = "阅读时的文字大小", propName = "font-size")
     private Integer fontSize;
 
     /**
@@ -75,7 +76,8 @@ public class TextConfig implements ReaderConfig{
      */
     @Getter
     @Setter
-    @ConfigProp(name = "字体颜色", type = PropType.COLOR, value = "", tooltip = "字体的使用的颜色")
+    @ConfigProp(name = "字体颜色", type = PropType.COLOR, value = "",
+            tooltip = "字体的使用的颜色", propName = "font-color")
     private String fontColor;
 
     /**
@@ -83,7 +85,8 @@ public class TextConfig implements ReaderConfig{
      */
     @Getter
     @Setter
-    @ConfigProp(name = "渲染字体的阴影", type = PropType.CHECK, value = "", tooltip = "渲染字体的阴影")
+    @ConfigProp(name = "渲染字体的阴影", type = PropType.CHECK,
+            value = "", tooltip = "渲染字体的阴影",propName = "enable-text-shadow")
     private Boolean enableTextShadow;
 
     /**
@@ -91,7 +94,8 @@ public class TextConfig implements ReaderConfig{
      */
     @Getter
     @Setter
-    @ConfigProp(name = "字体阴影的颜色", type = PropType.COLOR, value = "", tooltip = "字体的阴影色")
+    @ConfigProp(name = "字体阴影的颜色", type = PropType.COLOR,
+            value = "", tooltip = "字体的阴影色", propName = "shadow-color")
     private String shadowColor;
 
 }

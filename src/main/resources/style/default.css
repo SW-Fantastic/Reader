@@ -218,3 +218,14 @@
 .scroll-bar .increment-arrow{
     -fx-background-color: rgba(79,155,106, 1);
 }
+.dialog-pane {
+    -fx-background-color: rgb(253,255,223);
+    -fx-font-family: "FZMiaoWuS-GB";
+    -fx-font-size: 16px;
+}
+.dialog-pane .button {
+    -fx-background-radius: 0;
+    -fx-background-color:rgb(120,106,123);
+    -fx-text-fill: rgb(253,255,223);
+    -fx-font-size: 14px;
+}

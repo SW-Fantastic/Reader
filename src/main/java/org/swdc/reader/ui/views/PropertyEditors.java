@@ -198,8 +198,11 @@ public class PropertyEditors {
 
         picker.valueProperty().addListener((observable, oldValue, newValue) -> {
             picker.setValue(newValue);
-            String data = "#" + Integer.toHexString(newValue.hashCode()).substring(0,6);
-            text.setText(data);
+            String data = "#" + Integer.toHexString(newValue.hashCode());
+            if (data.equals("#ff")) {
+                data = "#000000";
+            }
+            text.setText(data.substring(0,7));
             property.setValue(data);
         });
 

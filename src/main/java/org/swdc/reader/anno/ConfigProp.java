@@ -20,4 +20,6 @@ public @interface ConfigProp {
 
     String tooltip();
 
+    String propName();
+
 }
