@@ -92,6 +92,8 @@ public class DataUtil {
         String baseDir = base;
         if (baseParts[baseParts.length - 1].split("[.]").length > 0) {
             baseDir = base.substring(0, base.lastIndexOf("/"));
+        } else {
+            return target;
         }
         // 拼接
         String targetPath = baseDir + "/" + target;

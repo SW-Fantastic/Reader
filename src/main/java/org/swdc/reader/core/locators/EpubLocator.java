@@ -8,6 +8,11 @@ import nl.siegmann.epublib.domain.SpineReference;
 import nl.siegmann.epublib.domain.TOCReference;
 import nl.siegmann.epublib.epub.EpubReader;
 import org.dom4j.*;
+import org.dom4j.Document;
+import org.dom4j.Element;
+import org.dom4j.Node;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.*;
 import org.swdc.reader.core.BookLocator;
 import org.swdc.reader.core.configs.EpubConfig;
 import org.swdc.reader.core.configs.TextConfig;
@@ -151,6 +156,13 @@ public class EpubLocator implements BookLocator<String> {
     }
 
     private String renderPage(Element elem) {
+        org.jsoup.nodes.Element elemJ = Jsoup.parse(elem.asXML());
+        elemJ.getElementsByTag("a").forEach(link -> {
+            if (link.text().length() > 20) {
+                link.tagName("p");
+                link.removeAttr("href");
+            }
+        });
         StringBuilder sb = new StringBuilder();
         sb.append("body {")
                 .append("font-family: \"")
@@ -203,11 +215,11 @@ public class EpubLocator implements BookLocator<String> {
         if (elem.elements("div").size() <= 0) {
             return HTML5 + "<html><head><style>" + sb.toString()
                     + "</style></head><body><div>"
-                    + elem.asXML() + "</div>" +
+                    + elemJ.html() + "</div>" +
                     "<script>" + scriptbbuilder.toString() + "</script></body></html>";
         }
         return HTML5 + "<html><head><style>" + sb.toString() + "</style></head><body>"
-                + elem.asXML() + "<script>" + scriptbbuilder.toString() + "</script></body></html>";
+                + elemJ.html() + "<script>" + scriptbbuilder.toString() + "</script></body></html>";
     }
 
     @Override
@@ -277,12 +289,15 @@ public class EpubLocator implements BookLocator<String> {
                 return indexContentMap.get(pageIndex);
             }
             // 处理相对路径
-            String currentLoc = epubBook.getSpine().getResource(pageIndex).getHref();
-            location = DataUtil.resolveRelativePath(currentLoc, location);
             if (location.contains("#")) {
                 location = location.substring(0, location.indexOf("#"));
             }
             resource = epubBook.getResources().getByHref(location);
+            if (resource == null){
+                String currentLoc = epubBook.getSpine().getResource(pageIndex).getHref();
+                location = DataUtil.resolveRelativePath(currentLoc, location);
+                resource = epubBook.getResources().getByHref(location);
+            }
         }
         int index = epubBook.getSpine().getResourceIndex(resource);
         try {
