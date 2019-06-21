@@ -16,6 +16,7 @@ import javafx.stage.FileChooser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.annotation.Order;
 import org.swdc.reader.entity.Book;
 import org.swdc.reader.entity.BookType;
 import org.swdc.reader.event.BooksRefreshEvent;
@@ -37,6 +38,7 @@ import java.util.Set;
 /**
  * Created by lenovo on 2019/5/22.
  */
+@Order(1)
 @FXMLController
 public class BookController implements Initializable{
 

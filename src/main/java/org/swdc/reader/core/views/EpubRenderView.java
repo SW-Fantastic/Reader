@@ -10,6 +10,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import lombok.Getter;
+import lombok.extern.apachecommons.CommonsLog;
 import netscape.javascript.JSObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.swdc.reader.core.BookView;
@@ -26,6 +27,7 @@ import javax.annotation.PostConstruct;
  * Created by lenovo on 2019/6/13.
  */
 @FXMLView
+@CommonsLog
 public class EpubRenderView extends AbstractFxmlView implements BookView {
 
     private WebView view;
@@ -62,7 +64,7 @@ public class EpubRenderView extends AbstractFxmlView implements BookView {
             this.view.setId(viewId);
             WebEngine engine = this.view.getEngine();
             engine.setOnError(event -> {
-                event.getException().printStackTrace();
+                log.error(event.getException());
             });
             engine.setOnAlert(event -> {
                 UIUtils.showAlertDialog(event.getData(),"提示", Alert.AlertType.INFORMATION,config);
@@ -72,7 +74,11 @@ public class EpubRenderView extends AbstractFxmlView implements BookView {
                 if (newValue == Worker.State.SUCCEEDED && epubConfig.getEnableHyperLinks()) {
                     JSObject jsObject = (JSObject) engine.executeScript("window");
                     jsObject.setMember("swdc", control);
-                    engine.executeScript("init()");
+                    try {
+                        engine.executeScript("init()");
+                    } catch (Exception e) {
+                        log.error(e);
+                    }
                 }
             });
         });

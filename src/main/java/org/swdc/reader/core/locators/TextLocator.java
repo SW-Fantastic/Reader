@@ -1,5 +1,6 @@
 package org.swdc.reader.core.locators;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import info.monitorenter.cpdetector.io.CodepageDetectorProxy;
 import javafx.scene.text.Font;
 import lombok.extern.apachecommons.CommonsLog;
@@ -61,6 +62,8 @@ public class TextLocator implements BookLocator<String> {
 
     private String backgroundImageData;
 
+    private Boolean available;
+
     public TextLocator(Book book, CodepageDetectorProxy codepageDetectorProxy, TextConfig config) {
         File bookFile = new File("./data/library/" + book.getName());
         this.bookEntity = book;
@@ -87,6 +90,7 @@ public class TextLocator implements BookLocator<String> {
             this.chapterPatterns.add(Pattern.compile("^第[^章]+章[\\s\\S]*?(?:(?=第[^章]+章)|$)"));
             this.chapterPatterns.add(Pattern.compile("^第[^回]+回[\\s\\S]*?(?:(?=回[^回]+回)|$)"));
             this.chapterPatterns.add(Pattern.compile("第[^章]+章[\\s\\S]*?(?:(?=第[^章]+章)|$)"));
+            available = true;
         } catch (IOException e) {
             log.error(e);
         }
@@ -190,6 +194,7 @@ public class TextLocator implements BookLocator<String> {
             e.printStackTrace(new PrintWriter(swr));
             this.currentPage --;
             this.chapterName = "读取出现异常";
+            available = false;
             return swr.toString();
         }
     }
@@ -206,7 +211,10 @@ public class TextLocator implements BookLocator<String> {
     }
 
     @Override
-    public String toPage(String location) {
+    public synchronized String toPage(String location) {
+        if (!this.available) {
+            return null;
+        }
         int page = Integer.valueOf(location);
         if (page <= 0) {
             return toPage("1");
@@ -239,17 +247,23 @@ public class TextLocator implements BookLocator<String> {
     }
 
     @Override
-    public void finalizeResources() {
+    public synchronized void finalizeResources() {
         try {
             if (reader!= null) {
                 this.reader.close();
                 this.locationTitleMap.clear();
                 this.locationTextMap.clear();
                 this.bookFile = null;
+                this.available = false;
             }
         } catch (IOException e) {
             log.error(e);
         }
+    }
+
+    @Override
+    public Boolean isAvailable() {
+        return available;
     }
 
 }

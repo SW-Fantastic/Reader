@@ -31,6 +31,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.Executor;
+import java.util.concurrent.FutureTask;
 
 /**
  * Created by lenovo on 2019/5/31.
@@ -68,6 +69,8 @@ public class ReadViewController implements Initializable {
     @FXML
     private TextField txtLocation;
 
+    private final Object lock = new Object();
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -80,50 +83,60 @@ public class ReadViewController implements Initializable {
 
     @EventListener(BookLocationEvent.class)
     public void onLocationRequest(BookLocationEvent event) {
-        Platform.runLater(() -> {
-            if (currentReader == null) {
-                return;
+        executor.execute(() -> {
+            synchronized (lock){
+                try {
+                    if (currentReader == null) {
+                        return;
+                    }
+                    String location = event.getSource();
+                    BookLocator locator = currentReader.getLocator();
+                    Object data = locator.toPage(location);
+                    Platform.runLater(() -> {
+                        currentReader.renderPage(data, (BorderPane)view.getView());
+                        txtTitle.setText(locator.getTitle());
+                        txtLocation.setText(locator.getLocation());
+                    });
+                } catch (Exception e) {
+                    config.publishEvent(event);
+                }
             }
-            String location = event.getSource();
-            BookLocator locator = currentReader.getLocator();
-            Object data = locator.toPage(location);
-            currentReader.renderPage(data, (BorderPane)view.getView());
-            txtTitle.setText(locator.getTitle());
-            txtLocation.setText(locator.getLocation());
         });
     }
 
     @EventListener(DocumentOpenEvent.class)
     public void bookOpenRequested(DocumentOpenEvent event) {
-        executor.execute(() ->
-            readers.stream().filter(reader -> reader.isSupport(event.getSource()))
-                    .findFirst().ifPresent((BookReader reader) -> {
-                if (currentReader != null) {
-                    if (event.getSource().getId().longValue() == currentReader.getBook().getId().longValue()) {
-                        return;
-                    } else if (currentReader != null && currentReader != reader) {
-                        currentReader.finalizeResources();
+        executor.execute(() ->{
+            synchronized (lock) {
+                readers.stream().filter(reader -> reader.isSupport(event.getSource()))
+                        .findFirst().ifPresent((BookReader reader) -> {
+                    if (currentReader != null) {
+                        if (event.getSource().getId().longValue() == currentReader.getBook().getId().longValue()) {
+                            return;
+                        } else if (currentReader != null && currentReader != reader) {
+                            currentReader.finalizeResources();
+                        }
                     }
-                }
-                Platform.runLater(() -> {
-                    Notifications.create()
-                            .owner(GUIState.getStage())
-                            .hideCloseButton()
-                            .hideAfter(Duration.millis(2000))
-                            .text("正在载入《" + event.getSource().getTitle() + "》")
-                            .position(Pos.CENTER)
-                            .show();
+                    Platform.runLater(() -> {
+                        Notifications.create()
+                                .owner(GUIState.getStage())
+                                .hideCloseButton()
+                                .hideAfter(Duration.millis(2000))
+                                .text("正在载入《" + event.getSource().getTitle() + "》")
+                                .position(Pos.CENTER)
+                                .show();
+                    });
+                    this.currentReader = reader;
+                    reader.setBook(event.getSource());
+                    BookLocator locator = reader.getLocator();
+                    Platform.runLater(() -> {
+                        reader.renderPage(locator.nextPage(), (BorderPane) view.getView());
+                        txtTitle.setText(locator.getTitle());
+                        txtLocation.setText(locator.getLocation());
+                    });
                 });
-                this.currentReader = reader;
-                reader.setBook(event.getSource());
-                BookLocator locator = reader.getLocator();
-                Platform.runLater(() -> {
-                    reader.renderPage(locator.nextPage(), (BorderPane) view.getView());
-                    txtTitle.setText(locator.getTitle());
-                    txtLocation.setText(locator.getLocation());
-                });
-            })
-        );
+            }
+        });
     }
 
     @FXML

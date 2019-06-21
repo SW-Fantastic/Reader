@@ -9,6 +9,7 @@ import javafx.scene.layout.BorderPane;
 import lombok.Getter;
 import org.controlsfx.control.GridView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.swdc.reader.entity.Book;
 import org.swdc.reader.entity.BookType;
 import org.swdc.reader.ui.ApplicationConfig;
@@ -23,6 +24,7 @@ import java.util.List;
 /**
  * Created by lenovo on 2019/5/19.
  */
+@Order(0)
 @FXMLView("/views/BooksView.fxml")
 public class BooksView extends AbstractFxmlView {
 

@@ -1,5 +1,8 @@
 package org.swdc.reader.core;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+import org.swdc.reader.entity.Book;
+
 /**
  * Created by lenovo on 2019/5/28.
  */
@@ -41,5 +44,7 @@ public interface BookLocator<T> {
      * 不需要这些的时候应该释放掉
      */
     void finalizeResources();
+
+    Boolean isAvailable();
 
 }

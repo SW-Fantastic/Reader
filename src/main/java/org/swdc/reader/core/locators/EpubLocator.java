@@ -54,6 +54,8 @@ public class EpubLocator implements BookLocator<String> {
 
     private String backgroundImageData;
 
+    private Boolean availbale;
+
     public EpubLocator(Book book, EpubConfig config, TextConfig textConfig){
         this.book = book;
         this.config = config;
@@ -80,6 +82,7 @@ public class EpubLocator implements BookLocator<String> {
                 bot.flush();
                 backgroundInput.close();
                 backgroundImageData = Base64.getEncoder().encodeToString(bot.toByteArray());
+                this.availbale = true;
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -320,7 +323,12 @@ public class EpubLocator implements BookLocator<String> {
 
     @Override
     public void finalizeResources() {
+        this.availbale = false;
+    }
 
+    @Override
+    public Boolean isAvailable() {
+        return availbale;
     }
 
 }

@@ -1,6 +1,7 @@
 package org.swdc.reader.core.locators;
 
 import javafx.scene.image.Image;
+import lombok.Getter;
 import lombok.extern.apachecommons.CommonsLog;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.destination.PDPageDestination;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocumentOutline;
@@ -44,6 +45,8 @@ public class PDFLocator implements BookLocator<Image> {
 
     private Map<Integer, Image> locationDataMap = new WeakHashMap<>();
 
+    private Boolean available;
+
     public PDFLocator(Book book, PDFConfig config) {
         this.config = config;
         this.bookEntity = book;
@@ -54,6 +57,7 @@ public class PDFLocator implements BookLocator<Image> {
             if (bookEntity.getContentsItems() == null || bookEntity.getContentsItems().size() == 0) {
                 this.loadOutLines(config.getConfig());
             }
+            this.available = true;
         } catch (IOException e) {
            log.error(e);
         }
@@ -146,10 +150,16 @@ public class PDFLocator implements BookLocator<Image> {
             if (locationDataMap != null) {
                 locationDataMap.clear();
                 locationDataMap = null;
+                this.available = false;
             }
         } catch (IOException e) {
             log.error(e);
         }
+    }
+
+    @Override
+    public Boolean isAvailable() {
+        return this.available;
     }
 
     private Image renderPage(Integer page) {
