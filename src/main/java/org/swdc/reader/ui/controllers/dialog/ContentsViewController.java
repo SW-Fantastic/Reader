@@ -49,8 +49,17 @@ public class ContentsViewController implements Initializable {
 
     @EventListener(ContentItemChangeEvent.class)
     public void onItemsChange(ContentItemChangeEvent event) {
+        this.resolveBookContent(event.getSource());
+    }
+
+    @EventListener(DocumentOpenEvent.class)
+    public void onDocumentOpen(DocumentOpenEvent event) {
+       this.resolveBookContent(event.getSource());
+    }
+
+    private void resolveBookContent(Book booktarget) {
         Platform.runLater(() -> {
-            Book book = service.getBook(event.getSource().getId());
+            Book book =  service.getBook(booktarget.getId());
             this.items.clear();
             this.items.addAll(book.getContentsItems());
             this.items.sort((itemA, itemB) -> itemA.getId().intValue() - itemB.getId().intValue());

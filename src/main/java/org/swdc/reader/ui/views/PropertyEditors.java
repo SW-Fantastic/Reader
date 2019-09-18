@@ -203,7 +203,7 @@ public class PropertyEditors {
                 data = "#000000";
             }
             text.setText(data.substring(0,7));
-            property.setValue(data);
+            property.setValue(data.substring(0,7));
         });
 
         picker.getStyleClass().add("comb");

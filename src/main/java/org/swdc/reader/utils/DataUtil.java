@@ -123,7 +123,7 @@ public class DataUtil {
                 continue;
             }
             PropertyDescriptor desc = new PropertyDescriptor(field.getName(),config.getClass());
-           props.setProperty(prefix +"."+ field.getAnnotation(ConfigProp.class).propName(), desc.getReadMethod().invoke(config).toString());
+            props.setProperty(prefix +"."+ field.getAnnotation(ConfigProp.class).propName(), desc.getReadMethod().invoke(config).toString());
         }
         props.store(new FileOutputStream("./configs/" + name), "");
     }

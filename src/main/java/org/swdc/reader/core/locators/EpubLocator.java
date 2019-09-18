@@ -178,9 +178,13 @@ public class EpubLocator implements BookLocator<String> {
         .append("padding: 12px;")
         .append("}");
         if (txtConfig.getEnableBackgroundImage()) {
-            sb.append("div{")
+            sb.append("body>div{")
                     .append("background-color: rgba(255,255,255,0.8);")
                     .append("padding: 36px;")
+                    .append("}");
+        } else {
+            sb.append("body>div{")
+                    .append("padding: 24px")
                     .append("}");
         }
         sb.append("p {")
@@ -201,14 +205,10 @@ public class EpubLocator implements BookLocator<String> {
                 .append("}.bind(links[idx]);")
                 .append("}")
                 .append("};");
-        if (elem.getElementsByTag("div").size() <= 0) {
-            return HTML5 + "<html><head><style>" + sb.toString()
+        return HTML5 + "<html><head><style>" + sb.toString()
                     + "</style></head><body><div>"
                     + element.html() + "</div>" +
                     "<script>" + scriptbbuilder.toString() + "</script></body></html>";
-        }
-        return HTML5 + "<html><head><style>" + sb.toString() + "</style></head><body>"
-                + element.html() + "<script>" + scriptbbuilder.toString() + "</script></body></html>";
     }
 
     @Override
