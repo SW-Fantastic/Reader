@@ -116,7 +116,13 @@
 			<artifactId>jsoup</artifactId>
 			<version>1.12.1</version>
 		</dependency>
-
+		<dependency>
+			<groupId>hu.webhejj</groupId>
+			<artifactId>mobi-java</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/libs/mobi-java.jar</systemPath>
+		</dependency>
 	</dependencies>
 
 	<build>

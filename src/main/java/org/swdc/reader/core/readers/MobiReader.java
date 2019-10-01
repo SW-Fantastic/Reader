@@ -1,50 +1,56 @@
 package org.swdc.reader.core.readers;
 
-import info.monitorenter.cpdetector.io.CodepageDetectorProxy;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.web.WebView;
+import lombok.extern.apachecommons.CommonsLog;
+import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.swdc.reader.core.BookLocator;
 import org.swdc.reader.core.BookReader;
-import org.swdc.reader.core.configs.EpubConfig;
 import org.swdc.reader.core.configs.TextConfig;
-import org.swdc.reader.core.locators.EpubLocator;
-import org.swdc.reader.core.views.EpubRenderView;
+import org.swdc.reader.core.locators.MobiLocator;
+import org.swdc.reader.core.views.MobiRenderView;
 import org.swdc.reader.entity.Book;
+import org.swdc.reader.ui.ApplicationConfig;
 
 import java.util.concurrent.Executor;
 
 /**
- * Created by lenovo on 2019/6/13.
+ * Created by lenovo on 2019/9/29.
  */
 @Component
-public class EpubReader implements BookReader<String> {
-
-    @Autowired
-    private EpubConfig config;
+@CommonsLog
+public class MobiReader implements BookReader<String> {
 
     @Autowired
     private TextConfig textConfig;
 
     @Autowired
-    private EpubRenderView view;
+    private MobiRenderView view;
+
+    @Autowired
+    private ApplicationConfig config;
 
     @Autowired
     private Executor asyncExecutor;
 
-    private EpubLocator locator;
+    private MobiLocator locator;
 
     private Book book;
 
     @Override
     public void setBook(Book book) {
-        if (locator != null) {
+        this.book = book;
+        if (this.locator != null) {
             locator.finalizeResources();
             locator = null;
         }
-        this.book = book;
-        locator = new EpubLocator(asyncExecutor,book, config, textConfig);
+        try {
+            locator = new MobiLocator(asyncExecutor,config, book, textConfig);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override
@@ -62,10 +68,10 @@ public class EpubReader implements BookReader<String> {
         webView.getEngine().loadContent(pageData);
     }
 
+
     @Override
     public boolean isSupport(Book target) {
-        return target.getName().endsWith("epub") &&
-                target.getMimeData().equals("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+        return target.getName().toLowerCase().endsWith("mobi");
     }
 
     @Override

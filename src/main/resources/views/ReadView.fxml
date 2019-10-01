@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
@@ -26,4 +27,23 @@
          </BorderPane.margin>
       </HBox>
    </top>
+   <bottom>
+      <HBox prefHeight="0.0" prefWidth="729.0" BorderPane.alignment="CENTER">
+         <children>
+            <ProgressBar fx:id="progress" prefHeight="4.0" prefWidth="258.0" progress="0.0" styleClass="progress">
+               <HBox.margin>
+                  <Insets bottom="4.0" top="4.0" />
+               </HBox.margin>
+            </ProgressBar>
+            <Label fx:id="procMessage" prefHeight="15.0" prefWidth="269.0" text="Label">
+               <HBox.margin>
+                  <Insets left="12.0" top="4.0" />
+               </HBox.margin>
+            </Label>
+         </children>
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
+      </HBox>
+   </bottom>
 </BorderPane>

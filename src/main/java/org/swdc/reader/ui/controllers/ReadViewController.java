@@ -7,6 +7,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.util.Duration;
@@ -17,8 +19,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.event.EventListener;
 import org.swdc.reader.core.BookLocator;
 import org.swdc.reader.core.BookReader;
+import org.swdc.reader.entity.Book;
 import org.swdc.reader.entity.ContentsItem;
 import org.swdc.reader.event.BookLocationEvent;
+import org.swdc.reader.event.BookProcessEvent;
 import org.swdc.reader.event.ContentItemFoundEvent;
 import org.swdc.reader.event.DocumentOpenEvent;
 import org.swdc.reader.services.BookService;
@@ -69,11 +73,17 @@ public class ReadViewController implements Initializable {
     @FXML
     private TextField txtLocation;
 
+    @FXML
+    private ProgressBar progress;
+
+    @FXML
+    private Label procMessage;
+
     private final Object lock = new Object();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        procMessage.setText("");
     }
 
     @EventListener(ContentItemFoundEvent.class)
@@ -136,6 +146,14 @@ public class ReadViewController implements Initializable {
                     });
                 });
             }
+        });
+    }
+
+    @EventListener(BookProcessEvent.class)
+    public void processEvent(BookProcessEvent event) {
+        Platform.runLater(() -> {
+            progress.setProgress(event.getSource());
+            procMessage.setText(event.getMessage());
         });
     }
 

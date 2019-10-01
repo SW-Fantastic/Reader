@@ -1,6 +1,5 @@
 package org.swdc.reader.core.locators;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import info.monitorenter.cpdetector.io.CodepageDetectorProxy;
 import javafx.scene.text.Font;
 import lombok.extern.apachecommons.CommonsLog;
@@ -8,6 +7,7 @@ import org.swdc.reader.core.BookLocator;
 import org.swdc.reader.core.configs.TextConfig;
 import org.swdc.reader.entity.Book;
 import org.swdc.reader.entity.ContentsItem;
+import org.swdc.reader.event.BookProcessEvent;
 import org.swdc.reader.event.ContentItemFoundEvent;
 import org.swdc.reader.ui.CommonComponents;
 
@@ -219,15 +219,24 @@ public class TextLocator implements BookLocator<String> {
         if (page <= 0) {
             return toPage("1");
         }
+        double totals = Math.abs(page - currentPage);
         if (page > currentPage) {
             while (page > currentPage) {
+                double target = 1 - ((page - currentPage) / totals);
+                BookProcessEvent processEvent = new BookProcessEvent(target, "正在加载页面");
+                config.getApplicationConfig().publishEvent(processEvent);
                 this.nextPage();
             }
         } else if (page < currentPage) {
             while (page < currentPage) {
+                double target = 1 - ((currentPage - page) / totals);
+                BookProcessEvent processEvent = new BookProcessEvent(target, "正在加载页面");
+                config.getApplicationConfig().publishEvent(processEvent);
                 this.prevPage();
             }
         }
+        BookProcessEvent processEvent = new BookProcessEvent(1.0, "");
+        config.getApplicationConfig().publishEvent(processEvent);
         return currentPage();
     }
 

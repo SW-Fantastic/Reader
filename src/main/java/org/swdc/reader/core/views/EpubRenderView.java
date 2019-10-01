@@ -16,8 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.swdc.reader.core.BookView;
 import org.swdc.reader.core.configs.EpubConfig;
 import org.swdc.reader.event.BookLocationEvent;
-import org.swdc.reader.event.ContentItemChangeEvent;
-import org.swdc.reader.event.MarkItemChangeEvent;
 import org.swdc.reader.ui.ApplicationConfig;
 import org.swdc.reader.utils.UIUtils;
 

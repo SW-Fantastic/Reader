@@ -1,7 +1,5 @@
 package org.swdc.reader.core;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-import org.swdc.reader.entity.Book;
 
 /**
  * Created by lenovo on 2019/5/28.

@@ -13,6 +13,7 @@ import org.swdc.reader.core.configs.EpubConfig;
 import org.swdc.reader.core.configs.TextConfig;
 import org.swdc.reader.entity.Book;
 import org.swdc.reader.entity.ContentsItem;
+import org.swdc.reader.event.BookProcessEvent;
 import org.swdc.reader.event.ContentItemFoundEvent;
 import org.swdc.reader.ui.ApplicationConfig;
 import org.swdc.reader.ui.CommonComponents;
@@ -20,6 +21,7 @@ import org.swdc.reader.utils.DataUtil;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.Executor;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -56,7 +58,7 @@ public class EpubLocator implements BookLocator<String> {
 
     private Boolean availbale;
 
-    public EpubLocator(Book book, EpubConfig config, TextConfig textConfig){
+    public EpubLocator(Executor executor, Book book, EpubConfig config, TextConfig textConfig){
         this.book = book;
         this.config = config;
         this.txtConfig = textConfig;
@@ -93,6 +95,7 @@ public class EpubLocator implements BookLocator<String> {
         if (toc == null || toc.size() == 0) {
             return;
         }
+        double totals = toc.size();
         for (int idx = 0; idx < toc.size(); idx++) {
             TOCReference ref = toc.get(idx);
             ContentsItem item = new ContentsItem();
@@ -104,9 +107,14 @@ public class EpubLocator implements BookLocator<String> {
             item.setLocation(ref.getResource().getHref());
             item.setLocated(book);
             config.publishEvent(new ContentItemFoundEvent(item));
+            double progress = 1 - (idx/totals);
+            BookProcessEvent processEvent = new BookProcessEvent(progress, "正在索引目录");
+            config.publishEvent(processEvent);
             if (ref.getChildren() != null && ref.getChildren().size() > 0) {
                 this.initContents(ref.getChildren(), config, "节");
             }
+            processEvent = new BookProcessEvent(1.0, "");
+            config.publishEvent(processEvent);
         }
     }
 
