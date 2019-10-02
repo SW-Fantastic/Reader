@@ -121,7 +121,7 @@
 			<artifactId>mobi-java</artifactId>
 			<version>1.0</version>
 			<scope>system</scope>
-			<systemPath>${basedir}/libs/mobi-java.jar</systemPath>
+			<systemPath>${project.basedir}/libs/mobi-java.jar</systemPath>
 		</dependency>
 	</dependencies>
 
@@ -130,6 +130,9 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<includeSystemScope>true</includeSystemScope>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

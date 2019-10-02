@@ -3,6 +3,8 @@ package org.swdc.reader.ui.controllers;
 import de.felixroske.jfxsupport.FXMLController;
 import de.felixroske.jfxsupport.GUIState;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ObservableBooleanValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -79,11 +81,33 @@ public class ReadViewController implements Initializable {
     @FXML
     private Label procMessage;
 
+    @FXML
+    private Button prevButton;
+
+    @FXML
+    private Button nextButton;
+
+    @FXML
+    private Button addLblButton;
+
+    @FXML
+    private Button jumpButton;
+
+    @FXML
+    private Button contentsButton;
+
+    private SimpleBooleanProperty disabled = new SimpleBooleanProperty(false);
+
     private final Object lock = new Object();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         procMessage.setText("");
+        addLblButton.disableProperty().bind(disabled);
+        contentsButton.disableProperty().bind(disabled);
+        prevButton.disableProperty().bind(disabled);
+        nextButton.disableProperty().bind(disabled);
+        jumpButton.disableProperty().bind(disabled);
     }
 
     @EventListener(ContentItemFoundEvent.class)
@@ -116,6 +140,9 @@ public class ReadViewController implements Initializable {
 
     @EventListener(DocumentOpenEvent.class)
     public void bookOpenRequested(DocumentOpenEvent event) {
+        if (this.disabled.get()) {
+            return;
+        }
         executor.execute(() ->{
             synchronized (lock) {
                 readers.stream().filter(reader -> reader.isSupport(event.getSource()))
@@ -154,12 +181,17 @@ public class ReadViewController implements Initializable {
         Platform.runLater(() -> {
             progress.setProgress(event.getSource());
             procMessage.setText(event.getMessage());
+            if (event.getSource() < 1) {
+                disabled.set(true);
+            } else {
+                disabled.set(false);
+            }
         });
     }
 
     @FXML
     public void onPrevPage() {
-        if (currentReader == null) {
+        if (currentReader == null || this.disabled.get()) {
             return;
         }
         BookLocator locator = currentReader.getLocator();
@@ -176,7 +208,7 @@ public class ReadViewController implements Initializable {
 
     @FXML
     public void onPageTo(){
-        if (currentReader == null) {
+        if (currentReader == null || this.disabled.get()) {
             return;
         }
         config.publishEvent(new BookLocationEvent(txtLocation.getText()));
@@ -184,7 +216,7 @@ public class ReadViewController implements Initializable {
 
     @FXML
     public void onAddMarks() {
-        if (currentReader == null) {
+        if (currentReader == null || this.disabled.get()) {
             return;
         }
         markAddDialog.setBook(currentReader);
@@ -193,7 +225,7 @@ public class ReadViewController implements Initializable {
 
     @FXML
     public void onNextPage() {
-        if (currentReader == null) {
+        if (currentReader == null || this.disabled.get()) {
             return;
         }
         BookLocator locator = currentReader.getLocator();

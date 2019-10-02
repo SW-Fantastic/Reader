@@ -10,14 +10,14 @@
    <top>
       <HBox alignment="CENTER_RIGHT" prefHeight="53.0" prefWidth="637.0" spacing="6.0" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" onAction="#onPrevPage" prefHeight="24.0" prefWidth="58.0" styleClass="btn-txt" text="上一页" />
-            <Button mnemonicParsing="false" onAction="#onNextPage" prefHeight="24.0" prefWidth="58.0" styleClass="btn-txt" text="下一页" />
-            <Button layoutX="88.0" layoutY="30.0" mnemonicParsing="false" onAction="#onAddMarks" prefHeight="24.0" prefWidth="58.0" styleClass="btn-txt" text="书签" />
+            <Button fx:id="prevButton" mnemonicParsing="false" onAction="#onPrevPage" prefHeight="24.0" prefWidth="58.0" styleClass="btn-txt" text="上一页" />
+            <Button fx:id="nextButton" mnemonicParsing="false" onAction="#onNextPage" prefHeight="24.0" prefWidth="58.0" styleClass="btn-txt" text="下一页" />
+            <Button fx:id="addLblButton" layoutX="88.0" layoutY="30.0" mnemonicParsing="false" onAction="#onAddMarks" prefHeight="24.0" prefWidth="58.0" styleClass="btn-txt" text="书签" />
             <TextField fx:id="txtTitle" editable="false" prefHeight="27.0" prefWidth="151.0" styleClass="txt" />
             <HBox prefHeight="41.0" prefWidth="152.0" HBox.hgrow="ALWAYS" />
             <TextField fx:id="txtLocation" prefHeight="26.0" prefWidth="104.0" styleClass="txt" />
-            <Button mnemonicParsing="false" onAction="#onPageTo" prefHeight="24.0" prefWidth="58.0" styleClass="btn-txt" text="跳转" />
-            <Button mnemonicParsing="false" onAction="#onContentsItem" prefHeight="24.0" prefWidth="58.0" styleClass="btn-txt" text="目录" />
+            <Button fx:id="jumpButton" mnemonicParsing="false" onAction="#onPageTo" prefHeight="24.0" prefWidth="58.0" styleClass="btn-txt" text="跳转" />
+            <Button fx:id="contentsButton" mnemonicParsing="false" onAction="#onContentsItem" prefHeight="24.0" prefWidth="58.0" styleClass="btn-txt" text="目录" />
          </children>
          <padding>
             <Insets left="12.0" right="12.0" top="12.0" />
