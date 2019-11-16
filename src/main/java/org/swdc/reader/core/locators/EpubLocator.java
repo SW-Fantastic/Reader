@@ -209,7 +209,7 @@ public class EpubLocator implements BookLocator<String> {
                 .append("for(var idx = 0;idx < links.length; idx++) {")
                 .append("links[idx].onclick = function(e){")
                 .append("/*window.swdc.linkClick(this.href);*/")
-                .append("swdc.locate(this.href);")
+                .append("swdc.locate(this.outerHTML);")
                 .append("}.bind(links[idx]);")
                 .append("}")
                 .append("};");

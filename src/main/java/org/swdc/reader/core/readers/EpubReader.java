@@ -1,5 +1,6 @@
 package org.swdc.reader.core.readers;
 
+import com.teamdev.jxbrowser.chromium.javafx.BrowserView;
 import info.monitorenter.cpdetector.io.CodepageDetectorProxy;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.web.WebView;
@@ -54,12 +55,12 @@ public class EpubReader implements BookReader<String> {
 
     @Override
     public void renderPage(String pageData, BorderPane view) {
-        WebView webView = (WebView)view.lookup("#" + this.view.getViewId());
+        BrowserView webView = (BrowserView) view.lookup("#" + this.view.getViewId());
         if (webView == null) {
             view.setCenter(this.view.getView());
-            webView = (WebView)this.view.getView();
+            webView = (BrowserView) this.view.getView();
         }
-        webView.getEngine().loadContent(pageData);
+        webView.getBrowser().loadHTML(pageData);
     }
 
     @Override

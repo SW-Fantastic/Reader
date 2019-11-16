@@ -1,5 +1,6 @@
 package org.swdc.reader.core.views;
 
+import com.teamdev.jxbrowser.chromium.javafx.BrowserView;
 import de.felixroske.jfxsupport.FXMLView;
 import javafx.application.Platform;
 import javafx.scene.Node;
@@ -16,7 +17,7 @@ import javax.annotation.PostConstruct;
 @FXMLView
 public class MobiRenderView implements BookView {
 
-    private WebView view;
+    private BrowserView view;
 
     @Getter
     private final String viewId = "mobiRenderView";
@@ -24,7 +25,7 @@ public class MobiRenderView implements BookView {
     @PostConstruct
     public void initUI() {
         Platform.runLater(() ->{
-            this.view = new WebView();
+            this.view = new BrowserView();
             this.view.setId(viewId);
         });
     }

@@ -1,5 +1,6 @@
 package org.swdc.reader.core.views;
 
+import com.teamdev.jxbrowser.chromium.javafx.BrowserView;
 import de.felixroske.jfxsupport.AbstractFxmlView;
 import de.felixroske.jfxsupport.FXMLView;
 import javafx.application.Platform;
@@ -19,7 +20,7 @@ import javax.annotation.PostConstruct;
 @FXMLView
 public class TextRenderView extends AbstractFxmlView implements BookView {
 
-    private WebView view;
+    private BrowserView view;
 
     @Getter
     private final String viewId = "webRenderView";
@@ -27,7 +28,7 @@ public class TextRenderView extends AbstractFxmlView implements BookView {
     @PostConstruct
     protected void initUI() {
         Platform.runLater(() ->{
-            this.view = new WebView();
+            this.view = new BrowserView();
             this.view.setId(viewId);
         });
     }

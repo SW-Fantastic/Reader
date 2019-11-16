@@ -6,7 +6,6 @@ import javafx.application.Platform;
 import javafx.stage.Stage;
 import lombok.extern.apachecommons.CommonsLog;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -43,6 +42,12 @@ public class FReaderApplication extends AbstractJavaFxApplicationSupport {
 					log.error(e);
 				}
 			}
+		});
+		stage.setOnCloseRequest(event -> {
+			stage.hide();
+			ctx.stop();
+			ctx.close();
+			System.exit(0);
 		});
 	}
 

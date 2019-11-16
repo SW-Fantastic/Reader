@@ -123,6 +123,24 @@
 			<scope>system</scope>
 			<systemPath>${project.basedir}/libs/mobi-java.jar</systemPath>
 		</dependency>
+        <dependency>
+            <groupId>jxBrowser</groupId>
+            <artifactId>jxBrowser</artifactId>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/jxbrowser-6.21-patched.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>jxBrowser-platform</groupId>
+            <artifactId>jxBrowser-platform32</artifactId>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/jxbrowser-win32-6.21.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>jxBrowser-platform</groupId>
+            <artifactId>jxBrowser-platform64</artifactId>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/jxbrowser-win64-6.21.jar</systemPath>
+        </dependency>
 	</dependencies>
 
 	<build>

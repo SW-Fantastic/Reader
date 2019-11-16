@@ -1,5 +1,11 @@
 package org.swdc.reader.core.views;
 
+import com.teamdev.jxbrowser.chromium.Browser;
+import com.teamdev.jxbrowser.chromium.JSValue;
+import com.teamdev.jxbrowser.chromium.events.FinishLoadingEvent;
+import com.teamdev.jxbrowser.chromium.events.LoadAdapter;
+import com.teamdev.jxbrowser.chromium.events.LoadEvent;
+import com.teamdev.jxbrowser.chromium.javafx.BrowserView;
 import de.felixroske.jfxsupport.AbstractFxmlView;
 import de.felixroske.jfxsupport.FXMLView;
 import javafx.application.Platform;
@@ -12,6 +18,8 @@ import javafx.scene.web.WebView;
 import lombok.Getter;
 import lombok.extern.apachecommons.CommonsLog;
 import netscape.javascript.JSObject;
+import org.jsoup.Jsoup;
+import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.swdc.reader.core.BookView;
 import org.swdc.reader.core.configs.EpubConfig;
@@ -28,7 +36,7 @@ import javax.annotation.PostConstruct;
 @CommonsLog
 public class EpubRenderView extends AbstractFxmlView implements BookView {
 
-    private WebView view;
+    private BrowserView view;
 
     @Autowired
     private ApplicationConfig config;
@@ -48,7 +56,10 @@ public class EpubRenderView extends AbstractFxmlView implements BookView {
         }
 
         public void locate(Object location) {
-           config.publishEvent(new BookLocationEvent(location.toString()));
+            Elements elem = Jsoup.parse(location.toString()).getElementsByTag("a");
+            if (elem.size() == 1) {
+                config.publishEvent(new BookLocationEvent(elem.get(0).attr("href")));
+            }
         }
     }
 
@@ -58,26 +69,21 @@ public class EpubRenderView extends AbstractFxmlView implements BookView {
     protected void initUI() {
         control = new PageControl(config);
         Platform.runLater(() ->{
-            this.view = new WebView();
+            this.view = new BrowserView();
             this.view.setId(viewId);
-            WebEngine engine = this.view.getEngine();
-            engine.setOnError(event -> {
-                log.error(event.getException());
-            });
-            engine.setOnAlert(event -> {
-                UIUtils.showAlertDialog(event.getData(),"提示", Alert.AlertType.INFORMATION,config);
-            });
-            engine.setJavaScriptEnabled(true);
-            engine.getLoadWorker().stateProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == Worker.State.SUCCEEDED && epubConfig.getEnableHyperLinks()) {
-                    JSObject jsObject = (JSObject) engine.executeScript("window");
-                    jsObject.setMember("swdc", control);
-                    try {
-                        engine.executeScript("init()");
-                    } catch (Exception e) {
-                        log.error(e);
+            Browser engine = this.view.getBrowser();
+            engine.addLoadListener(new LoadAdapter() {
+                @Override
+                public void onFinishLoadingFrame(FinishLoadingEvent event) {
+                    if(event.isMainFrame()) {
+                        JSValue jsWindow = engine.executeJavaScriptAndReturnValue("window");
+                        jsWindow.asObject().setProperty("swdc", control);
+                        engine.executeJavaScript("init()");
                     }
                 }
+            });
+            engine.addConsoleListener(consoleEvent -> {
+                log.info(consoleEvent.getMessage());
             });
         });
     }
