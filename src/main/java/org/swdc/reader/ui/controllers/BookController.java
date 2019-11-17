@@ -38,7 +38,7 @@ import java.util.Set;
 /**
  * Created by lenovo on 2019/5/22.
  */
-@Order(8)
+@Order(2)
 @FXMLController
 public class BookController implements Initializable{
 

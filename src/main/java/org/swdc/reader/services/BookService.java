@@ -4,6 +4,7 @@ import lombok.extern.apachecommons.CommonsLog;
 import net.sf.jmimemagic.*;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +28,7 @@ import java.util.Set;
  * Created by lenovo on 2019/5/22.
  */
 @Service
+@Order(1)
 @CommonsLog
 public class BookService {
 

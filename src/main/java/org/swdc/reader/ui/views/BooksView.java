@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * Created by lenovo on 2019/5/19.
  */
-@Order(0)
+@Order(1)
 @FXMLView("/views/BooksView.fxml")
 public class BooksView extends AbstractFxmlView {
 
