@@ -8,12 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.swdc.reader.core.BookLocator;
 import org.swdc.reader.core.BookReader;
+import org.swdc.reader.core.RenderResolver;
 import org.swdc.reader.core.configs.EpubConfig;
 import org.swdc.reader.core.configs.TextConfig;
 import org.swdc.reader.core.locators.EpubLocator;
 import org.swdc.reader.core.views.EpubRenderView;
 import org.swdc.reader.entity.Book;
 
+import java.util.List;
 import java.util.concurrent.Executor;
 
 /**
@@ -34,6 +36,9 @@ public class EpubReader implements BookReader<String> {
     @Autowired
     private Executor asyncExecutor;
 
+    @Autowired
+    private List<RenderResolver> resolvers;
+
     private EpubLocator locator;
 
     private Book book;
@@ -45,7 +50,7 @@ public class EpubReader implements BookReader<String> {
             locator = null;
         }
         this.book = book;
-        locator = new EpubLocator(asyncExecutor,book, config, textConfig);
+        locator = new EpubLocator(resolvers,asyncExecutor,book, config, textConfig);
     }
 
     @Override

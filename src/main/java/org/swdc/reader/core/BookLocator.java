@@ -2,7 +2,9 @@ package org.swdc.reader.core;
 
 
 /**
- * Created by lenovo on 2019/5/28.
+ * 文档定位器接口
+ *
+ * 对内容进行获取，渲染的接口
  */
 public interface BookLocator<T> {
 

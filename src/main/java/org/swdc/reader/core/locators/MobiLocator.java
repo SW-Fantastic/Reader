@@ -6,11 +6,17 @@ import hu.webhejj.pdb.PalmRecord;
 import hu.webhejj.pdb.mobi.MobiAdapter;
 import hu.webhejj.pdb.mobi.MobiHeaderRecord;
 import lombok.extern.apachecommons.CommonsLog;
+import net.sourceforge.pinyin4j.PinyinHelper;
+import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
+import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.swdc.reader.core.BookLocator;
+import org.swdc.reader.core.RenderResolver;
 import org.swdc.reader.core.configs.TextConfig;
 import org.swdc.reader.entity.Book;
 import org.swdc.reader.entity.ContentsItem;
@@ -47,7 +53,10 @@ public class MobiLocator extends MobiAdapter implements BookLocator<String> {
 
     private static final String HTML5 = "<!DOCTYPE HTML>";
 
-    public MobiLocator(Executor executor,ApplicationConfig appConfig, Book book, TextConfig config){
+    private List<RenderResolver> resolvers;
+
+    public MobiLocator(List<RenderResolver> resolvers, Executor executor, ApplicationConfig appConfig, Book book, TextConfig config){
+        this.resolvers = resolvers;
         PDBReader reader = new PDBReader();
         executor.execute(() -> {
             try {
@@ -156,47 +165,12 @@ public class MobiLocator extends MobiAdapter implements BookLocator<String> {
             elem.attr("src", "data:image/png;base64," + encoder.encodeToString(image));
         }
         StringBuilder sb = new StringBuilder();
-        sb.append("body {")
-                .append("font-family: \"")
-                .append(CommonComponents.getFontMap().containsKey(textConfig.getFontPath()) ? CommonComponents.getFontMap().get(textConfig.getFontPath()).getFamily():"Microsoft YaHei").append("\";")
-                .append("font-color:").append(textConfig.getFontColor()).append(";")
-                .append("font-size:").append(textConfig.getFontSize()).append("px;")
-                .append("background-color:").append(textConfig.getBackgroundColor()).append(";")
-                .append("overflow-wrap: break-word;")
-                .append("word-wrap: break-word;")
-                .append("-webkit-font-smoothing: antialiased;")
-                .append("padding: 18px;");
-        if (textConfig.getEnableBackgroundImage()) {
-            sb.append("background-image: url(data:image/png;base64,").append(backgroundImageData).append(");");
+        for (RenderResolver resolver : resolvers) {
+           if (resolver.support(this.getClass())){
+               resolver.renderStyle(sb);
+               resolver.renderContent(document.body());
+           }
         }
-        sb.append("}")
-                .append("img {")
-                .append("max-width: 100%;")
-                .append("}")
-                .append("a {")
-                .append("text-decoration: none;")
-                .append("}")
-                .append("li {")
-                .append("padding: 12px;")
-                .append("}");
-        if (textConfig.getEnableBackgroundImage()) {
-            sb.append("body>div{")
-                    .append("background-color: rgba(255,255,255,0.8);")
-                    .append("padding: 36px;")
-                    .append("}");
-        } else {
-            sb.append("body>div{")
-                    .append("padding: 24px")
-                    .append("}");
-        }
-        sb.append("p {")
-                .append("line-height: 2;")
-                .append("text-indent: ").append(textConfig.getFontSize() *2 + "px;")
-                .append("letter-spacing: 1.2px;");
-        if (textConfig.getEnableTextShadow()){
-            sb.append("text-shadow: 0px 0px 5px ").append(textConfig.getShadowColor()).append(";");
-        }
-        sb.append("}");
         return HTML5 + "<head><style>" + sb.toString() + "</style></head><body><div>" + document.html() + "</div></body></html>";
     }
 

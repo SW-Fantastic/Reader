@@ -1,6 +1,11 @@
 package org.swdc.reader.core.locators;
 
 import lombok.extern.apachecommons.CommonsLog;
+import net.sourceforge.pinyin4j.PinyinHelper;
+import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
+import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
 import nl.siegmann.epublib.domain.Resource;
 import nl.siegmann.epublib.domain.Spine;
 import nl.siegmann.epublib.domain.TOCReference;
@@ -9,6 +14,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.*;
 import org.jsoup.select.Elements;
 import org.swdc.reader.core.BookLocator;
+import org.swdc.reader.core.RenderResolver;
 import org.swdc.reader.core.configs.EpubConfig;
 import org.swdc.reader.core.configs.TextConfig;
 import org.swdc.reader.entity.Book;
@@ -16,14 +22,11 @@ import org.swdc.reader.entity.ContentsItem;
 import org.swdc.reader.event.BookProcessEvent;
 import org.swdc.reader.event.ContentItemFoundEvent;
 import org.swdc.reader.ui.ApplicationConfig;
-import org.swdc.reader.ui.CommonComponents;
 import org.swdc.reader.utils.DataUtil;
 
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.Executor;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by lenovo on 2019/6/13.
@@ -58,7 +61,10 @@ public class EpubLocator implements BookLocator<String> {
 
     private Boolean availbale;
 
-    public EpubLocator(Executor executor, Book book, EpubConfig config, TextConfig textConfig){
+    private List<RenderResolver> resolvers;
+
+    public EpubLocator(List<RenderResolver> resolvers, Executor executor, Book book, EpubConfig config, TextConfig textConfig){
+        this.resolvers = resolvers;
         this.book = book;
         this.config = config;
         this.txtConfig = textConfig;
@@ -84,8 +90,8 @@ public class EpubLocator implements BookLocator<String> {
                 bot.flush();
                 backgroundInput.close();
                 backgroundImageData = Base64.getEncoder().encodeToString(bot.toByteArray());
-                this.availbale = true;
             }
+            this.availbale = true;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -161,48 +167,13 @@ public class EpubLocator implements BookLocator<String> {
             }
         });
         StringBuilder sb = new StringBuilder();
-        sb.append("body {")
-                .append("font-family: \"")
-                .append(CommonComponents.getFontMap().containsKey(txtConfig.getFontPath()) ? CommonComponents.getFontMap().get(txtConfig.getFontPath()).getFamily():"Microsoft YaHei").append("\";")
-                .append("font-color:").append(txtConfig.getFontColor()).append(";")
-                .append("font-size:").append(txtConfig.getFontSize()).append("px;")
-                .append("background-color:").append(txtConfig.getBackgroundColor()).append(";")
-                .append("overflow-wrap: break-word;")
-                .append("word-wrap: break-word;")
-                .append("-webkit-font-smoothing: antialiased;")
-                .append("padding: 18px;");
-        if (txtConfig.getEnableBackgroundImage()) {
-            sb.append("background-image: url(data:image/png;base64,").append(backgroundImageData).append(");");
+        for (RenderResolver resolver : resolvers) {
+            if (resolver.support(this.getClass())) {
+                resolver.renderStyle(sb);
+                resolver.renderContent(elem);
+            }
         }
-        sb.append("}")
-        .append("img {")
-        .append("max-width: 100%;")
-        .append("}")
-        .append("a {")
-        .append("text-decoration: none;")
-        .append("color:").append(config.getLinkColor()).append(";")
-        .append("}")
-        .append("li {")
-        .append("padding: 12px;")
-        .append("}");
-        if (txtConfig.getEnableBackgroundImage()) {
-            sb.append("body>div{")
-                    .append("background-color: rgba(255,255,255,0.8);")
-                    .append("padding: 36px;")
-                    .append("}");
-        } else {
-            sb.append("body>div{")
-                    .append("padding: 24px")
-                    .append("}");
-        }
-        sb.append("p {")
-                .append("line-height: 2;")
-                .append("text-indent: ").append(txtConfig.getFontSize() *2 + "px;")
-                .append("letter-spacing: 1.2px;");
-        if (txtConfig.getEnableTextShadow()){
-            sb.append("text-shadow: 0px 0px 5px ").append(txtConfig.getShadowColor()).append(";");
-        }
-        sb.append("}");
+
         StringBuilder scriptbbuilder = new StringBuilder();
         scriptbbuilder.append("function init() {")
                 .append("var links = document.getElementsByTagName(\"a\");")

@@ -2,19 +2,19 @@ package org.swdc.reader.core.readers;
 
 import com.teamdev.jxbrowser.chromium.javafx.BrowserView;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.web.WebView;
 import lombok.extern.apachecommons.CommonsLog;
-import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.swdc.reader.core.BookLocator;
 import org.swdc.reader.core.BookReader;
+import org.swdc.reader.core.RenderResolver;
 import org.swdc.reader.core.configs.TextConfig;
 import org.swdc.reader.core.locators.MobiLocator;
 import org.swdc.reader.core.views.MobiRenderView;
 import org.swdc.reader.entity.Book;
 import org.swdc.reader.ui.ApplicationConfig;
 
+import java.util.List;
 import java.util.concurrent.Executor;
 
 /**
@@ -36,6 +36,9 @@ public class MobiReader implements BookReader<String> {
     @Autowired
     private Executor asyncExecutor;
 
+    @Autowired
+    private List<RenderResolver> resolvers;
+
     private MobiLocator locator;
 
     private Book book;
@@ -48,7 +51,7 @@ public class MobiReader implements BookReader<String> {
             locator = null;
         }
         try {
-            locator = new MobiLocator(asyncExecutor,config, book, textConfig);
+            locator = new MobiLocator(resolvers,asyncExecutor,config, book, textConfig);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

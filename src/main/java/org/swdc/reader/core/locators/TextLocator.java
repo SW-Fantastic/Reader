@@ -3,7 +3,16 @@ package org.swdc.reader.core.locators;
 import info.monitorenter.cpdetector.io.CodepageDetectorProxy;
 import javafx.scene.text.Font;
 import lombok.extern.apachecommons.CommonsLog;
+import net.sourceforge.pinyin4j.PinyinHelper;
+import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
+import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.swdc.reader.core.BookLocator;
+import org.swdc.reader.core.RenderResolver;
 import org.swdc.reader.core.configs.TextConfig;
 import org.swdc.reader.entity.Book;
 import org.swdc.reader.entity.ContentsItem;
@@ -64,7 +73,10 @@ public class TextLocator implements BookLocator<String> {
 
     private Boolean available;
 
-    public TextLocator(Book book, CodepageDetectorProxy codepageDetectorProxy, TextConfig config) {
+    private List<RenderResolver> resolvers;
+
+    public TextLocator(List<RenderResolver> resolvers,Book book, CodepageDetectorProxy codepageDetectorProxy, TextConfig config) {
+        this.resolvers = resolvers;
         File bookFile = new File("./data/library/" + book.getName());
         this.bookEntity = book;
         this.config = config;
@@ -126,35 +138,14 @@ public class TextLocator implements BookLocator<String> {
             }
             String line = chapterName.equals("序章") ? "" : chapterName;
             StringBuilder sb = new StringBuilder("<!docutype html><html><head><style>");
-            sb.append("body {")
-                    .append("font-family: \"")
-                    .append(CommonComponents.getFontMap().containsKey(config.getFontPath()) ? CommonComponents.getFontMap().get(config.getFontPath()).getFamily():"Microsoft YaHei").append("\";")
-                    .append("font-color:").append(config.getFontColor()).append(";")
-                    .append("font-size:").append(config.getFontSize()).append("px;")
-                    .append("background-color:").append(config.getBackgroundColor()).append(";")
-                    .append("overflow-wrap: break-word;")
-                    .append("word-wrap: break-word;")
-                    .append("-webkit-font-smoothing: antialiased;")
-                    .append("padding: 18px;");
-            if (config.getEnableBackgroundImage()) {
-                sb.append("background-image: url(data:image/png;base64,").append(backgroundImageData).append(");");
+
+            for (RenderResolver resolver : resolvers) {
+                if (resolver.support(this.getClass())) {
+                    resolver.renderStyle(sb);
+                }
             }
-            sb.append("}");
-            if (config.getEnableBackgroundImage()) {
-                sb.append("div{")
-                        .append("background-color: rgba(255,255,255,0.8);")
-                        .append("padding: 36px;")
-                        .append("}");
-            }
-            sb.append("p {")
-                    .append("line-height: 2;")
-                    .append("text-indent: ").append(config.getFontSize() *2 + "px;")
-                    .append("letter-spacing: 1.2px;");
-            if (config.getEnableTextShadow()){
-                sb.append("text-shadow: 0px 0px 5px ").append(config.getShadowColor()).append(";");
-            }
-            sb.append("}")
-                    .append("</style></head><body><div>")
+
+            sb.append("</style></head><body><div>")
                     .append("<p><h2 style=\"text-align: center\">")
                     .append(line)
                     .append("</h2></p>");
@@ -188,8 +179,16 @@ public class TextLocator implements BookLocator<String> {
             item.setLocation(currentPage + "");
             item.setTitle(chapterName);
             config.getApplicationConfig().publishEvent(new ContentItemFoundEvent(item));
-            return sb.toString();
-        } catch (IOException e) {
+
+            String content = sb.toString();
+            Document document = Jsoup.parse(content);
+            for (RenderResolver resolver : resolvers) {
+                if (resolver.support(this.getClass())) {
+                    resolver.renderContent(document.body());
+                }
+            }
+            return document.toString();
+        } catch (Exception e) {
             log.error(e);
             StringWriter swr = new StringWriter();
             e.printStackTrace(new PrintWriter(swr));

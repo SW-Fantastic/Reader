@@ -98,4 +98,13 @@ public class TextConfig implements ReaderConfig{
             value = "", tooltip = "字体的阴影色", propName = "shadow-color")
     private String shadowColor;
 
+    /**
+     * 为汉字注音
+     */
+    @Getter
+    @Setter
+    @ConfigProp(name="显示拼音", type = PropType.CHECK,
+            value = "", tooltip = "是否为汉字注音", propName = "show-pin-yin")
+    private Boolean showPinYin;
+
 }
