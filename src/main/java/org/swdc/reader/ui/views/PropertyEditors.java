@@ -6,7 +6,6 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
@@ -81,6 +80,13 @@ public class PropertyEditors {
         hBox.widthProperty().addListener(((observable, oldValue, newValue) -> {
             comboBox.setPrefWidth(hBox.getWidth() - buttonImport.getWidth());
         }));
+
+        comboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null && !newValue.trim().equals("")) {
+                property.setValue(newValue);
+            }
+        });
+
         return new PropertyEditor() {
 
             @Override
@@ -134,6 +140,11 @@ public class PropertyEditors {
         hBox.widthProperty().addListener(((observable, oldValue, newValue) -> {
             comboBox.setPrefWidth(hBox.getWidth() - buttonImport.getWidth());
         }));
+        comboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null && !newValue.trim().equals("")) {
+                property.setValue(newValue);
+            }
+        });
         return new PropertyEditor() {
 
             @Override
