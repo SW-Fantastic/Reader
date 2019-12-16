@@ -1,6 +1,7 @@
 package org.swdc.reader.core.views;
 
 import com.teamdev.jxbrowser.chromium.Browser;
+import com.teamdev.jxbrowser.chromium.BrowserContext;
 import com.teamdev.jxbrowser.chromium.JSValue;
 import com.teamdev.jxbrowser.chromium.events.FinishLoadingEvent;
 import com.teamdev.jxbrowser.chromium.events.LoadAdapter;
@@ -42,7 +43,7 @@ public class EpubRenderView extends AbstractFxmlView implements BookView {
     private ApplicationConfig config;
 
     @Autowired
-    private EpubConfig epubConfig;
+    private BrowserContext context;
 
     @Getter
     private final String viewId = "epubRenderView";
@@ -69,7 +70,7 @@ public class EpubRenderView extends AbstractFxmlView implements BookView {
     protected void initUI() {
         control = new PageControl(config);
         Platform.runLater(() ->{
-            this.view = new BrowserView();
+            this.view = new BrowserView(new Browser(context));
             this.view.setId(viewId);
             Browser engine = this.view.getBrowser();
             engine.addLoadListener(new LoadAdapter() {

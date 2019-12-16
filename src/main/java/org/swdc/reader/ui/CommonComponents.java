@@ -1,5 +1,7 @@
 package org.swdc.reader.ui;
 
+import com.teamdev.jxbrowser.chromium.BrowserContext;
+import com.teamdev.jxbrowser.chromium.BrowserContextParams;
 import info.monitorenter.cpdetector.io.CodepageDetectorProxy;
 import info.monitorenter.cpdetector.io.JChardetFacade;
 import javafx.scene.text.Font;
@@ -52,6 +54,11 @@ public class CommonComponents {
         CodepageDetectorProxy codepageDetectorProxy = CodepageDetectorProxy.getInstance();
         codepageDetectorProxy.add(JChardetFacade.getInstance());
         return codepageDetectorProxy;
+    }
+
+    @Bean
+    public BrowserContext browserContext() {
+        return new BrowserContext(new BrowserContextParams("./configs/xRender"));
     }
 
     @Bean
