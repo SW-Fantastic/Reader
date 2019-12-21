@@ -27,6 +27,8 @@ public class CommonComponents {
     @Getter
     private static Map<String, Font> fontMap;
 
+    private static final BrowserContext browserContext = new BrowserContext(new BrowserContextParams("./configs/xRender"));
+
     static {
         fontMap = new LinkedHashMap<>();
         File fonts = new File("configs/fonts");
@@ -58,7 +60,7 @@ public class CommonComponents {
 
     @Bean
     public BrowserContext browserContext() {
-        return new BrowserContext(new BrowserContextParams("./configs/xRender"));
+        return browserContext;
     }
 
     @Bean
