@@ -172,6 +172,7 @@
 }
 .config-panels .tab{
     -fx-border-insets: 0;
+    -fx-focus-color: rgba(0,0,0,0);
     -fx-background-color: rgba(255,255,255,0.8);
     -fx-border-color: rgba(120,106,123,0.4);
     -fx-border-radius: 8 8 0 0;
