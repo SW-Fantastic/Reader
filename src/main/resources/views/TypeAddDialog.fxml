@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="129.0" prefWidth="420.0" styleClass="scene-dlg" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.swdc.reader.ui.controller.dialog.TypeAddDialogController">
+   <top>
+      <HBox alignment="CENTER_LEFT" prefHeight="49.0" prefWidth="420.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label text="添加分类，请输入分类名称：">
+               <HBox.margin>
+                  <Insets left="16.0" />
+               </HBox.margin>
+            </Label>
+         </children>
+      </HBox>
+   </top>
+   <center>
+      <HBox alignment="TOP_CENTER" prefHeight="115.0" prefWidth="420.0" BorderPane.alignment="CENTER">
+         <children>
+            <TextField fx:id="txtName" prefHeight="30.0" prefWidth="357.0" styleClass="txt" />
+         </children>
+      </HBox>
+   </center>
+   <bottom>
+      <HBox alignment="CENTER_RIGHT" prefHeight="39.0" prefWidth="420.0" spacing="8.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button mnemonicParsing="false" onAction="#onCancel" prefHeight="29.0" prefWidth="55.0" styleClass="btn-txt" text="取消" />
+            <Button mnemonicParsing="false" onAction="#onOk" prefHeight="28.0" prefWidth="55.0" styleClass="btn-txt" text="确定" />
+         </children>
+         <padding>
+            <Insets right="8.0" />
+         </padding>
+      </HBox>
+   </bottom>
+</BorderPane>

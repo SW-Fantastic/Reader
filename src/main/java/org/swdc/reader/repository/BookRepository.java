@@ -1,8 +1,8 @@
 package org.swdc.reader.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
+import org.swdc.fx.jpa.JPARepository;
+import org.swdc.fx.jpa.anno.Param;
+import org.swdc.fx.jpa.anno.SQLQuery;
 import org.swdc.reader.entity.Book;
 
 import java.util.Set;
@@ -10,11 +10,12 @@ import java.util.Set;
 /**
  * Created by lenovo on 2019/5/22.
  */
-@Repository
-public interface BookRepository extends JpaRepository<Book, Long> {
+public interface BookRepository extends JPARepository<Book, Long> {
 
-    Long countByShaCode(@Param("shaCode")String shaCode);
+    @SQLQuery("SELECT count(1) FROM Book WHERE shaCode = :shaCode")
+    Long countByShaCode(@Param("shaCode") String shaCode);
 
-    Set<Book> findByNameContaining(@Param("name") String name);
+    @SQLQuery("FROM Book WHERE name LIKE :name")
+    Set<Book> findByNameContaining(@Param(value = "name", searchBy = true) String name);
 
 }

@@ -7,35 +7,30 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.swdc.fx.anno.Aware;
 import org.swdc.reader.core.BookLocator;
-import org.swdc.reader.core.BookReader;
 import org.swdc.reader.core.configs.PDFConfig;
 import org.swdc.reader.core.locators.PDFLocator;
 import org.swdc.reader.core.views.PDFRenderView;
 import org.swdc.reader.entity.Book;
 
-import javax.annotation.PostConstruct;
-
 /**
  * Created by lenovo on 2019/6/9.
  */
-@Component
-public class PDFReader implements BookReader<Image> {
+public class PDFReader extends AbstractReader<Image> {
 
     private PDFLocator locator;
 
     private Book currentBook;
 
-    @Autowired
+    @Aware
     private PDFRenderView view;
 
-    @Autowired
+    @Aware
     private PDFConfig config;
 
-    @PostConstruct
-    protected void init() {
+    @Override
+    public void initialize() {
         System.setProperty("sun.java2d.cmm", "sun.java2d.cmm.kcms.KcmsServiceProvider");
     }
 

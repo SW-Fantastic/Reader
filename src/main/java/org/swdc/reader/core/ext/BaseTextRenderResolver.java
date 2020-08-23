@@ -2,18 +2,15 @@ package org.swdc.reader.core.ext;
 
 import lombok.extern.apachecommons.CommonsLog;
 import org.jsoup.nodes.Element;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.swdc.fx.anno.Aware;
 import org.swdc.reader.core.BookLocator;
-import org.swdc.reader.core.RenderResolver;
 import org.swdc.reader.core.configs.EpubConfig;
 import org.swdc.reader.core.configs.TextConfig;
 import org.swdc.reader.core.locators.EpubLocator;
 import org.swdc.reader.core.locators.MobiLocator;
 import org.swdc.reader.core.locators.TextLocator;
-import org.swdc.reader.ui.CommonComponents;
+import org.swdc.reader.services.CommonComponents;
 
-import javax.annotation.PostConstruct;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.File;
@@ -24,23 +21,25 @@ import java.util.Base64;
  * 基础文本渲染器
  * 文本类型的数据在这里渲染样式
  */
-@Component
 @CommonsLog
-public class BaseTextRenderResolver implements RenderResolver {
+public class BaseTextRenderResolver extends AbstractResolver {
 
-    @Autowired
+    @Aware
     private TextConfig textConfig;
 
-    @Autowired
+    @Aware
     private EpubConfig epubConfig;
+
+    @Aware
+    private CommonComponents commonComponents;
 
     private String backgroundImageData;
 
-    @PostConstruct
-    public void initData() {
+    @Override
+    public void initialize() {
         try {
             ByteArrayOutputStream bot = new ByteArrayOutputStream();
-            DataInputStream backgroundInput = new DataInputStream(new FileInputStream(new File("configs/readerResources/text/" + textConfig.getBackgroundImage())));
+            DataInputStream backgroundInput = new DataInputStream(new FileInputStream(new File(getAssetsPath() + "/readerBackground/" + textConfig.getBackgroundImage())));
             byte[] data = new byte[1024];
             while (backgroundInput.read(data) != -1) {
                 bot.write(data);
@@ -64,7 +63,7 @@ public class BaseTextRenderResolver implements RenderResolver {
     public void renderStyle(StringBuilder builder) {
         builder.append("body {")
                 .append("font-family: \"")
-                .append(CommonComponents.getFontMap().containsKey(textConfig.getFontPath()) ? CommonComponents.getFontMap().get(textConfig.getFontPath()).getFamily():"Microsoft YaHei").append("\";")
+                .append(commonComponents.getFontFamily(textConfig.getFontPath()) != null ? commonComponents.getFontFamily(textConfig.getFontPath()):"Microsoft YaHei").append("\";")
                 .append("font-color:").append(textConfig.getFontColor()).append(";")
                 .append("font-size:").append(textConfig.getFontSize()).append("px;")
                 .append("background-color:").append(textConfig.getBackgroundColor()).append(";")

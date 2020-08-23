@@ -2,8 +2,6 @@ package org.swdc.reader.core;
 
 import javafx.scene.layout.BorderPane;
 import org.swdc.reader.entity.Book;
-import org.swdc.reader.ui.controllers.ReadViewController;
-import org.swdc.reader.ui.views.ReaderView;
 
 /**
  * 核心组件，提供读取内容的locator

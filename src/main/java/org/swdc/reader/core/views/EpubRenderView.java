@@ -1,15 +1,5 @@
 package org.swdc.reader.core.views;
 
-import com.teamdev.jxbrowser.chromium.Browser;
-import com.teamdev.jxbrowser.chromium.BrowserContext;
-import com.teamdev.jxbrowser.chromium.JSValue;
-import com.teamdev.jxbrowser.chromium.events.FinishLoadingEvent;
-import com.teamdev.jxbrowser.chromium.events.LoadAdapter;
-import com.teamdev.jxbrowser.chromium.events.LoadEvent;
-import com.teamdev.jxbrowser.chromium.javafx.BrowserView;
-import de.felixroske.jfxsupport.AbstractFxmlView;
-import de.felixroske.jfxsupport.FXMLView;
-import javafx.application.Platform;
 import javafx.concurrent.Worker;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
@@ -19,75 +9,53 @@ import javafx.scene.web.WebView;
 import lombok.Getter;
 import lombok.extern.apachecommons.CommonsLog;
 import netscape.javascript.JSObject;
+import org.apache.commons.io.IOUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.swdc.fx.AppComponent;
+import org.swdc.fx.FXView;
+import org.swdc.fx.anno.Aware;
+import org.swdc.fx.anno.View;
 import org.swdc.reader.core.BookView;
 import org.swdc.reader.core.configs.EpubConfig;
-import org.swdc.reader.event.BookLocationEvent;
-import org.swdc.reader.ui.ApplicationConfig;
-import org.swdc.reader.utils.UIUtils;
+import org.swdc.reader.core.event.BookLocationEvent;
 
-import javax.annotation.PostConstruct;
+import java.io.InputStream;
 
 /**
  * Created by lenovo on 2019/6/13.
  */
-@FXMLView
+@View(stage = false)
 @CommonsLog
-public class EpubRenderView extends AbstractFxmlView implements BookView {
+public class EpubRenderView extends FXView implements BookView {
 
-    private BrowserView view;
-
-    @Autowired
-    private ApplicationConfig config;
-
-    @Autowired
-    private BrowserContext context;
+    private WebView view;
 
     @Getter
     private final String viewId = "epubRenderView";
 
+    @Aware
+    private EpubConfig config = null;
+
+    private static String pageScript = null;
+
     public static class PageControl {
 
-        private ApplicationConfig config;
+        private AppComponent source;
 
-        public PageControl(ApplicationConfig config){
-            this.config = config;
+        public PageControl(AppComponent source){
+            this.source = source;
         }
 
         public void locate(Object location) {
             Elements elem = Jsoup.parse(location.toString()).getElementsByTag("a");
             if (elem.size() == 1) {
-                config.publishEvent(new BookLocationEvent(elem.get(0).attr("href")));
+                source.emit(new BookLocationEvent(elem.get(0).attr("href"),source));
             }
         }
     }
 
     private PageControl control;
-
-    @PostConstruct
-    protected void initUI() {
-        control = new PageControl(config);
-        Platform.runLater(() ->{
-            this.view = new BrowserView(new Browser(context));
-            this.view.setId(viewId);
-            Browser engine = this.view.getBrowser();
-            engine.addLoadListener(new LoadAdapter() {
-                @Override
-                public void onFinishLoadingFrame(FinishLoadingEvent event) {
-                    if(event.isMainFrame()) {
-                        JSValue jsWindow = engine.executeJavaScriptAndReturnValue("window");
-                        jsWindow.asObject().setProperty("swdc", control);
-                        engine.executeJavaScript("init()");
-                    }
-                }
-            });
-            engine.addConsoleListener(consoleEvent -> {
-                log.info(consoleEvent.getMessage());
-            });
-        });
-    }
 
     @Override
     public void initToolsView(HBox toolBox) {
@@ -96,6 +64,41 @@ public class EpubRenderView extends AbstractFxmlView implements BookView {
 
     @Override
     public Parent getView() {
+        return this.view;
+    }
+
+    @Override
+    protected Parent create() {
+        control = new PageControl(this);
+        this.view = new WebView();
+        this.view.setId(viewId);
+        WebEngine engine = this.view.getEngine();
+        engine.setJavaScriptEnabled(true);
+        engine.setOnError(event -> {
+            event.getException().printStackTrace();
+            log.error(event.getException());
+        });
+        engine.setOnAlert(event -> {
+            this.showAlertDialog("提示",event.getData(), Alert.AlertType.INFORMATION);
+        });
+        engine.getLoadWorker().stateProperty().addListener((observableValue, state, stateNew) -> {
+            if (stateNew == Worker.State.SUCCEEDED && config.getEnableHyperLinks()) {
+                JSObject jsObject = (JSObject) engine.executeScript("window");
+                jsObject.setMember("swdc", control);
+                if (config.getEnableHyperLinks()) {
+                    try {
+                        if (pageScript == null) {
+                            InputStream in = this.getClass().getModule().getResourceAsStream("views/EpubView.js");
+                            pageScript = IOUtils.toString(in,"utf8");
+                        }
+                        engine.executeScript(pageScript);
+                    } catch (Exception e) {
+                        logger.error("can not load javascript for web page",e);
+                    }
+
+                }
+            }
+        });
         return this.view;
     }
 }

@@ -1,185 +1,211 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.1.5.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repository -->
-	</parent>
-	<groupId>org.swdc.reader</groupId>
-	<artifactId>freader</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>FReader</name>
-	<description>Book Reader</description>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<properties>
-		<java.version>1.8</java.version>
-	</properties>
+    <groupId>org.swdc</groupId>
+    <artifactId>fxreader</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <encoding>UTF-8</encoding>
+        <java.version>13</java.version>
+        <fx.version>15-ea+1</fx.version>
+        <maven.compiler.source>13</maven.compiler.source>
+        <maven.compiler.target>13</maven.compiler.target>
+    </properties>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-aop</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-configuration-processor</artifactId>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.controlsfx/controlsfx -->
-		<dependency>
-			<groupId>org.controlsfx</groupId>
-			<artifactId>controlsfx</artifactId>
-			<version>8.40.15</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/de.roskenet/springboot-javafx-support -->
-		<dependency>
-			<groupId>de.roskenet</groupId>
-			<artifactId>springboot-javafx-support</artifactId>
-			<version>2.1.6</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/net.sf.jmimemagic/jmimemagic -->
-		<dependency>
-			<groupId>net.sf.jmimemagic</groupId>
-			<artifactId>jmimemagic</artifactId>
-			<version>0.1.5</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>2.6</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/net.sourceforge.cpdetector/cpdetector -->
-		<dependency>
-			<groupId>net.sourceforge.cpdetector</groupId>
-			<artifactId>cpdetector</artifactId>
-			<version>1.0.7</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox -->
-		<dependency>
-			<groupId>org.apache.pdfbox</groupId>
-			<artifactId>pdfbox</artifactId>
-			<version>2.0.15</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/jaxen/jaxen -->
-		<dependency>
-			<groupId>jaxen</groupId>
-			<artifactId>jaxen</artifactId>
-			<version>1.2.0</version>
-		</dependency>
-		<dependency>
-			<groupId>nl.siegmann.epublib</groupId>
-			<artifactId>epublib-core</artifactId>
-			<version>3.1</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-api</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-simple</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>com.github.chimenchen</groupId>
-			<artifactId>jchmlib</artifactId>
-			<version>0.5.4</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.belerweb/pinyin4j -->
-		<dependency>
-			<groupId>com.belerweb</groupId>
-			<artifactId>pinyin4j</artifactId>
-			<version>2.5.1</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
-		<dependency>
-			<groupId>org.jsoup</groupId>
-			<artifactId>jsoup</artifactId>
-			<version>1.12.1</version>
-		</dependency>
-		<dependency>
-			<groupId>hu.webhejj</groupId>
-			<artifactId>mobi-java</artifactId>
-			<version>1.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/libs/mobi-java.jar</systemPath>
-		</dependency>
+    <dependencies>
         <dependency>
-            <groupId>jxBrowser</groupId>
-            <artifactId>jxBrowser</artifactId>
-            <scope>system</scope>
+            <groupId>kxml2</groupId>
+            <artifactId>kxml2</artifactId>
             <version>0.1</version>
-			<systemPath>${project.basedir}/libs/jxbrowser-6.21-patched.jar</systemPath>
+            <scope>system</scope>
+            <systemPath>${pom.basedir}/libs/kxml2-1.0-SNAPSHOT.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>jxBrowser-platform</groupId>
-            <artifactId>jxBrowser-platform32</artifactId>
+            <groupId>epublib</groupId>
+            <artifactId>epublib</artifactId>
+            <version>0.1</version>
             <scope>system</scope>
-			<version>0.1</version>
-            <systemPath>${project.basedir}/libs/jxbrowser-win32-6.21.jar</systemPath>
+            <systemPath>${pom.basedir}/libs/epublib-core-3.1.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>jxBrowser-platform</groupId>
-            <artifactId>jxBrowser-platform64</artifactId>
+            <groupId>mobi</groupId>
+            <artifactId>mobj</artifactId>
+            <version>0.1</version>
             <scope>system</scope>
-			<version>0.1</version>
-            <systemPath>${project.basedir}/libs/jxbrowser-win64-6.21.jar</systemPath>
+            <systemPath>${pom.basedir}/libs/mobi-java.jar</systemPath>
         </dependency>
-	</dependencies>
+        <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox -->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>2.0.15</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>commons-logging</artifactId>
+                    <groupId>commons-logging</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.13.1</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/net.sourceforge.cpdetector/cpdetector -->
+        <dependency>
+            <groupId>net.sourceforge.cpdetector</groupId>
+            <artifactId>cpdetector</artifactId>
+            <version>1.0.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.swdc</groupId>
+            <artifactId>fx</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>commons-logging</artifactId>
+                    <groupId>commons-logging</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.swdc.fx</groupId>
+            <artifactId>deploy</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.swdc.fx</groupId>
+            <artifactId>jpa</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>slf4j-api</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.swdc.fx</groupId>
+            <artifactId>aop</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.swdc.fx</groupId>
+            <artifactId>resource</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.openjfx/javafx-base -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-base</artifactId>
+            <version>${fx.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.openjfx/javafx-swing -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
+            <version>${fx.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/net.sf.jmimemagic/jmimemagic -->
+        <dependency>
+            <groupId>net.sf.jmimemagic</groupId>
+            <artifactId>jmimemagic</artifactId>
+            <version>0.1.5</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>log4j</artifactId>
+                    <groupId>log4j</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>commons-logging</artifactId>
+                    <groupId>commons-logging</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.openjfx/javafx-graphics -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
+            <version>${fx.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.openjfx/javafx-web -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
+            <version>${fx.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.openjfx/javafx-fxml -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>${fx.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.controlsfx/controlsfx -->
+        <dependency>
+            <groupId>org.controlsfx</groupId>
+            <artifactId>controlsfx</artifactId>
+            <version>11.0.2</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.12</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.mapstruct/mapstruct-processor -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <version>1.3.1.Final</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.belerweb/pinyin4j -->
+        <dependency>
+            <groupId>com.belerweb</groupId>
+            <artifactId>pinyin4j</artifactId>
+            <version>2.5.1</version>
+        </dependency>
+    </dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<includeSystemScope>true</includeSystemScope>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-
-	<repositories>
-		<repository>
-			<id>psiegman-repo</id>
-			<url>https://github.com/psiegman/mvn-repo/raw/master/releases</url>
-		</repository>
-		<repository>
-			<id>jitpack</id>
-			<url>https://jitpack.io</url>
-		</repository>
-		<repository>
-			<id>encodeRepo</id>
-			<url>http://maven.nuiton.org/release/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</repository>
-	</repositories>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <annotationProcessorPath>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.12</version>
+                        </annotationProcessorPath>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.1.1</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

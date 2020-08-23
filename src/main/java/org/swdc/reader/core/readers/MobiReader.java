@@ -1,43 +1,32 @@
 package org.swdc.reader.core.readers;
 
-import com.teamdev.jxbrowser.chromium.javafx.BrowserView;
 import javafx.scene.layout.BorderPane;
-import lombok.extern.apachecommons.CommonsLog;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import javafx.scene.web.WebView;
+import org.swdc.fx.anno.Aware;
 import org.swdc.reader.core.BookLocator;
-import org.swdc.reader.core.BookReader;
-import org.swdc.reader.core.RenderResolver;
 import org.swdc.reader.core.configs.TextConfig;
+import org.swdc.reader.core.ext.AbstractResolver;
 import org.swdc.reader.core.locators.MobiLocator;
 import org.swdc.reader.core.views.MobiRenderView;
 import org.swdc.reader.entity.Book;
-import org.swdc.reader.ui.ApplicationConfig;
+import org.swdc.reader.services.CommonComponents;
 
 import java.util.List;
-import java.util.concurrent.Executor;
 
 /**
  * Created by lenovo on 2019/9/29.
  */
-@Component
-@CommonsLog
-public class MobiReader implements BookReader<String> {
+public class MobiReader extends AbstractReader<String> {
 
-    @Autowired
+    @Aware
     private TextConfig textConfig;
 
-    @Autowired
+    @Aware
     private MobiRenderView view;
 
-    @Autowired
-    private ApplicationConfig config;
 
-    @Autowired
-    private Executor asyncExecutor;
-
-    @Autowired
-    private List<RenderResolver> resolvers;
+    @Aware
+    private CommonComponents commonComponents;
 
     private MobiLocator locator;
 
@@ -51,9 +40,10 @@ public class MobiReader implements BookReader<String> {
             locator = null;
         }
         try {
-            locator = new MobiLocator(resolvers,asyncExecutor,config, book, textConfig);
+            List<AbstractResolver> resolvers = getScoped(AbstractResolver.class);
+            locator = new MobiLocator(resolvers,commonComponents, book, textConfig);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            logger.error("fail to init reader",ex);
         }
     }
 
@@ -64,12 +54,12 @@ public class MobiReader implements BookReader<String> {
 
     @Override
     public void renderPage(String pageData, BorderPane view) {
-        BrowserView webView = (BrowserView) view.lookup("#" + this.view.getViewId());
+        WebView webView = (WebView) view.lookup("#" + this.view.getViewId());
         if (webView == null) {
             view.setCenter(this.view.getView());
-            webView = (BrowserView) this.view.getView();
+            webView = (WebView) this.view.getView();
         }
-        webView.getBrowser().loadHTML(pageData);
+        webView.getEngine().loadContent(pageData);
     }
 
 

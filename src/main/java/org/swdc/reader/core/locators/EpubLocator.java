@@ -1,32 +1,30 @@
 package org.swdc.reader.core.locators;
 
 import lombok.extern.apachecommons.CommonsLog;
-import net.sourceforge.pinyin4j.PinyinHelper;
-import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
-import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
-import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
-import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
 import nl.siegmann.epublib.domain.Resource;
 import nl.siegmann.epublib.domain.Spine;
 import nl.siegmann.epublib.domain.TOCReference;
 import nl.siegmann.epublib.epub.EpubReader;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.*;
-import org.jsoup.select.Elements;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.swdc.reader.core.BookLocator;
 import org.swdc.reader.core.RenderResolver;
 import org.swdc.reader.core.configs.EpubConfig;
 import org.swdc.reader.core.configs.TextConfig;
+import org.swdc.reader.core.event.BookProcessEvent;
+import org.swdc.reader.core.event.ContentItemFoundEvent;
 import org.swdc.reader.entity.Book;
 import org.swdc.reader.entity.ContentsItem;
-import org.swdc.reader.event.BookProcessEvent;
-import org.swdc.reader.event.ContentItemFoundEvent;
-import org.swdc.reader.ui.ApplicationConfig;
 import org.swdc.reader.utils.DataUtil;
 
-import java.io.*;
-import java.util.*;
-import java.util.concurrent.Executor;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Base64;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by lenovo on 2019/6/13.
@@ -57,13 +55,11 @@ public class EpubLocator implements BookLocator<String> {
     private static final String HTML_DTD_401T = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
     private static final String HTML_DTD_401S = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">";
 
-    private String backgroundImageData;
-
     private Boolean availbale;
 
-    private List<RenderResolver> resolvers;
+    private List<? extends RenderResolver> resolvers;
 
-    public EpubLocator(List<RenderResolver> resolvers, Executor executor, Book book, EpubConfig config, TextConfig textConfig){
+    public EpubLocator(List<? extends RenderResolver> resolvers, Book book, EpubConfig config, TextConfig textConfig){
         this.resolvers = resolvers;
         this.book = book;
         this.config = config;
@@ -77,27 +73,16 @@ public class EpubLocator implements BookLocator<String> {
             FileInputStream fin = new FileInputStream(bookFile);
             epubBook = reader.readEpub(fin);
             if (book.getContentsItems() == null || book.getContentsItems().size() == 0) {
-                initContents(epubBook.getTableOfContents().getTocReferences(), config.getConfig(), "章");
+                initContents(epubBook.getTableOfContents().getTocReferences(), "章");
             }
             fin.close();
-            if (txtConfig.getEnableBackgroundImage()) {
-                ByteArrayOutputStream bot = new ByteArrayOutputStream();
-                DataInputStream backgroundInput = new DataInputStream(new FileInputStream(new File("configs/readerResources/text/" + textConfig.getBackgroundImage())));
-                byte[] data = new byte[1024];
-                while (backgroundInput.read(data) != -1) {
-                    bot.write(data);
-                }
-                bot.flush();
-                backgroundInput.close();
-                backgroundImageData = Base64.getEncoder().encodeToString(bot.toByteArray());
-            }
             this.availbale = true;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void initContents(List<TOCReference> toc, ApplicationConfig config, String subfix) {
+    private void initContents(List<TOCReference> toc, String subfix) {
         if (toc == null || toc.size() == 0) {
             return;
         }
@@ -112,19 +97,19 @@ public class EpubLocator implements BookLocator<String> {
             item.setTitle(title);
             item.setLocation(ref.getResource().getHref());
             item.setLocated(book);
-            config.publishEvent(new ContentItemFoundEvent(item));
+            config.emit(new ContentItemFoundEvent(item,config));
             double progress = 1 - (idx/totals);
-            BookProcessEvent processEvent = new BookProcessEvent(progress, "正在索引目录");
-            config.publishEvent(processEvent);
+            BookProcessEvent processEvent = new BookProcessEvent(progress, "正在索引目录",config);
+            config.emit(processEvent);
             if (ref.getChildren() != null && ref.getChildren().size() > 0) {
-                this.initContents(ref.getChildren(), config, "节");
+                this.initContents(ref.getChildren(), "节");
             }
-            processEvent = new BookProcessEvent(1.0, "");
-            config.publishEvent(processEvent);
+            processEvent = new BookProcessEvent(1.0, "",config);
+            config.emit(processEvent);
         }
     }
 
-    private Element preparImages(Document doc) throws IOException{
+    private Element preparImages(Document doc) throws IOException {
         Element elem = doc.body();
 
         List<Element> elems = elem.getElementsByTag("img");
@@ -173,21 +158,10 @@ public class EpubLocator implements BookLocator<String> {
                 resolver.renderContent(elem);
             }
         }
-
-        StringBuilder scriptbbuilder = new StringBuilder();
-        scriptbbuilder.append("function init() {")
-                .append("var links = document.getElementsByTagName(\"a\");")
-                .append("for(var idx = 0;idx < links.length; idx++) {")
-                .append("links[idx].onclick = function(e){")
-                .append("/*window.swdc.linkClick(this.href);*/")
-                .append("swdc.locate(this.outerHTML);")
-                .append("}.bind(links[idx]);")
-                .append("}")
-                .append("};");
         return HTML5 + "<html><head><style>" + sb.toString()
                     + "</style></head><body><div>"
                     + element.html() + "</div>" +
-                    "<script>" + scriptbbuilder.toString() + "</script></body></html>";
+                    "</body></html>";
     }
 
     @Override
