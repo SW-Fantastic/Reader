@@ -1,20 +1,17 @@
 package org.swdc.reader.core.locators;
 
 import javafx.scene.image.Image;
-import lombok.Getter;
 import lombok.extern.apachecommons.CommonsLog;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.destination.PDPageDestination;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocumentOutline;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.swdc.reader.core.BookLocator;
 import org.swdc.reader.core.configs.PDFConfig;
+import org.swdc.reader.core.event.ContentItemFoundEvent;
 import org.swdc.reader.entity.Book;
-
-import org.apache.pdfbox.pdmodel.PDDocument;
 import org.swdc.reader.entity.ContentsItem;
-import org.swdc.reader.event.ContentItemFoundEvent;
-import org.swdc.reader.ui.ApplicationConfig;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -55,7 +52,7 @@ public class PDFLocator implements BookLocator<Image> {
             this.document = PDDocument.load(file);
             this.renderer = new PDFRenderer(document);
             if (bookEntity.getContentsItems() == null || bookEntity.getContentsItems().size() == 0) {
-                this.loadOutLines(config.getConfig());
+                this.loadOutLines();
             }
             this.available = true;
         } catch (IOException e) {
@@ -63,7 +60,7 @@ public class PDFLocator implements BookLocator<Image> {
         }
     }
 
-    private void loadOutLines(ApplicationConfig config) throws IOException {
+    private void loadOutLines() throws IOException {
         PDDocumentOutline outline = document.getDocumentCatalog().getDocumentOutline();
         if (outline == null) {
             return;
@@ -72,10 +69,10 @@ public class PDFLocator implements BookLocator<Image> {
         if (item == null) {
             return;
         }
-        loadContentTree(item,config);
+        loadContentTree(item);
     }
 
-    private void loadContentTree(PDOutlineItem item, ApplicationConfig config) throws IOException {
+    private void loadContentTree(PDOutlineItem item) throws IOException {
         if(item.getDestination() instanceof PDPageDestination) {
             PDPageDestination  destination = (PDPageDestination) item.getDestination();
             String title = item.getTitle();
@@ -84,13 +81,13 @@ public class PDFLocator implements BookLocator<Image> {
             contentsItem.setLocated(bookEntity);
             contentsItem.setLocation(location + "");
             contentsItem.setTitle(title == null ? "Page：" + location : title);
-            config.publishEvent(new ContentItemFoundEvent(contentsItem));
+            config.emit(new ContentItemFoundEvent(contentsItem,config));
             if (item.hasChildren()) {
-                this.loadContentTree(item.getFirstChild(),config);
+                this.loadContentTree(item.getFirstChild());
             }
             if (item.getNextSibling() != null) {
                 item = item.getNextSibling();
-                this.loadContentTree(item, config);
+                this.loadContentTree(item);
             }
         }
     }

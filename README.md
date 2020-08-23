@@ -5,6 +5,9 @@
 这个是阅读器，用于看电子书的那种，计划支持多数常见的电子书格式以及
 RSS（Feed）电子订阅，基于SpringBoot，javaFX。
 
+搞事结束，已经不在用 springboot了，但是会留着一个springboot的分支。
+目前已经移植到了自己的框架上。
+
 this is a Reader for EBooks ，planning supports most common formats like txt epub pdf and more
 include RSS （Feeds），based javaFX and SpringBoot
 
@@ -17,3 +20,4 @@ include RSS （Feeds），based javaFX and SpringBoot
  - [x] 文本阅读的实现（Text reader implemented）
  - [x] PDF阅读的实现（Adobe PDF reader implement）
  - [x] EPublic阅读的实现（EPUB File Reader implement）
+ - [x] MOBI文件的基础支撑（Mobi kindle format implement)

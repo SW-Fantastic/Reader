@@ -1,38 +1,32 @@
 package org.swdc.reader.core.readers;
 
-import com.teamdev.jxbrowser.chromium.javafx.BrowserView;
-import info.monitorenter.cpdetector.io.CodepageDetectorProxy;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.web.WebView;
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.swdc.fx.anno.Aware;
 import org.swdc.reader.core.BookLocator;
-import org.swdc.reader.core.BookReader;
-import org.swdc.reader.core.RenderResolver;
 import org.swdc.reader.core.configs.TextConfig;
+import org.swdc.reader.core.ext.AbstractResolver;
 import org.swdc.reader.core.locators.TextLocator;
 import org.swdc.reader.core.views.TextRenderView;
 import org.swdc.reader.entity.Book;
+import org.swdc.reader.services.CommonComponents;
 
 import java.util.List;
 
 /**
  * Created by lenovo on 2019/5/30.
  */
-@Component
-public class TextReader implements BookReader<String>{
+public class TextReader extends AbstractReader<String> {
 
-    @Autowired
-    private TextRenderView view;
+    @Aware
+    private TextRenderView view = null;
 
-    @Autowired
-    private CodepageDetectorProxy encodeDescriptor;
+    @Aware
+    private CommonComponents commonComponents = null;
 
-    @Autowired
-    private TextConfig config;
-
-    @Autowired
-    private List<RenderResolver> resolvers;
+    @Aware
+    private TextConfig config = null;
 
     @Getter
     private BookLocator<String> locator;
@@ -45,7 +39,8 @@ public class TextReader implements BookReader<String>{
             locator.finalizeResources();
             locator = null;
         }
-        locator = new TextLocator(resolvers, book, encodeDescriptor, config);
+        List<AbstractResolver> resolvers = getScoped(AbstractResolver.class);
+        locator = new TextLocator(resolvers, book, commonComponents.getCodepageDetectorProxy(), config);
         this.currentBook = book;
     }
 
@@ -56,12 +51,12 @@ public class TextReader implements BookReader<String>{
 
     @Override
     public void renderPage(String pageData, BorderPane view) {
-        BrowserView webView = (BrowserView) view.lookup("#" + this.view.getViewId());
+        WebView webView = (WebView) view.lookup("#" + this.view.getViewId());
         if (webView == null) {
             view.setCenter(this.view.getView());
-            webView = (BrowserView) this.view.getView();
+            webView = (WebView) this.view.getView();
         }
-        webView.getBrowser().loadHTML(pageData);
+        webView.getEngine().loadContent(pageData);
     }
 
     @Override

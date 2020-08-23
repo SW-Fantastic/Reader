@@ -9,10 +9,8 @@ import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.swdc.fx.anno.Aware;
 import org.swdc.reader.core.BookLocator;
-import org.swdc.reader.core.RenderResolver;
 import org.swdc.reader.core.configs.TextConfig;
 import org.swdc.reader.core.locators.EpubLocator;
 import org.swdc.reader.core.locators.MobiLocator;
@@ -23,11 +21,10 @@ import org.swdc.reader.core.locators.TextLocator;
  *
  * 开启显示拼音后，这里渲染拼音
  */
-@Component
 @CommonsLog
-public class PinYinRenderResolver implements RenderResolver {
+public class PinYinRenderResolver extends AbstractResolver {
 
-    @Autowired
+    @Aware
     private TextConfig config;
 
     @Override

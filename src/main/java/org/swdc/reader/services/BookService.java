@@ -1,13 +1,11 @@
 package org.swdc.reader.services;
 
-import lombok.extern.apachecommons.CommonsLog;
-import net.sf.jmimemagic.*;
+import net.sf.jmimemagic.Magic;
+import net.sf.jmimemagic.MagicMatch;
 import org.apache.commons.io.FileUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.swdc.fx.anno.Aware;
+import org.swdc.fx.jpa.anno.Transactional;
+import org.swdc.fx.services.Service;
 import org.swdc.reader.entity.Book;
 import org.swdc.reader.entity.BookMark;
 import org.swdc.reader.entity.BookType;
@@ -16,39 +14,34 @@ import org.swdc.reader.repository.BookRepository;
 import org.swdc.reader.repository.BookTypeRepository;
 import org.swdc.reader.repository.ContentsRepository;
 import org.swdc.reader.repository.MarksRepository;
-import org.swdc.reader.ui.ApplicationConfig;
 import org.swdc.reader.utils.DataUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
 /**
  * Created by lenovo on 2019/5/22.
  */
-@Service
-@Order(1)
-@CommonsLog
-public class BookService {
+public class BookService extends Service {
 
-    @Autowired
-    private BookRepository bookRepository;
+    @Aware
+    private BookRepository bookRepository = null;
 
-    @Autowired
-    private BookTypeRepository typeRepository;
+    @Aware
+    private BookTypeRepository typeRepository = null;
 
-    @Autowired
-    private ContentsRepository contentsRepository;
+    @Aware
+    private ContentsRepository contentsRepository = null;
 
-    @Autowired
-    private MarksRepository marksRepository;
+    @Aware
+    private MarksRepository marksRepository = null;
 
     /**
      * 更新书籍数据，和文件夹的内容同步
      */
-    @Async
-    @Transactional(rollbackFor = Exception.class)
     public void syncBookFolder() throws Exception {
         File file = new File("./data/library");
         if (!file.exists()) {
@@ -81,13 +74,13 @@ public class BookService {
                 book.setMimeData(magicMatch.getMimeType());
                 bookRepository.save(book);
             }catch (Exception e) {
-             e.printStackTrace();
+              logger.error("fail to create book : " + book.getName(),e);
             }
         }
     }
 
     public List<BookType> listTypes() {
-        return typeRepository.findAll();
+        return typeRepository.getAll();
     }
 
     public BookType getDefaultType() {
@@ -104,16 +97,20 @@ public class BookService {
         return !(bookTypes == null);
     }
 
-    @Transactional
     public Set<Book> getBooks(BookType type) {
         BookType bookType = typeRepository.getOne(type.getId());
-        return bookType.getBooks();
+        if (bookType.getBooks() != null) {
+            return bookType.getBooks();
+        } else {
+            return Collections.emptySet();
+        }
     }
 
     public Set<Book> searchByName(String name) {
         return bookRepository.findByNameContaining(name);
     }
 
+    @Transactional
     public Book fromFile(File file) {
         BookType defaultType = typeRepository.getDefault();
         if (defaultType == null) {
@@ -137,10 +134,12 @@ public class BookService {
         }
     }
 
+    @Transactional
     public Book getBook(Long id) {
-        return bookRepository.findById(id).orElse(null);
+        return bookRepository.getOne(id);
     }
 
+    @Transactional
     public void createBook(Book book, File sourceFile) {
         Long count = bookRepository.countByShaCode(book.getShaCode());
         if (count > 0) {
@@ -168,10 +167,12 @@ public class BookService {
             FileUtils.copyFile(sourceFile, new File("./data/library/" + sourceFile.getName()));
             bookRepository.save(book);
         } catch (IOException e) {
-            log.error(e);
+            logger.error("fail to create book",e);
         }
     }
 
+
+    @Transactional
     public BookType createType(String name) {
         if (isTypeExist(name)) {
             return typeRepository.findByName(name);
@@ -182,26 +183,27 @@ public class BookService {
         return type;
     }
 
+    @Transactional
     public void modifyBook(Book modifiedBook) {
         bookRepository.save(modifiedBook);
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public void deleteBook(Book target) {
         Book deleteTarget = bookRepository.getOne(target.getId());
         Set<BookMark> marks = deleteTarget.getMarks();
         Set<ContentsItem> contentsItems = deleteTarget.getContentsItems();
         if (marks != null && marks.size() > 0) {
-            marksRepository.deleteAll(marks);
+            marksRepository.removeAll(marks);
         }
         if (contentsItems != null && contentsItems.size() > 0) {
-            contentsRepository.deleteAll(contentsItems);
+            contentsRepository.removeAll(contentsItems);
         }
         File file = new File("./data/library/" + deleteTarget.getName());
         if (!file.delete()) {
             file.deleteOnExit();
         }
-        bookRepository.delete(deleteTarget);
+        bookRepository.remove(deleteTarget);
     }
 
     @Transactional
@@ -223,6 +225,7 @@ public class BookService {
         }
     }
 
+    @Transactional
     public void createBookMark(BookMark mark) {
         if (mark.getLocation() == null || mark.getLocation().trim().equals("")) {
             return;
@@ -241,48 +244,56 @@ public class BookService {
         }
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public void deleteMark(BookMark mark) {
-        marksRepository.findById(mark.getId()).ifPresent(bookMark -> {
-            Book book = bookRepository.getOne(bookMark.getMarkFor().getId());
-            book.getMarks().remove(bookMark);
-            bookRepository.save(book);
-            marksRepository.delete(bookMark);
-        });
+        BookMark bookMark = marksRepository.getOne(mark.getId());
+        if (bookMark == null) {
+            return;
+        }
+        Book book = bookRepository.getOne(bookMark.getMarkFor().getId());
+        book.getMarks().remove(bookMark);
+        bookRepository.save(book);
+        marksRepository.remove(bookMark);
     }
 
     public void modifyType(BookType type) {
-        typeRepository.findById(type.getId()).ifPresent(bookType -> {
-            if (bookType.getName().equals("未分类")) {
-                return;
-            }
-            bookType.setName(type.getName());
-            typeRepository.save(bookType);
-        });
+        BookType bookType = typeRepository.getOne(type.getId());
+        if (bookType == null) {
+            return;
+        }
+        if (bookType.getName().equals("未分类")) {
+            return;
+        }
+        bookType.setName(type.getName());
+        typeRepository.save(bookType);
     }
 
-    public void exportType(File targetFolder,  BookType type) {
-        typeRepository.findById(type.getId()).ifPresent(bookType -> {
-            try {
-                Set<Book> books = type.getBooks();
-                for (Book book : books) {
-                    File bookFile = new File("data/library/" + book.getName());
-                    File target = new File(targetFolder.getPath() + "/" + book.getName());
-                    FileUtils.copyFile(bookFile, target);
-                }
-            } catch (Exception e) {
-                log.error(e);
+    public void exportType(File targetFolder, BookType type) {
+        BookType bookType = typeRepository.getOne(type.getId());
+        if (bookType == null) {
+            return;
+        }
+        try {
+            Set<Book> books = type.getBooks();
+            for (Book book : books) {
+                File bookFile = new File("data/library/" + book.getName());
+                File target = new File(targetFolder.getPath() + "/" + book.getName());
+                FileUtils.copyFile(bookFile, target);
             }
-        });
+        } catch (Exception e) {
+            logger.error("fail to export type",e);
+        }
     }
 
     @Transactional
     public void deleteType(BookType type) {
-        typeRepository.findById(type.getId()).ifPresent(bookType -> {
-            Set<Book> books = type.getBooks();
-            books.forEach(this::deleteBook);
-            typeRepository.delete(bookType);
-        });
+        BookType bookType = typeRepository.getOne(type.getId());
+        if (bookType == null) {
+            return;
+        }
+        Set<Book> books = type.getBooks();
+        books.forEach(this::deleteBook);
+        typeRepository.remove(bookType);
     }
 
 }

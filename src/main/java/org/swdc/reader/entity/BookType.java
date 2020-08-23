@@ -4,12 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Set;
 
-/**
- * Created by lenovo on 2019/5/23.
- */
 @Entity
 public class BookType {
 
@@ -32,4 +28,5 @@ public class BookType {
     public String toString() {
         return this.getName();
     }
+
 }

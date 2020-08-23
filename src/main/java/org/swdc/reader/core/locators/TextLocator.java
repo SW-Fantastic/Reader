@@ -1,28 +1,23 @@
 package org.swdc.reader.core.locators;
 
 import info.monitorenter.cpdetector.io.CodepageDetectorProxy;
-import javafx.scene.text.Font;
 import lombok.extern.apachecommons.CommonsLog;
-import net.sourceforge.pinyin4j.PinyinHelper;
-import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
-import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
-import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
-import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.swdc.reader.core.BookLocator;
 import org.swdc.reader.core.RenderResolver;
 import org.swdc.reader.core.configs.TextConfig;
+import org.swdc.reader.core.event.BookProcessEvent;
+import org.swdc.reader.core.event.ContentItemFoundEvent;
 import org.swdc.reader.entity.Book;
 import org.swdc.reader.entity.ContentsItem;
-import org.swdc.reader.event.BookProcessEvent;
-import org.swdc.reader.event.ContentItemFoundEvent;
-import org.swdc.reader.ui.CommonComponents;
 
 import java.io.*;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -73,25 +68,14 @@ public class TextLocator implements BookLocator<String> {
 
     private Boolean available;
 
-    private List<RenderResolver> resolvers;
+    private List<? extends RenderResolver> resolvers;
 
-    public TextLocator(List<RenderResolver> resolvers,Book book, CodepageDetectorProxy codepageDetectorProxy, TextConfig config) {
+    public TextLocator(List<? extends RenderResolver> resolvers, Book book, CodepageDetectorProxy codepageDetectorProxy, TextConfig config) {
         this.resolvers = resolvers;
         File bookFile = new File("./data/library/" + book.getName());
         this.bookEntity = book;
         this.config = config;
         try {
-            if (config.getEnableBackgroundImage()) {
-                ByteArrayOutputStream bot = new ByteArrayOutputStream();
-                DataInputStream backgroundInput = new DataInputStream(new FileInputStream(new File("configs/readerResources/text/" + config.getBackgroundImage())));
-                byte[] data = new byte[1024];
-                while (backgroundInput.read(data) != -1) {
-                    bot.write(data);
-                }
-                bot.flush();
-                backgroundInput.close();
-                backgroundImageData = Base64.getEncoder().encodeToString(bot.toByteArray());
-            }
             Charset charset = codepageDetectorProxy.detectCodepage(bookFile.toURI().toURL());
             if (charset != null) {
                 reader = new BufferedReader(new InputStreamReader(new FileInputStream(bookFile),charset));
@@ -178,7 +162,7 @@ public class TextLocator implements BookLocator<String> {
             item.setLocated(bookEntity);
             item.setLocation(currentPage + "");
             item.setTitle(chapterName);
-            config.getApplicationConfig().publishEvent(new ContentItemFoundEvent(item));
+            config.emit(new ContentItemFoundEvent(item,config));
 
             String content = sb.toString();
             Document document = Jsoup.parse(content);
@@ -223,20 +207,20 @@ public class TextLocator implements BookLocator<String> {
         if (page > currentPage) {
             while (page > currentPage) {
                 double target = 1 - ((page - currentPage) / totals);
-                BookProcessEvent processEvent = new BookProcessEvent(target, "正在加载页面");
-                config.getApplicationConfig().publishEvent(processEvent);
+                BookProcessEvent processEvent = new BookProcessEvent(target, "正在加载页面",config);
+                config.emit(processEvent);
                 this.nextPage();
             }
         } else if (page < currentPage) {
             while (page < currentPage) {
                 double target = 1 - ((currentPage - page) / totals);
-                BookProcessEvent processEvent = new BookProcessEvent(target, "正在加载页面");
-                config.getApplicationConfig().publishEvent(processEvent);
+                BookProcessEvent processEvent = new BookProcessEvent(target, "正在加载页面",config);
+                config.emit(processEvent);
                 this.prevPage();
             }
         }
-        BookProcessEvent processEvent = new BookProcessEvent(1.0, "");
-        config.getApplicationConfig().publishEvent(processEvent);
+        BookProcessEvent processEvent = new BookProcessEvent(1.0, "",config);
+        config.emit(processEvent);
         return currentPage();
     }
 

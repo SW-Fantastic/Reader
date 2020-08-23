@@ -6,7 +6,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="470.0" prefWidth="729.0" styleClass="scene" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.swdc.reader.ui.controllers.ReadViewController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="470.0" prefWidth="729.0" styleClass="scene" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.swdc.reader.ui.controller.ReadController">
    <top>
       <HBox alignment="CENTER_RIGHT" prefHeight="53.0" prefWidth="637.0" spacing="6.0" BorderPane.alignment="CENTER">
          <children>
@@ -28,9 +28,9 @@
       </HBox>
    </top>
    <bottom>
-      <HBox prefHeight="0.0" prefWidth="729.0" BorderPane.alignment="CENTER">
+      <HBox minHeight="26.0" prefHeight="0.0" prefWidth="729.0" BorderPane.alignment="CENTER">
          <children>
-            <ProgressBar fx:id="progress" prefHeight="4.0" prefWidth="258.0" progress="0.0" styleClass="progress">
+            <ProgressBar fx:id="progress" minHeight="-Infinity" prefHeight="16.0" prefWidth="258.0" progress="0.0" styleClass="progress">
                <HBox.margin>
                   <Insets bottom="4.0" top="4.0" />
                </HBox.margin>

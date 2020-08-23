@@ -2,29 +2,21 @@ package org.swdc.reader.core.configs;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Component;
-import org.swdc.reader.anno.ConfigProp;
-import org.swdc.reader.anno.PropType;
+import org.swdc.fx.anno.ConfigProp;
+import org.swdc.fx.anno.PropType;
+import org.swdc.fx.anno.Properties;
+import org.swdc.fx.properties.FXProperties;
 import org.swdc.reader.core.ReaderConfig;
-import org.swdc.reader.ui.ApplicationConfig;
 
 /**
  * Created by lenovo on 2019/6/9.
  */
-@PropertySource("file:configs/pdf.reader.properties")
-@ConfigurationProperties(prefix = "pdf")
-@Component
-public class PDFConfig implements ReaderConfig {
+@Properties(value = "pdf.reader.properties",prefix = "pdf")
+public class PDFConfig extends FXProperties implements ReaderConfig {
 
     @Getter
     private String name = "Adobe-PDF";
 
-    @Getter
-    @Autowired
-    private ApplicationConfig config;
 
     @Getter
     @Setter
@@ -37,5 +29,9 @@ public class PDFConfig implements ReaderConfig {
     @ConfigProp(name = "渲染质量", type = PropType.NUMBER,
             value = "4", tooltip = "高质量的渲染会有比较大的延时。", propName = "render-quality")
     private Float renderQuality;
+
+    public void setName(String name) {
+        return;
+    }
 
 }

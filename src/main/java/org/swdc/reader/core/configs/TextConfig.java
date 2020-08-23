@@ -2,29 +2,21 @@ package org.swdc.reader.core.configs;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Component;
-import org.swdc.reader.anno.ConfigProp;
-import org.swdc.reader.anno.PropType;
+import org.swdc.fx.anno.ConfigProp;
+import org.swdc.fx.anno.PropType;
+import org.swdc.fx.anno.Properties;
+import org.swdc.fx.properties.FXProperties;
 import org.swdc.reader.core.ReaderConfig;
-import org.swdc.reader.ui.ApplicationConfig;
 
 /**
  * 文本阅读器的相关配置
  */
-@Component
-@ConfigurationProperties(prefix = "text")
-@PropertySource("file:configs/text.reader.properties")
-public class TextConfig implements ReaderConfig{
+@Properties(value = "text.reader.properties", prefix = "text")
+public class TextConfig extends FXProperties implements ReaderConfig{
 
     @Getter
     private String name = "文本渲染";
 
-    @Getter
-    @Autowired
-    private ApplicationConfig applicationConfig;
 
     /**
      * 阅读字体
@@ -32,7 +24,7 @@ public class TextConfig implements ReaderConfig{
     @Getter
     @Setter
     @ConfigProp(name = "阅读字体", type = PropType.FILE_SELECT_IMPORTABLE,
-            value = "configs/fonts", tooltip = "这是文本文件阅读的时候的字体样式", propName = "font-path")
+            value = "assets/fonts", tooltip = "这是文本文件阅读的时候的字体样式", propName = "font-path")
     private String fontPath;
 
     /**
@@ -41,7 +33,7 @@ public class TextConfig implements ReaderConfig{
     @Getter
     @Setter
     @ConfigProp(name = "阅读背景图", type = PropType.FILE_SELECT_IMPORTABLE,
-            value = "configs/readerResources/text",propName = "background-image", tooltip = "文本阅读的时候的背景图片")
+            value = "assets/readerBackground/",propName = "background-image", tooltip = "文本阅读的时候的背景图片")
     private String backgroundImage;
 
     /**
@@ -106,5 +98,9 @@ public class TextConfig implements ReaderConfig{
     @ConfigProp(name="显示拼音", type = PropType.CHECK,
             value = "", tooltip = "是否为汉字注音", propName = "show-pin-yin")
     private Boolean showPinYin;
+
+    public void setName(String name) {
+        return;
+    }
 
 }

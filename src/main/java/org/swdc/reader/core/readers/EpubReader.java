@@ -1,43 +1,31 @@
 package org.swdc.reader.core.readers;
 
-import com.teamdev.jxbrowser.chromium.javafx.BrowserView;
-import info.monitorenter.cpdetector.io.CodepageDetectorProxy;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.web.WebView;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.swdc.fx.anno.Aware;
 import org.swdc.reader.core.BookLocator;
-import org.swdc.reader.core.BookReader;
-import org.swdc.reader.core.RenderResolver;
 import org.swdc.reader.core.configs.EpubConfig;
 import org.swdc.reader.core.configs.TextConfig;
+import org.swdc.reader.core.ext.AbstractResolver;
 import org.swdc.reader.core.locators.EpubLocator;
 import org.swdc.reader.core.views.EpubRenderView;
 import org.swdc.reader.entity.Book;
 
 import java.util.List;
-import java.util.concurrent.Executor;
 
 /**
  * Created by lenovo on 2019/6/13.
  */
-@Component
-public class EpubReader implements BookReader<String> {
+public class EpubReader extends AbstractReader<String> {
 
-    @Autowired
-    private EpubConfig config;
+    @Aware
+    private EpubConfig config = null;
 
-    @Autowired
-    private TextConfig textConfig;
+    @Aware
+    private TextConfig textConfig = null;
 
-    @Autowired
-    private EpubRenderView view;
-
-    @Autowired
-    private Executor asyncExecutor;
-
-    @Autowired
-    private List<RenderResolver> resolvers;
+    @Aware
+    private EpubRenderView view = null;
 
     private EpubLocator locator;
 
@@ -50,7 +38,8 @@ public class EpubReader implements BookReader<String> {
             locator = null;
         }
         this.book = book;
-        locator = new EpubLocator(resolvers,asyncExecutor,book, config, textConfig);
+        List<AbstractResolver> resolvers = getScoped(AbstractResolver.class);
+        locator = new EpubLocator(resolvers,book, config, textConfig);
     }
 
     @Override
@@ -60,12 +49,12 @@ public class EpubReader implements BookReader<String> {
 
     @Override
     public void renderPage(String pageData, BorderPane view) {
-        BrowserView webView = (BrowserView) view.lookup("#" + this.view.getViewId());
+        WebView webView = (WebView) view.lookup("#" + this.view.getViewId());
         if (webView == null) {
             view.setCenter(this.view.getView());
-            webView = (BrowserView) this.view.getView();
+            webView = (WebView) this.view.getView();
         }
-        webView.getBrowser().loadHTML(pageData);
+        webView.getEngine().loadContent(pageData);
     }
 
     @Override

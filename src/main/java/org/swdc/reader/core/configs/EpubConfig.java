@@ -2,27 +2,17 @@ package org.swdc.reader.core.configs;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Component;
-import org.swdc.reader.anno.ConfigProp;
-import org.swdc.reader.anno.PropType;
+import org.swdc.fx.anno.ConfigProp;
+import org.swdc.fx.anno.PropType;
+import org.swdc.fx.anno.Properties;
+import org.swdc.fx.properties.FXProperties;
 import org.swdc.reader.core.ReaderConfig;
-import org.swdc.reader.entity.Book;
-import org.swdc.reader.ui.ApplicationConfig;
 
 /**
  * Created by lenovo on 2019/6/13.
  */
-@PropertySource("file:configs/epub.reader.properties")
-@ConfigurationProperties(prefix = "epub")
-@Component
-public class EpubConfig implements ReaderConfig {
-
-    @Getter
-    @Autowired
-    private ApplicationConfig config;
+@Properties(value = "epub.reader.properties",prefix = "epub")
+public class EpubConfig extends FXProperties implements ReaderConfig {
 
     @Getter
     private String name = "E-Public";
@@ -39,4 +29,7 @@ public class EpubConfig implements ReaderConfig {
             value = "", tooltip = "可以使用超链接在页面间跳转",propName = "enable-hyper-links")
     private Boolean enableHyperLinks;
 
+    public void setName(String name) {
+        return;
+    }
 }

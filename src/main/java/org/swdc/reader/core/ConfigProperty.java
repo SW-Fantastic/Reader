@@ -2,7 +2,7 @@ package org.swdc.reader.core;
 
 import lombok.Getter;
 import org.controlsfx.property.BeanProperty;
-import org.swdc.reader.anno.ConfigProp;
+import org.swdc.fx.anno.ConfigProp;
 
 import java.beans.PropertyDescriptor;
 
