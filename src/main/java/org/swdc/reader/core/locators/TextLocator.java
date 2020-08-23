@@ -4,6 +4,8 @@ import info.monitorenter.cpdetector.io.CodepageDetectorProxy;
 import lombok.extern.apachecommons.CommonsLog;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.swdc.reader.core.BookLocator;
 import org.swdc.reader.core.RenderResolver;
 import org.swdc.reader.core.configs.TextConfig;
@@ -14,6 +16,7 @@ import org.swdc.reader.entity.ContentsItem;
 
 import java.io.*;
 import java.nio.charset.Charset;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -24,7 +27,6 @@ import java.util.regex.Pattern;
 /**
  * Text文本阅读组件
  */
-@CommonsLog
 public class TextLocator implements BookLocator<String> {
 
     private File bookFile;
@@ -68,6 +70,8 @@ public class TextLocator implements BookLocator<String> {
 
     private Boolean available;
 
+    private Logger logger = LoggerFactory.getLogger(TextLocator.class);
+
     private List<? extends RenderResolver> resolvers;
 
     public TextLocator(List<? extends RenderResolver> resolvers, Book book, CodepageDetectorProxy codepageDetectorProxy, TextConfig config) {
@@ -76,7 +80,17 @@ public class TextLocator implements BookLocator<String> {
         this.bookEntity = book;
         this.config = config;
         try {
-            Charset charset = codepageDetectorProxy.detectCodepage(bookFile.toURI().toURL());
+            Charset charset = null;
+            try {
+                charset = codepageDetectorProxy.detectCodepage(bookFile.toURI().toURL());
+            } catch (UnsupportedCharsetException cex) {
+                if (cex.getCharsetName().equals("GB2312")) {
+                    charset = Charset.forName("GBK");
+                } else {
+                    logger.error("unsupported charset",cex);
+                    charset = Charset.defaultCharset();
+                }
+            }
             if (charset != null) {
                 reader = new BufferedReader(new InputStreamReader(new FileInputStream(bookFile),charset));
             } else {
@@ -89,7 +103,7 @@ public class TextLocator implements BookLocator<String> {
             this.chapterPatterns.add(Pattern.compile("第[^章]+章[\\s\\S]*?(?:(?=第[^章]+章)|$)"));
             available = true;
         } catch (IOException e) {
-            log.error(e);
+            logger.error("error on create locator",e);
         }
     }
 
@@ -173,7 +187,7 @@ public class TextLocator implements BookLocator<String> {
             }
             return document.toString();
         } catch (Exception e) {
-            log.error(e);
+            logger.error("error when load data",e);
             StringWriter swr = new StringWriter();
             e.printStackTrace(new PrintWriter(swr));
             this.currentPage --;
@@ -250,7 +264,7 @@ public class TextLocator implements BookLocator<String> {
                 this.available = false;
             }
         } catch (IOException e) {
-            log.error(e);
+            logger.error("error on finializer",e);
         }
     }
 

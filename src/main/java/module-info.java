@@ -1,5 +1,4 @@
 module FReader {
-
     requires fx.framework.core;
     requires fx.framework.resource;
     requires fx.framework.aop;
@@ -7,6 +6,7 @@ module FReader {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.web;
+    requires java.instrument;
     requires javafx.swing;
     requires static lombok;
     requires fx.framework.jpa;
@@ -25,6 +25,7 @@ module FReader {
     requires jdk.jsobject;
     requires jmimemagic;
     requires commons.io;
+    requires slf4j.api;
 
     opens org.swdc.reader.aspect to
             fx.framework.core,

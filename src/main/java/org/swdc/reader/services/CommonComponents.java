@@ -6,6 +6,7 @@ import javafx.scene.text.Font;
 import org.swdc.fx.services.Service;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -30,7 +31,7 @@ public class CommonComponents extends Service {
             File[] contents = fontFolder.listFiles();
             if (contents != null) {
                 for(File fontFile : contents){
-                    Font font = Font.loadFont(fontFile.toURI().toURL().toExternalForm(), 18);
+                    Font font = Font.loadFont(new FileInputStream(fontFile), 18);
                     fontMap.put(fontFile.getName(), font);
                 }
             }

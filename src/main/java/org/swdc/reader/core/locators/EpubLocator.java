@@ -73,7 +73,7 @@ public class EpubLocator implements BookLocator<String> {
             FileInputStream fin = new FileInputStream(bookFile);
             epubBook = reader.readEpub(fin);
             if (book.getContentsItems() == null || book.getContentsItems().size() == 0) {
-                initContents(epubBook.getTableOfContents().getTocReferences(), "章");
+                initContents(epubBook.getTableOfContents().getTocReferences(), "章",true);
             }
             fin.close();
             this.availbale = true;
@@ -82,7 +82,8 @@ public class EpubLocator implements BookLocator<String> {
         }
     }
 
-    private void initContents(List<TOCReference> toc, String subfix) {
+    private void initContents(List<TOCReference> toc, String subfix, boolean isOuther) {
+
         if (toc == null || toc.size() == 0) {
             return;
         }
@@ -99,12 +100,12 @@ public class EpubLocator implements BookLocator<String> {
             item.setLocated(book);
             config.emit(new ContentItemFoundEvent(item,config));
             double progress = 1 - (idx/totals);
-            BookProcessEvent processEvent = new BookProcessEvent(progress, "正在索引目录",config);
+            BookProcessEvent processEvent = new BookProcessEvent(progress, "正在索引目录：" + title,config);
             config.emit(processEvent);
             if (ref.getChildren() != null && ref.getChildren().size() > 0) {
-                this.initContents(ref.getChildren(), "节");
+                this.initContents(ref.getChildren(), "节",false);
             }
-            processEvent = new BookProcessEvent(1.0, "",config);
+            processEvent = new BookProcessEvent(isOuther ? 1.0 : 0.8, isOuther ? "完成": "正在索引目录：" + title,config);
             config.emit(processEvent);
         }
     }
