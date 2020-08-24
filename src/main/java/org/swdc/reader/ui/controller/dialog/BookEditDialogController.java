@@ -13,6 +13,7 @@ import org.swdc.reader.entity.Book;
 import org.swdc.reader.entity.BookType;
 import org.swdc.reader.services.BookService;
 import org.swdc.reader.ui.events.TypeRefreshEvent;
+import org.swdc.reader.ui.view.ReadView;
 import org.swdc.reader.ui.view.dialogs.BookEditDialog;
 
 import java.net.URL;
@@ -71,6 +72,10 @@ public class BookEditDialogController extends FXController  {
         Optional<ButtonType> selected = view.showAlertDialog("提示","确定要删除《" + book.getTitle() + "》吗？", Alert.AlertType.CONFIRMATION);
         selected.ifPresent(type -> {
             if (type.equals(ButtonType.OK)) {
+                ReadView readView = findView(ReadView.class);
+                if (readView.getOpenedBook().getId().equals(book.getId())) {
+                    readView.closeBook();
+                }
                 service.deleteBook(book);
                 view.close();
             }

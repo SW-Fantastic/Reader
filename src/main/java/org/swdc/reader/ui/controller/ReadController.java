@@ -82,6 +82,7 @@ public class ReadController extends FXController {
         prevButton.disableProperty().bind(disabled);
         nextButton.disableProperty().bind(disabled);
         jumpButton.disableProperty().bind(disabled);
+        disabled.set(true);
     }
 
 
@@ -92,9 +93,6 @@ public class ReadController extends FXController {
 
     @Listener(DocumentOpenEvent.class)
     public void bookOpenRequested(DocumentOpenEvent event) {
-        if (this.disabled.get()) {
-            return;
-        }
         List<AbstractReader> readers = getScoped(AbstractReader.class);
         ReadView view = getView();
         commonComponents.submitTask(() ->{
@@ -118,6 +116,7 @@ public class ReadController extends FXController {
                         reader.renderPage(locator.nextPage(), view.getView());
                         txtTitle.setText(locator.getTitle());
                         txtLocation.setText(locator.getLocation());
+                        disabled.set(false);
                     });
                 });
             }
@@ -127,6 +126,7 @@ public class ReadController extends FXController {
     @Listener(BookLocationEvent.class)
     public void onLocationRequest(BookLocationEvent event) {
         ReadView view = getView();
+        disabled.set(true);
         commonComponents.submitTask(() -> {
             synchronized (lock){
                 try {
@@ -137,9 +137,10 @@ public class ReadController extends FXController {
                     BookLocator locator = currentReader.getLocator();
                     Object data = locator.toPage(location);
                     Platform.runLater(() -> {
-                        currentReader.renderPage(data, (BorderPane)view.getView());
+                        currentReader.renderPage(data, view.getView());
                         txtTitle.setText(locator.getTitle());
                         txtLocation.setText(locator.getLocation());
+                        disabled.set(false);
                     });
                 } catch (Exception e) {
                     this.emit(event);
@@ -152,10 +153,12 @@ public class ReadController extends FXController {
     public void processEvent(BookProcessEvent event) {
         progress.setProgress(event.getData());
         procMessage.setText(event.getMessage());
-        if (event.getData() < 1) {
-            disabled.set(true);
-        } else {
-            disabled.set(false);
+        synchronized (lock) {
+            if (event.getData() < 1) {
+                disabled.set(true);
+            } else {
+                disabled.set(false);
+            }
         }
     }
 
@@ -205,6 +208,22 @@ public class ReadController extends FXController {
     @FXML
     public void onContentsItem() {
         contentsItemView.show();
+    }
+
+    public AbstractReader getCurrentReader() {
+        return currentReader;
+    }
+
+    public void closeOpenedBook() {
+        if (currentReader == null) {
+            return;
+        }
+        if (currentReader.getBook() == null) {
+            return;
+        }
+        currentReader.getLocator().finalizeResources();
+        currentReader = null;
+        disabled.set(true);
     }
 
 }
