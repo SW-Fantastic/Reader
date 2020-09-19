@@ -5,6 +5,8 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.math.BigDecimal;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -23,16 +25,12 @@ public class DataUtil {
     public static String getFileShaCode(File file) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            DataInputStream din = new DataInputStream(new FileInputStream(file));
-            byte[] data = new byte[2048];
-            ByteArrayOutputStream bot = new ByteArrayOutputStream();
-            while (din.read(data) > -1) {
-                bot.write(data);
-            }
-            bot.flush();
-            din.close();
-            byte[] fileData = bot.toByteArray();
-            digest.update(fileData);
+            FileInputStream fin = new FileInputStream(file);
+            FileChannel channel = fin.getChannel();
+            ByteBuffer byteBuffer = channel.map(FileChannel.MapMode.READ_ONLY,0,channel.size());
+            digest.update(byteBuffer.flip());
+            channel.close();
+            fin.close();
             return bytesToHexString(digest.digest());
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -61,7 +59,7 @@ public class DataUtil {
         // 如果字节数少于1024，则直接以B为单位，否则先除于1024，后3位因太少无意义
         double value = (double) size;
         if (value < 1024) {
-            return String.valueOf(value) + "B";
+            return value + "B";
         } else {
             value = new BigDecimal(value / 1024).setScale(2, BigDecimal.ROUND_DOWN).doubleValue();
         }
@@ -69,16 +67,16 @@ public class DataUtil {
         // 因为还没有到达要使用另一个单位的时候
         // 接下去以此类推
         if (value < 1024) {
-            return String.valueOf(value) + "KB";
+            return value + "KB";
         } else {
             value = new BigDecimal(value / 1024).setScale(2, BigDecimal.ROUND_DOWN).doubleValue();
         }
         if (value < 1024) {
-            return String.valueOf(value) + "MB";
+            return value + "MB";
         } else {
             // 否则如果要以GB为单位的，先除于1024再作同样的处理
             value = new BigDecimal(value / 1024).setScale(2, BigDecimal.ROUND_DOWN).doubleValue();
-            return String.valueOf(value) + "GB";
+            return value + "GB";
         }
     }
 

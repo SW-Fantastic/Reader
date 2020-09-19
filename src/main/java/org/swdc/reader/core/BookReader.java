@@ -15,6 +15,8 @@ public interface BookReader<T> {
      */
     void setBook(Book book);
 
+    BookView getView();
+
     /**
      * 获取当前的book
      * @return

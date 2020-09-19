@@ -4,6 +4,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.web.WebView;
 import org.swdc.fx.anno.Aware;
 import org.swdc.reader.core.BookLocator;
+import org.swdc.reader.core.BookView;
 import org.swdc.reader.core.configs.TextConfig;
 import org.swdc.reader.core.ext.AbstractResolver;
 import org.swdc.reader.core.locators.MobiLocator;
@@ -45,6 +46,11 @@ public class MobiReader extends AbstractReader<String> {
         } catch (Exception ex) {
             logger.error("fail to init reader",ex);
         }
+    }
+
+    @Override
+    public BookView getView() {
+        return view;
     }
 
     @Override

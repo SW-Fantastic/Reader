@@ -1,11 +1,13 @@
 package org.swdc.reader.ui.view;
 
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.ToolBar;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.swdc.fx.FXView;
@@ -33,11 +35,31 @@ public class MainView extends FXView {
 
     private ToggleGroup group = new ToggleGroup();
 
+    private SimpleBooleanProperty silderFocusable = new SimpleBooleanProperty(true);
+
     @Override
     public void initialize() {
         Stage stage = getStage();
         stage.setMinHeight(680);
         stage.setMinWidth(1000);
+
+        stage.getScene().setOnKeyPressed(e -> {
+            ToggleButton selected = (ToggleButton)group.getSelectedToggle();
+            if (selected.getId().equals("read")) {
+                silderFocusable.set(false);
+                if (e.getCode() == KeyCode.RIGHT) {
+                    readView.nextPage();
+                } else if (e.getCode() == KeyCode.LEFT) {
+                    readView.prevPage();
+                } else if (e.getCode() == KeyCode.ENTER) {
+                    readView.focus();
+                } else if (e.getCode() == KeyCode.TAB) {
+                    silderFocusable.set(!silderFocusable.get());
+                }
+            } else {
+                silderFocusable.set(true);
+            }
+        });
 
         this.initTools();
         BorderPane pane = this.getView();
@@ -77,6 +99,7 @@ public class MainView extends FXView {
         button.setText(fontawsomeService.getFontIcon(name));
         button.setFont(fontawsomeService.getFont(FontSize.MIDDLE_SMALL));
         button.selectedProperty().addListener(onChange);
+        button.focusTraversableProperty().bind(silderFocusable);
         group.getToggles().add(button);
     }
 

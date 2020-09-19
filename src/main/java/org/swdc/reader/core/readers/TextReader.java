@@ -5,6 +5,7 @@ import javafx.scene.web.WebView;
 import lombok.Getter;
 import org.swdc.fx.anno.Aware;
 import org.swdc.reader.core.BookLocator;
+import org.swdc.reader.core.BookView;
 import org.swdc.reader.core.configs.TextConfig;
 import org.swdc.reader.core.ext.AbstractResolver;
 import org.swdc.reader.core.locators.TextLocator;
@@ -42,6 +43,11 @@ public class TextReader extends AbstractReader<String> {
         List<AbstractResolver> resolvers = getScoped(AbstractResolver.class);
         locator = new TextLocator(resolvers, book, commonComponents.getCodepageDetectorProxy(), config);
         this.currentBook = book;
+    }
+
+    @Override
+    public BookView getView() {
+        return view;
     }
 
     @Override

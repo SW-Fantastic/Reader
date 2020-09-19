@@ -1,7 +1,6 @@
 package org.swdc.reader.core.locators;
 
 import info.monitorenter.cpdetector.io.CodepageDetectorProxy;
-import lombok.extern.apachecommons.CommonsLog;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
@@ -65,8 +64,6 @@ public class TextLocator implements BookLocator<String> {
     private TextConfig config;
 
     private BufferedReader reader;
-
-    private String backgroundImageData;
 
     private Boolean available;
 

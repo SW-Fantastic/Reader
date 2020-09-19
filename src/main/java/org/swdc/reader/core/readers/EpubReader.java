@@ -64,6 +64,11 @@ public class EpubReader extends AbstractReader<String> {
     }
 
     @Override
+    public EpubRenderView getView() {
+        return view;
+    }
+
+    @Override
     public BookLocator<String> getLocator() {
         return locator;
     }

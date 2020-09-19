@@ -21,3 +21,4 @@ include RSS （Feeds），based javaFX and SpringBoot
  - [x] PDF阅读的实现（Adobe PDF reader implement）
  - [x] EPublic阅读的实现（EPUB File Reader implement）
  - [x] MOBI文件的基础支撑（Mobi kindle format implement)
+ - [x] 文本内容可以通过键盘左右方向键快速翻页，回车可以重定向焦点。

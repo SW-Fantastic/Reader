@@ -106,4 +106,9 @@ public class PDFReader extends AbstractReader<Image> {
         pane.widthProperty().removeListener(this::onResize);
         pane.heightProperty().removeListener(this::onResize);
     }
+
+    @Override
+    public PDFRenderView getView() {
+        return view;
+    }
 }
