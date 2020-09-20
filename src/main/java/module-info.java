@@ -26,6 +26,7 @@ module FReader {
     requires jmimemagic;
     requires commons.io;
     requires slf4j.api;
+    requires org.agrona.core;
 
     opens org.swdc.reader.aspect to
             fx.framework.core,

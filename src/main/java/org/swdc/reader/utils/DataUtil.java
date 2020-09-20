@@ -1,5 +1,7 @@
 package org.swdc.reader.utils;
 
+import org.agrona.IoUtil;
+
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.File;
@@ -29,6 +31,7 @@ public class DataUtil {
             FileChannel channel = fin.getChannel();
             ByteBuffer byteBuffer = channel.map(FileChannel.MapMode.READ_ONLY,0,channel.size());
             digest.update(byteBuffer.flip());
+            IoUtil.unmap(byteBuffer);
             channel.close();
             fin.close();
             return bytesToHexString(digest.digest());
