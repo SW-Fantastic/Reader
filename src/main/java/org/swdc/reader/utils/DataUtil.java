@@ -29,6 +29,8 @@ public class DataUtil {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             FileInputStream fin = new FileInputStream(file);
             FileChannel channel = fin.getChannel();
+            // 通过map方法创建MappedBuffer，这样通过映射访问效率远高于普通的读写方法
+            // MappedBuffer如果创建在同一个文件上面，可以让多个进程共享同一个存储数据。
             ByteBuffer byteBuffer = channel.map(FileChannel.MapMode.READ_ONLY,0,channel.size());
             digest.update(byteBuffer.flip());
             IoUtil.unmap(byteBuffer);

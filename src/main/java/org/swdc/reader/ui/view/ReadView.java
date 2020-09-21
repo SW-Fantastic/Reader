@@ -40,4 +40,9 @@ public class ReadView extends FXView {
         reader.getView().getView().requestFocus();
     }
 
+    public void toggleFloatTools() {
+        ReadController controller = getLoader().getController();
+        controller.toggleFloatTools();
+    }
+
 }

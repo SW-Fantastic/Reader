@@ -3,6 +3,7 @@ package org.swdc.reader.ui.controller;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -16,9 +17,11 @@ import org.swdc.reader.core.event.BookLocationEvent;
 import org.swdc.reader.core.event.BookProcessEvent;
 import org.swdc.reader.core.event.ContentItemFoundEvent;
 import org.swdc.reader.core.readers.AbstractReader;
+import org.swdc.reader.core.views.PopupToolView;
 import org.swdc.reader.services.BookService;
 import org.swdc.reader.services.CommonComponents;
 import org.swdc.reader.ui.events.DocumentOpenEvent;
+import org.swdc.reader.ui.view.MainView;
 import org.swdc.reader.ui.view.ReadView;
 import org.swdc.reader.ui.view.dialogs.ContentsItemView;
 import org.swdc.reader.ui.view.dialogs.MarkCreateDialog;
@@ -44,6 +47,8 @@ public class ReadController extends FXController {
     private ContentsItemView contentsItemView = null;
 
     private AbstractReader currentReader = null;
+
+    private PopupToolView toolView;
 
     @FXML
     private TextField txtTitle;
@@ -72,6 +77,9 @@ public class ReadController extends FXController {
     @FXML
     private Button contentsButton;
 
+    @FXML
+    private Button floatTools;
+
     private final Object lock = new Object();
 
     @Override
@@ -82,6 +90,7 @@ public class ReadController extends FXController {
         prevButton.disableProperty().bind(disabled);
         nextButton.disableProperty().bind(disabled);
         jumpButton.disableProperty().bind(disabled);
+        floatTools.disableProperty().bind(disabled);
         disabled.set(true);
     }
 
@@ -224,6 +233,35 @@ public class ReadController extends FXController {
         currentReader.getLocator().finalizeResources();
         currentReader = null;
         disabled.set(true);
+    }
+
+    @FXML
+    public void toggleFloatTools () {
+        if(toolView == null) {
+            MainView view = findView(MainView.class);
+            toolView = new PopupToolView(view.getStage());
+        }
+        if (currentReader == null) {
+            toolView.hide();
+            return;
+        }
+        Node toolsView = currentReader.getView().getToolsView();
+        if (toolsView == null) {
+            toolView.hide();
+            return;
+        }
+        if (!toolsView.disableProperty().isBound()) {
+            toolsView.disableProperty().bind(disabled);
+        }
+        if (disabled.getValue()) {
+            return;
+        }
+        toolView.setGraph(toolsView);
+        if (toolView.isShowing()) {
+            toolView.hide();
+        } else {
+            toolView.showPopup();
+        }
     }
 
 }

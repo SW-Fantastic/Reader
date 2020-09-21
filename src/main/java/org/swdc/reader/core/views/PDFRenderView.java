@@ -1,5 +1,6 @@
 package org.swdc.reader.core.views;
 
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ScrollPane;
@@ -37,7 +38,7 @@ public class PDFRenderView extends FXView implements BookView {
     }
 
     @Override
-    public void initToolsView(HBox toolBox) {
-        toolBox.getChildren().clear();
+    public Node getToolsView() {
+        return null;
     }
 }

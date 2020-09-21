@@ -1,6 +1,7 @@
 package org.swdc.reader.core;
 
 import javafx.scene.layout.BorderPane;
+import org.swdc.reader.core.ext.ExternalRenderAction;
 import org.swdc.reader.entity.Book;
 
 /**
@@ -36,6 +37,20 @@ public interface BookReader<T> {
      * @return
      */
     boolean isSupport(Book target);
+
+    /**
+     * 添加额外的渲染器
+     * @param action 额外的渲染器实例
+     */
+    void addRenderAction(ExternalRenderAction action);
+
+    /**
+     * 移除渲染器
+     * @param action 渲染器类型
+     * @param <T>
+     * @return
+     */
+    <T> T removeRenderAction(Class<T> action);
 
     /**
      * 获取Locator来读取数据

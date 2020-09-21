@@ -7,6 +7,7 @@ import org.swdc.reader.core.BookLocator;
 import org.swdc.reader.core.configs.EpubConfig;
 import org.swdc.reader.core.configs.TextConfig;
 import org.swdc.reader.core.ext.AbstractResolver;
+import org.swdc.reader.core.ext.ExternalRenderAction;
 import org.swdc.reader.core.locators.EpubLocator;
 import org.swdc.reader.core.views.EpubRenderView;
 import org.swdc.reader.entity.Book;
@@ -54,7 +55,21 @@ public class EpubReader extends AbstractReader<String> {
             view.setCenter(this.view.getView());
             webView = (WebView) this.view.getView();
         }
-        webView.getEngine().loadContent(pageData);
+        String data = pageData;
+        for (ExternalRenderAction<String> action: renderActionObservableMap.values()) {
+            data = action.process(data);
+        }
+        webView.getEngine().loadContent(data);
+    }
+
+    @Override
+    protected void reload() {
+        WebView webView = (WebView) getView().getView();
+        String data = locator.currentPage();
+        for (ExternalRenderAction<String> action: renderActionObservableMap.values()) {
+            data = action.process(data);
+        }
+        webView.getEngine().loadContent(data);
     }
 
     @Override

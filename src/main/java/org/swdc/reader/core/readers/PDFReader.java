@@ -10,6 +10,7 @@ import javafx.scene.paint.Color;
 import org.swdc.fx.anno.Aware;
 import org.swdc.reader.core.BookLocator;
 import org.swdc.reader.core.configs.PDFConfig;
+import org.swdc.reader.core.ext.ExternalRenderAction;
 import org.swdc.reader.core.locators.PDFLocator;
 import org.swdc.reader.core.views.PDFRenderView;
 import org.swdc.reader.entity.Book;
@@ -66,14 +67,36 @@ public class PDFReader extends AbstractReader<Image> {
         pane.setHvalue((view.getWidth() / 2) - (pageData.getWidth() / 2));
         pane.setVvalue(0);
 
+        Image data = pageData;
+        for (ExternalRenderAction<Image> action: renderActionObservableMap.values()) {
+            data = action.process(data);
+        }
+
         Canvas canvasView = (Canvas) ((ScrollPane)this.view.getView()).getContent();
         // 计算画布当前宽度的时候，让图片等比例缩放为当前宽度时候的高度
-        double height = (canvasView.getWidth() * pageData.getHeight())/ pageData.getWidth();
+        double height = (canvasView.getWidth() * data.getHeight())/ data.getWidth();
         canvasView.setHeight(height);
         GraphicsContext context = canvasView.getGraphicsContext2D();
         context.setFill(Color.LIGHTGRAY);
         context.clearRect(0,0,canvasView.getWidth(), canvasView.getHeight());
-        context.drawImage(pageData,0,0,canvasView.getWidth(), height);
+        context.drawImage(data,0,0,canvasView.getWidth(), height);
+    }
+
+    @Override
+    protected void reload() {
+        ScrollPane pane = (ScrollPane) getView().getView();
+        Image data = locator.currentPage();
+        for (ExternalRenderAction<Image> action: renderActionObservableMap.values()) {
+            data = action.process(data);
+        }
+        Canvas canvasView = (Canvas) ((ScrollPane)this.view.getView()).getContent();
+        // 计算画布当前宽度的时候，让图片等比例缩放为当前宽度时候的高度
+        double height = (canvasView.getWidth() * data.getHeight())/ data.getWidth();
+        canvasView.setHeight(height);
+        GraphicsContext context = canvasView.getGraphicsContext2D();
+        context.setFill(Color.LIGHTGRAY);
+        context.clearRect(0,0,canvasView.getWidth(), canvasView.getHeight());
+        context.drawImage(data,0,0,canvasView.getWidth(), height);
     }
 
     private void onResize(ObservableValue value, Object oldVal, Object newVal) {

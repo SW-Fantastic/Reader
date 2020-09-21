@@ -55,6 +55,8 @@ public class MainView extends FXView {
                     readView.focus();
                 } else if (e.getCode() == KeyCode.TAB) {
                     silderFocusable.set(!silderFocusable.get());
+                } else if (e.isAltDown()) {
+                    readView.toggleFloatTools();
                 }
             } else {
                 silderFocusable.set(true);

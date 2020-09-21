@@ -17,7 +17,6 @@ public interface BookView {
 
     /**
      * 在readerView的工具栏配置工具组件
-     * @param toolBox
      */
-    void initToolsView(HBox toolBox);
+    Node getToolsView();
 }
