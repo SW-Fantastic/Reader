@@ -12,13 +12,13 @@ public class TextGapsAction implements ExternalRenderAction<String> {
         Document document = Jsoup.parse(data);
         Element style = document.head().appendElement("style");
         StringBuilder sb = new StringBuilder();
-        sb.append("body > div{")
+        sb.append("body div:first-child{")
                 .append("-webkit-column-count:2;")
                 .append(" -webkit-column-gap:20px;")
                 .append(" -webkit-column-rule:2px dotted #ccc;")
                 .append(" }");
         style.text(sb.toString());
-        return document.html().replace("&gt;",">");
+        return document.html();
     }
 
 }

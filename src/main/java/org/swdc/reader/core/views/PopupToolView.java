@@ -16,11 +16,11 @@ public class PopupToolView extends Popup {
         this.parent = parent;
         this.getContent().add(root);
 
-        this.setAnchorX(parent.getX() + (parent.getWidth() / 2) + (this.getWidth() / 2));
+        this.setAnchorX(parent.getX() + (parent.getWidth() / 2) - (this.getWidth() / 2));
         this.setAnchorY(parent.getY() + 92);
 
         parent.xProperty().addListener(x-> {
-            this.setAnchorX(parent.getX() + (parent.getWidth() / 2) + (this.getWidth() / 2));
+            this.setAnchorX(parent.getX() + (parent.getWidth() / 2) - (this.getWidth() / 2));
         });
 
         parent.yProperty().addListener(y -> {
@@ -36,11 +36,13 @@ public class PopupToolView extends Popup {
             node.getStyleClass().add("float-tools");
         }
         this.root.setCenter(node);
-        this.setAnchorX(parent.getX() + (parent.getWidth() / 2) - (this.getWidth() / 2));
-        this.setAnchorY(parent.getY() + 92);
+        this.root.requestLayout();
+        this.root.autosize();
     }
 
     public void showPopup() {
+        this.setAnchorX(parent.getX() + (parent.getWidth() / 2) - (this.getWidth() / 2));
+        this.setAnchorY(parent.getY() + 92);
         this.show(parent);
     }
 

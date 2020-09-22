@@ -62,7 +62,7 @@ public class BaseTextRenderResolver extends AbstractResolver {
     @Override
     public void renderStyle(StringBuilder builder) {
         builder.append("body {")
-                .append("font-family: \"")
+                .append("font-family:\"")
                 .append(commonComponents.getFontFamily(textConfig.getFontPath()) != null ? commonComponents.getFontFamily(textConfig.getFontPath()):"Microsoft YaHei").append("\";")
                 .append("font-color:").append(textConfig.getFontColor()).append(";")
                 .append("font-size:").append(textConfig.getFontSize()).append("px;")
@@ -86,12 +86,12 @@ public class BaseTextRenderResolver extends AbstractResolver {
                 .append("padding: 12px;")
                 .append("}");
         if (textConfig.getEnableBackgroundImage()) {
-            builder.append("body>div{")
+            builder.append("body div:first-child{")
                     .append("background-color: rgba(255,255,255,0.8);")
                     .append("padding: 36px;")
                     .append("}");
         } else {
-            builder.append("body>div{")
+            builder.append("body div:first-child{")
                     .append("padding: 24px")
                     .append("}");
         }

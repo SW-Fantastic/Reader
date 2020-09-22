@@ -24,6 +24,10 @@ public abstract class AbstractReader<T> extends AppComponent implements BookRead
         return (T)renderActionObservableMap.remove(action);
     }
 
+    public void clearActions() {
+        renderActionObservableMap.clear();
+    }
+
     protected abstract void reload();
 
     private void onRendersChange(MapChangeListener.Change<? extends Class, ? extends ExternalRenderAction> change) {

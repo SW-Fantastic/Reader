@@ -5,23 +5,23 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.swdc.reader.core.ext.ExternalRenderAction;
 
-public class TextFontSizeAction implements ExternalRenderAction<String> {
+public class TextFontFamilyAction implements ExternalRenderAction<String> {
 
-    private int fontSize = 0;
+    private String fontFamily;
 
-    public TextFontSizeAction(int size) {
-        this.fontSize = size;
+    public TextFontFamilyAction(String fontFamily) {
+        this.fontFamily = fontFamily;
+    }
+
+    public String getFontFamily() {
+        return fontFamily;
     }
 
     @Override
     public String process(String data) {
         Document document = Jsoup.parse(data);
         Element style = document.selectFirst("style");
-        style.text(style.html().replaceAll("font-size:[0-9]+px","font-size:" + fontSize + "px"));
+        style.text(style.html().replaceAll("font-family:\"[\\S]+\";","font-family:\"" + fontFamily + "\";"));
         return document.html();
-    }
-
-    public int getFontSize() {
-        return fontSize;
     }
 }

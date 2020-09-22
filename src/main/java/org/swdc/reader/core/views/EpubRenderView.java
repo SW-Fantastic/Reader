@@ -1,17 +1,21 @@
 package org.swdc.reader.core.views;
 
+import javafx.beans.Observable;
 import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import javafx.util.StringConverter;
 import lombok.Getter;
 import lombok.extern.apachecommons.CommonsLog;
 import netscape.javascript.JSObject;
@@ -28,11 +32,13 @@ import org.swdc.reader.core.BookView;
 import org.swdc.reader.core.configs.EpubConfig;
 import org.swdc.reader.core.configs.TextConfig;
 import org.swdc.reader.core.event.BookLocationEvent;
+import org.swdc.reader.core.ext.text.TextFontFamilyAction;
 import org.swdc.reader.core.ext.text.TextFontSizeAction;
 import org.swdc.reader.core.ext.text.TextGapsAction;
 import org.swdc.reader.core.readers.EpubReader;
 import org.swdc.reader.core.readers.TextReader;
 
+import java.awt.*;
 import java.io.InputStream;
 
 /**
@@ -83,13 +89,62 @@ public class EpubRenderView extends FXView implements BookView {
         Button fontSizeMinus = createButton("search_minus",this::subFontSize);
         Button pageColumns = createButton("columns",this::toggleColumns);
 
+
+        ComboBox<java.awt.Font> fontsBox = new ComboBox<>();
+        fontsBox.setConverter(new StringConverter<java.awt.Font>() {
+            @Override
+            public String toString(java.awt.Font object) {
+                if (object == null) {
+                    return null;
+                }
+                return object.getFontName();
+            }
+
+            @Override
+            public java.awt.Font fromString(String string) {
+                if(string == null) {
+                    return null;
+                }
+                return fontsBox.getItems().stream().filter(i -> i.getFontName().equals(string)).findFirst().orElse(null);
+            }
+        });
+
+        fontsBox.getStyleClass().add("comb");
+
+        GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        java.awt.Font[] fonts = environment.getAllFonts();
+        fontsBox.getItems().addAll(fonts);
+        fontsBox.setPromptText("默认字体");
+        fontsBox.getSelectionModel()
+                .selectedItemProperty()
+                .addListener(this::onFontChange);
+
+        Button clean = createButton("refresh", e->{
+            findComponent(TextReader.class).clearActions();
+            fontsBox.getSelectionModel().clearSelection();
+        });
+
         tool.setSpacing(8);
         tool.setPadding(new Insets(4,4,4,4));
         tool.getChildren().add(fontSizeBigger);
         tool.getChildren().add(fontSizeMinus);
         tool.getChildren().add(pageColumns);
+        tool.getChildren().add(fontsBox);
+        tool.getChildren().add(clean);
+
+        tool.setAlignment(Pos.CENTER);
+
         this.tools = tool;
         return tool;
+    }
+
+    private void onFontChange(Observable font, java.awt.Font oldFont, java.awt.Font newFont) {
+        EpubReader reader = findComponent(EpubReader.class);
+        if (newFont == null) {
+            reader.removeRenderAction(TextFontFamilyAction.class);
+            return;
+        }
+        reader.addRenderAction(new TextFontFamilyAction(newFont.getFamily()));
     }
 
     private void incFontSize(ActionEvent event) {
