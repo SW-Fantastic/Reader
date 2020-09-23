@@ -6,6 +6,8 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.input.*;
 import javafx.stage.FileChooser;
 import org.swdc.fx.FXController;
 import org.swdc.fx.anno.Aware;
@@ -21,7 +23,9 @@ import org.swdc.reader.ui.view.dialogs.BookImportDialog;
 import org.swdc.reader.ui.view.dialogs.TypeAddDialog;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class BookController extends FXController {
@@ -75,6 +79,8 @@ public class BookController extends FXController {
         detailTable.setPlaceholder(new Label("还没有任何书籍数据"));
         detailTable.setItems(books);
 
+
+
         detailTable.setOnMouseClicked(e -> {
             if (e.getClickCount() >= 2) {
                 Book book = detailTable.getSelectionModel().getSelectedItem();
@@ -89,6 +95,25 @@ public class BookController extends FXController {
                 this.emit(new ContentItemChangeEvent(book,this));
             }
         });
+
+        try {
+            Image icon = new Image(this.getClass().getModule().getResourceAsStream("appicons/label.png"));
+
+            detailTable.setOnDragDetected(event -> {
+                if (detailTable.getSelectionModel().getSelectedItem() == null) {
+                    return;
+                }
+                Book book = detailTable.getSelectionModel().getSelectedItem();
+                Dragboard dragboard = detailTable.startDragAndDrop(TransferMode.MOVE);
+                ClipboardContent content = new ClipboardContent();
+                content.putString(book.getId().toString());
+                dragboard.setContent(content);
+                dragboard.setDragView(icon);
+            });
+        } catch (Exception e) {
+
+        }
+
     }
 
     private void typeChange(ObservableValue<? extends BookType> typeObservableValue, BookType old, BookType newVal) {

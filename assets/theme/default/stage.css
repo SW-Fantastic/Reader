@@ -1,10 +1,10 @@
-.notification-bar > .pane {
+.notification-bar .pane {
   -fx-background-color: #fdffdf;
   -fx-padding: 12;
   -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 11, 0, 0, 3);
   -fx-background-insets: 0, 1, 2;
 }
-.notification-bar > .pane .label {
+.notification-bar .pane .label {
   -fx-font-family: "FZMiaoWuS-GB";
   -fx-font-size: 20px;
 }
@@ -41,22 +41,22 @@
   -fx-background-radius: 8;
   -fx-text-fill: #000;
 }
-.history-list .list-cell:selected .label {
-  -fx-text-fill: #FFF;
-}
-.history-list .list-cell:selected .cell-content {
-  -fx-background-color: #786a7b;
-}
 .history-list .list-cell .btn-cell {
   -fx-background-color: rgba(120, 106, 123, 0);
   -fx-text-fill: #786a7b;
   -fx-background-radius: 999;
   -fx-effect: dropshadow(three-pass-box, #786a7b, 16, 0, 0, 0);
 }
-.history-list .list-cell:selected .btn-cell {
+.history-list .list-cell .btn-cell:hover {
   -fx-text-fill: #FFF;
 }
-.history-list .list-cell .btn-cell:hover {
+.history-list .list-cell:selected .label {
+  -fx-text-fill: #FFF;
+}
+.history-list .list-cell:selected .cell-content {
+  -fx-background-color: #786a7b;
+}
+.history-list .list-cell:selected .btn-cell {
   -fx-text-fill: #FFF;
 }
 .scene {

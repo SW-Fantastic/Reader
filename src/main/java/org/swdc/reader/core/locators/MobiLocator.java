@@ -174,7 +174,7 @@ public class MobiLocator implements BookLocator<String> {
 
     @Override
     public String currentPage() {
-        return "" + (this.location / 2);
+        return toPage(this.getLocation());
     }
 
     @Override
