@@ -73,7 +73,8 @@ public class BookEditDialogController extends FXController  {
         selected.ifPresent(type -> {
             if (type.equals(ButtonType.OK)) {
                 ReadView readView = findView(ReadView.class);
-                if (readView.getOpenedBook().getId().equals(book.getId())) {
+                Book opened = readView.getOpenedBook();
+                if (opened != null && opened.getId().equals(book.getId())) {
                     readView.closeBook();
                 }
                 service.deleteBook(book);

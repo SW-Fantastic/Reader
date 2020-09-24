@@ -109,14 +109,14 @@
   -fx-border-width: 0 0 2 0;
   -fx-font-size: 15;
 }
+.comb * {
+  -fx-text-fill: #786a7b;
+}
 .comb * .label {
   -fx-font-size: 15;
 }
-.comb > * {
-  -fx-text-fill: #786a7b;
-}
 .comb .combo-box-popup,
-.comb .combo-box-popup .list-view {
+.comb .list-view {
   -fx-background-color: rgba(253, 255, 223, 0.8);
 }
 .comb .list-cell {
@@ -129,11 +129,6 @@
 .list-text {
   -fx-background-color: rgba(0, 0, 0, 0);
 }
-.list-text .list-cell:selected {
-  -fx-background-color: #786a7b;
-  -fx-text-fill: #FFF;
-  -fx-background-radius: 6;
-}
 .list-text .list-cell {
   -fx-font-size: 15;
   -fx-background-color: rgba(255, 255, 255, 0.6);
@@ -141,6 +136,11 @@
   -fx-border-style: dashed;
   -fx-border-width: 0 0 0.6 0;
   -fx-border-color: rgba(120, 106, 123, 0.4);
+}
+.list-text .list-cell:selected {
+  -fx-background-color: #786a7b;
+  -fx-text-fill: #FFF;
+  -fx-background-radius: 6;
 }
 .config-panels .tab-header-background {
   -fx-background-color: rgba(255, 255, 255, 0.4);
