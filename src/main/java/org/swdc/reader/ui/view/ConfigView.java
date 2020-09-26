@@ -6,6 +6,7 @@ import javafx.scene.layout.BorderPane;
 import org.swdc.fx.FXView;
 import org.swdc.fx.anno.View;
 import org.swdc.fx.properties.FXProperties;
+import org.swdc.reader.config.AppConfig;
 import org.swdc.reader.core.ReaderConfig;
 
 import java.util.List;
@@ -25,5 +26,6 @@ public class ConfigView extends FXView {
             ReaderConfig config = (ReaderConfig)prop;
             tabs.getTabs().add(new Tab(config.getName(),prop.getEditor()));
         }
+        tabs.getTabs().add(new Tab("系统配置",findComponent(AppConfig.class).getEditor()));
     }
 }

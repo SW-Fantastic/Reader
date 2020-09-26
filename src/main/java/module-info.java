@@ -65,6 +65,7 @@ module FReader {
     exports org.swdc.reader.services;
 
     opens org.swdc.reader.config to
+            org.controlsfx.controls,
             fx.framework.core;
 
     // 被aop的类需要对AOP的组件open
