@@ -2,6 +2,7 @@
 @color-none: rgba(0,0,0,0);
 @color-notify:rgba(253,255,223,1);
 @color-silder-light:rgb(255,163,163);
+@primary: rgba(120,106,123,1);
 
 .notification-bar {
   .pane {
@@ -55,7 +56,7 @@
       -fx-background-color:  rgba(120,106,123,0);
       -fx-text-fill:  rgba(120,106,123,1);
       -fx-background-radius: 999;
-      -fx-effect: dropshadow(three-pass-box, rgba(120,106,123,1), 16, 0, 0, 0);
+      -fx-effect: dropshadow(three-pass-box, @primary, 16, 0, 0, 0);
       &:hover {
         -fx-text-fill: #FFF;
       }
@@ -65,7 +66,7 @@
         -fx-text-fill: #FFF;
       }
       .cell-content{
-        -fx-background-color: rgb(120,106,123);
+        -fx-background-color: @primary;
       }
       .btn-cell {
         -fx-text-fill: #FFF;
@@ -140,7 +141,6 @@
     }
   }
 }
-
 
 
 .list-text {
@@ -308,6 +308,7 @@
   }
 }
 .float-tools{
+  -fx-font-family: "FZMiaoWuS-GB";
   -fx-background-color:rgba(253,255,223,1);
   -fx-border-radius: 8;
   -fx-background-radius: 8;
@@ -324,4 +325,14 @@
     }
   }
 
+}
+
+.context-menu {
+  .menu-item{
+    -fx-font-size: 14px;
+    -fx-accent: @primary;
+    &:hover .label,&:focused .label,&:selected .label {
+      -fx-text-fill: @color-notify;
+    }
+  }
 }

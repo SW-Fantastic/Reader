@@ -1,5 +1,6 @@
 package org.swdc.reader.ui.controller;
 
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,12 +16,14 @@ import org.swdc.fx.anno.Listener;
 import org.swdc.reader.entity.Book;
 import org.swdc.reader.entity.BookType;
 import org.swdc.reader.services.BookService;
+import org.swdc.reader.ui.actions.BookCellActions;
 import org.swdc.reader.ui.events.*;
 import org.swdc.reader.ui.view.MainView;
 import org.swdc.reader.ui.view.cells.BookEditCell;
 import org.swdc.reader.ui.view.cells.BookEditCellView;
 import org.swdc.reader.ui.view.dialogs.BookImportDialog;
 import org.swdc.reader.ui.view.dialogs.TypeAddDialog;
+import org.swdc.reader.utils.DataUtil;
 
 import java.io.File;
 import java.util.HashMap;
@@ -80,7 +83,6 @@ public class BookController extends FXController {
         detailTable.setItems(books);
 
 
-
         detailTable.setOnMouseClicked(e -> {
             if (e.getClickCount() >= 2) {
                 Book book = detailTable.getSelectionModel().getSelectedItem();
@@ -95,6 +97,29 @@ public class BookController extends FXController {
                 this.emit(new ContentItemChangeEvent(book,this));
             }
         });
+
+        BookCellActions actions = findComponent(BookCellActions.class);
+        ContextMenu contextMenu = new ContextMenu();
+        ObservableList<MenuItem> menuItems = contextMenu.getItems();
+        ObservableValue<Book> selectedBook = detailTable.getSelectionModel().selectedItemProperty();
+        menuItems.add(DataUtil.createMenuItem("打开",actions.openBook(selectedBook)));
+        menuItems.add(DataUtil.createMenuItem("查看目录",actions.openContentDialog(selectedBook)));
+        menuItems.add(DataUtil.createMenuItem("查看书签",actions.openBookMarksDialog(selectedBook)));
+        menuItems.add(DataUtil.createMenuItem("编辑",actions.openEditDialog(selectedBook)));
+
+        detailTable.setContextMenu(contextMenu);
+
+        SimpleBooleanProperty disableMenu = new SimpleBooleanProperty();
+        menuItems.forEach(menuItem -> menuItem.disableProperty().bind(disableMenu));
+
+        detailTable.getSelectionModel().selectionModeProperty().addListener(((observable, oldValue, newValue) -> {
+            if (newValue == null) {
+                disableMenu.setValue(true);
+                return;
+            }
+            disableMenu.setValue(false);
+        }));
+
 
         try {
             Image icon = new Image(this.getClass().getModule().getResourceAsStream("appicons/label.png"));
@@ -111,7 +136,7 @@ public class BookController extends FXController {
                 dragboard.setDragView(icon);
             });
         } catch (Exception e) {
-
+            logger.error("fail to start drag",e);
         }
 
     }

@@ -287,6 +287,7 @@
   -fx-background-color: rgba(255, 255, 255, 0.8);
 }
 .float-tools {
+  -fx-font-family: "FZMiaoWuS-GB";
   -fx-background-color: #fdffdf;
   -fx-border-radius: 8;
   -fx-background-radius: 8;
@@ -302,4 +303,13 @@
 }
 .float-tools .button:hover {
   -fx-border-color: #786a7b;
+}
+.context-menu .menu-item {
+  -fx-font-size: 14px;
+  -fx-accent: #786a7b;
+}
+.context-menu .menu-item:hover .label,
+.context-menu .menu-item:focused .label,
+.context-menu .menu-item:selected .label {
+  -fx-text-fill: #fdffdf;
 }

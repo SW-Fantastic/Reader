@@ -1,5 +1,8 @@
 package org.swdc.reader.utils;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.control.MenuItem;
 import org.agrona.IoUtil;
 
 import java.io.ByteArrayOutputStream;
@@ -107,6 +110,13 @@ public class DataUtil {
             result.add(part);
         }
         return result.stream().reduce((partA, partB) -> partA + "/" + partB).orElse("");
+    }
+
+    public static MenuItem createMenuItem(String name, EventHandler<ActionEvent> eventHandler) {
+        MenuItem item = new MenuItem();
+        item.setText(name);
+        item.setOnAction(eventHandler);
+        return item;
     }
 
 

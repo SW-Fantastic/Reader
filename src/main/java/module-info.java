@@ -59,6 +59,9 @@ module FReader {
             fx.framework.aop,
             fx.framework.core;
 
+    opens org.swdc.reader.ui.actions to
+            fx.framework.core;
+
     exports org.swdc.reader.services;
 
     opens org.swdc.reader.config to
