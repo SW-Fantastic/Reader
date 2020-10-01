@@ -30,23 +30,17 @@ public class EpubReader extends AbstractReader<String> {
 
     private EpubLocator locator;
 
-    private Book book;
-
     @Override
     public void setBook(Book book) {
         if (locator != null) {
             locator.finalizeResources();
             locator = null;
         }
-        this.book = book;
+        this.currentBook = book;
         List<AbstractResolver> resolvers = getScoped(AbstractResolver.class);
         locator = new EpubLocator(resolvers,book, config, textConfig);
     }
 
-    @Override
-    public Book getBook() {
-        return book;
-    }
 
     @Override
     public void renderPage(String pageData, BorderPane view) {

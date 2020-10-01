@@ -6,8 +6,21 @@ import javafx.collections.ObservableMap;
 import org.swdc.fx.AppComponent;
 import org.swdc.reader.core.BookReader;
 import org.swdc.reader.core.ext.ExternalRenderAction;
+import org.swdc.reader.entity.Book;
 
 public abstract class AbstractReader<T> extends AppComponent implements BookReader<T> {
+
+    protected Book currentBook;
+
+    @Override
+    public Book getBook() {
+        return currentBook;
+    }
+
+    @Override
+    public String getIndexedMode() {
+        return null;
+    }
 
     protected ObservableMap<Class, ExternalRenderAction> renderActionObservableMap = FXCollections.observableHashMap();
 

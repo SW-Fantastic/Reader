@@ -10,6 +10,8 @@ import org.swdc.reader.entity.Book;
  */
 public interface BookReader<T> {
 
+    String getIndexedMode();
+
     /**
      * 设置book对象，这个时候应该为book创建Locator
      * @param book

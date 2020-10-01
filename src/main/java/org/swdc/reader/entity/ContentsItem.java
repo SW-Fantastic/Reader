@@ -30,6 +30,10 @@ public class ContentsItem {
     @Setter
     private String title;
 
+    @Getter
+    @Setter
+    private String indexMode;
+
     @Override
     public String toString() {
         return title;

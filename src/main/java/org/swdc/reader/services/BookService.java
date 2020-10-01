@@ -218,7 +218,7 @@ public class BookService extends Service {
             return;
         }
         Book book = bookRepository.getOne(item.getLocated().getId());
-        ContentsItem existed = contentsRepository.findByLocationAndLocated(item.getLocation(), book);
+        ContentsItem existed = contentsRepository.findByModeAndLocated(item.getIndexMode(),item.getLocation(), book);
         if (existed == null) {
             item.setLocated(book);
             contentsRepository.save(item);

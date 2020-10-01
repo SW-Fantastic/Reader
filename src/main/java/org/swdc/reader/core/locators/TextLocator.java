@@ -10,6 +10,7 @@ import org.swdc.reader.core.RenderResolver;
 import org.swdc.reader.core.configs.TextConfig;
 import org.swdc.reader.core.event.BookProcessEvent;
 import org.swdc.reader.core.event.ContentItemFoundEvent;
+import org.swdc.reader.core.event.ContentsModeChangeEvent;
 import org.swdc.reader.entity.Book;
 import org.swdc.reader.entity.ContentsItem;
 
@@ -61,6 +62,12 @@ public class TextLocator implements BookLocator<String> {
      */
     private String chapterNext=null;
 
+    public static final String PAGE_BY_CHAPTER = "PAGE-BY-REGEX";
+
+    public static final String PAGE_BY_COUNT = "PAGE-BY-COUNT";
+
+    private final int pageSize = 1200;
+
     private TextConfig config;
 
     private BufferedReader reader;
@@ -71,13 +78,17 @@ public class TextLocator implements BookLocator<String> {
 
     private List<? extends RenderResolver> resolvers;
 
+    private boolean divideByChapter = false;
+
+    private Charset charset;
+
     public TextLocator(List<? extends RenderResolver> resolvers, Book book, CodepageDetectorProxy codepageDetectorProxy, TextConfig config) {
         this.resolvers = resolvers;
         File bookFile = new File("./data/library/" + book.getName());
         this.bookEntity = book;
         this.config = config;
+        this.divideByChapter = config.getDivideByChapter();
         try {
-            Charset charset = null;
             try {
                 charset = codepageDetectorProxy.detectCodepage(bookFile.toURI().toURL());
             } catch (UnsupportedCharsetException cex) {
@@ -106,20 +117,53 @@ public class TextLocator implements BookLocator<String> {
 
     @Override
     public String prevPage() {
-        this.currentPage --;
-        String data = chapterAt(currentPage);
-        if (data != null) {
-            return data;
-        } else {
-            // 没有下一页，返回上一页
-            this.currentPage ++;
-            return chapterAt(currentPage);
+        try {
+            if (divideByChapter != config.getDivideByChapter()) {
+                this.reloadFile();
+            }
+            this.currentPage --;
+            String data = chapterAt(currentPage);
+            if (data != null) {
+                return data;
+            } else {
+                // 没有下一页，返回上一页
+                this.currentPage ++;
+                return chapterAt(currentPage);
+            }
+        } catch (Exception e) {
+            logger.error("fail to load prev page",e);
+            StringWriter swr = new StringWriter();
+            e.printStackTrace(new PrintWriter(swr));
+            this.currentPage --;
+            this.chapterName = "读取出现异常";
+            available = false;
+            return swr.toString();
         }
+    }
+
+    private void reloadFile() throws Exception {
+        this.currentPage = 0;
+        this.locationTextMap.clear();
+        this.locationTitleMap.clear();
+        reader.close();
+        chapterName = "序章";
+        chapterNext = null;
+        File bookFile = new File("./data/library/" + bookEntity.getName());
+        if (charset != null) {
+            reader = new BufferedReader(new InputStreamReader(new FileInputStream(bookFile),charset));
+        } else {
+            reader = new BufferedReader(new InputStreamReader(new FileInputStream(bookFile)));
+        }
+        divideByChapter = config.getDivideByChapter();
+        config.emit(new ContentsModeChangeEvent(config));
     }
 
     @Override
     public String nextPage() {
         try {
+            if (divideByChapter != config.getDivideByChapter()) {
+                this.reloadFile();
+            }
             currentPage ++;
             // 当前页内容已经存在
             String data = chapterAt(currentPage);
@@ -139,40 +183,55 @@ public class TextLocator implements BookLocator<String> {
                     resolver.renderStyle(sb);
                 }
             }
-
-            sb.append("</style></head><body><div>")
-                    .append("<p><h2 style=\"text-align: center\">")
-                    .append(line)
-                    .append("</h2></p>");
-            sb.append("\n");
-            readerLoop: while ((line = reader.readLine()) != null) {
-                if (patternForChapter == null){
-                    // 查找合用的章节正则
-                    for (Pattern pattern: chapterPatterns) {
-                        Matcher matcher = pattern.matcher(line);
+            sb.append("</style></head><body><div>");
+            if (config.getDivideByChapter()) {
+                sb.append("<p><h2 style=\"text-align: center\">")
+                        .append(line)
+                        .append("</h2></p>");
+                sb.append("\n");
+                readerLoop: while ((line = reader.readLine()) != null) {
+                    if (patternForChapter == null){
+                        // 查找合用的章节正则
+                        for (Pattern pattern: chapterPatterns) {
+                            Matcher matcher = pattern.matcher(line);
+                            if (matcher.find()) {
+                                patternForChapter = pattern;
+                                this.locationTitleMap.put(currentPage, chapterName);
+                                this.chapterNext = line.trim();
+                                break readerLoop;
+                            }
+                        }
+                    } else {
+                        Matcher matcher = patternForChapter.matcher(line);
                         if (matcher.find()) {
-                            patternForChapter = pattern;
                             this.locationTitleMap.put(currentPage, chapterName);
-                            this.chapterNext = line.trim();
-                            break readerLoop;
+                            this.chapterNext = line;
+                            break;
                         }
                     }
-                } else {
-                    Matcher matcher = patternForChapter.matcher(line);
-                    if (matcher.find()) {
-                        this.locationTitleMap.put(currentPage, chapterName);
-                        this.chapterNext = line;
-                        break;
-                    }
+                    sb.append("<p>").append(line).append("</p>");
                 }
-                sb.append("<p>").append(line).append("</p>");
+            } else {
+                int totalSize = 0;
+                while ((line = reader.readLine()) != null) {
+                    if (totalSize < pageSize) {
+                        totalSize = totalSize + line.length();
+                        sb.append("<p>").append(line).append("</p>");
+                        continue;
+                    }
+                    this.chapterName = "第" + currentPage + "页";
+                    this.locationTitleMap.put(currentPage, this.chapterName);
+                    break;
+                }
             }
+
             sb.append("</div></body></html>");
             locationTextMap.put(currentPage, sb.toString());
             ContentsItem item = new ContentsItem();
             item.setLocated(bookEntity);
             item.setLocation(currentPage + "");
             item.setTitle(chapterName);
+            item.setIndexMode(config.getDivideByChapter() ? PAGE_BY_CHAPTER: PAGE_BY_COUNT);
             config.emit(new ContentItemFoundEvent(item,config));
 
             String content = sb.toString();

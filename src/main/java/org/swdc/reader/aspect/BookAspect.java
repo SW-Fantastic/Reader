@@ -22,8 +22,9 @@ public class BookAspect extends Advisor {
     @Around(pattern = "org.swdc.reader.services.BookService.create[\\S]+")
     public Object onCreate(ExecutablePoint point) {
         try {
-           this.publishRefreshEvent(point.getOriginal().getName(), getBook(point));
-           return point.process();
+            Object result = point.process();
+            this.publishRefreshEvent(point.getOriginal().getName(), getBook(point));
+            return result;
         } catch (Exception exc) {
             logger.error("fail to execute creation method",exc);
         }

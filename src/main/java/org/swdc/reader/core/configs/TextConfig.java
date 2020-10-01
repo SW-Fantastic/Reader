@@ -7,6 +7,7 @@ import org.swdc.fx.anno.PropType;
 import org.swdc.fx.anno.Properties;
 import org.swdc.fx.properties.FXProperties;
 import org.swdc.reader.core.ReaderConfig;
+import org.swdc.reader.core.event.ContentsModeChangeEvent;
 
 /**
  * 文本阅读器的相关配置
@@ -98,6 +99,12 @@ public class TextConfig extends FXProperties implements ReaderConfig{
     @ConfigProp(name="显示拼音", type = PropType.CHECK,
             value = "", tooltip = "是否为汉字注音", propName = "show-pin-yin")
     private Boolean showPinYin;
+
+    @Getter
+    @Setter
+    @ConfigProp(name = "按章节分页",type = PropType.CHECK,value = "",
+            tooltip = "中文分页模式，按照正则表达式匹配章节。",propName = "divide-by-page")
+    private Boolean divideByChapter;
 
     public void setName(String name) {
         return;

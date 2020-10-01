@@ -37,7 +37,9 @@ public class ReadView extends FXView {
     public void focus() {
         ReadController controller = getLoader().getController();
         AbstractReader reader = controller.getCurrentReader();
-        reader.getView().getView().requestFocus();
+        if (reader != null) {
+            reader.getView().getView().requestFocus();
+        }
     }
 
     public void toggleFloatTools() {

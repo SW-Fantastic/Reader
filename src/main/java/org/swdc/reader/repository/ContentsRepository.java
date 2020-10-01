@@ -14,4 +14,7 @@ public interface ContentsRepository extends JPARepository<ContentsItem, Long> {
     @SQLQuery("FROM ContentsItem WHERE location = :location AND located = :located")
     ContentsItem findByLocationAndLocated(@Param("location") String location, @Param("located") Book located);
 
+    @SQLQuery("FROM ContentsItem WHERE indexMode = :mode AND location = :location AND located = :located")
+    ContentsItem findByModeAndLocated(@Param("mode")String mode,@Param("location") String location, @Param("located") Book located);
+
 }

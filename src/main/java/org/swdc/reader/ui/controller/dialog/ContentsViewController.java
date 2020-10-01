@@ -1,5 +1,6 @@
 package org.swdc.reader.ui.controller.dialog;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -8,17 +9,22 @@ import org.swdc.fx.FXController;
 import org.swdc.fx.anno.Aware;
 import org.swdc.fx.anno.Listener;
 import org.swdc.reader.core.event.BookLocationEvent;
+import org.swdc.reader.core.event.ContentsModeChangeEvent;
+import org.swdc.reader.core.readers.AbstractReader;
 import org.swdc.reader.entity.Book;
 import org.swdc.reader.entity.ContentsItem;
 import org.swdc.reader.services.BookService;
 import org.swdc.reader.ui.events.ContentItemChangeEvent;
 import org.swdc.reader.ui.events.DocumentOpenEvent;
 import org.swdc.reader.ui.events.ViewChangeEvent;
+import org.swdc.reader.ui.view.ReadView;
 import org.swdc.reader.ui.view.dialogs.ContentsItemView;
 
 import java.net.URL;
 import java.util.Comparator;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class ContentsViewController extends FXController {
 
@@ -27,6 +33,8 @@ public class ContentsViewController extends FXController {
 
     @Aware
     private BookService service = null;
+
+    private Long bookId;
 
     private ObservableList<ContentsItem> items = FXCollections.observableArrayList();
 
@@ -45,11 +53,38 @@ public class ContentsViewController extends FXController {
         this.resolveBookContent(event.getData());
     }
 
+    @Listener(value = ContentsModeChangeEvent.class,updateUI = true)
+    public void onModeChange(ContentsModeChangeEvent event) {
+        if (bookId == null) {
+            return;
+        }
+        Book book = service.getBook(this.bookId);
+        resolveBookContent(book);
+    }
+
     private void resolveBookContent(Book booktarget) {
+
         Book book =  service.getBook(booktarget.getId());
         this.items.clear();
-        this.items.addAll(book.getContentsItems());
-        this.items.sort(Comparator.comparingInt(itemA -> itemA.getId().intValue()));
+        this.bookId = booktarget.getId();
+
+        List<AbstractReader> readers = getScoped(AbstractReader.class);
+        readers.stream().filter(reader -> reader.isSupport(book))
+                .findFirst().ifPresent((AbstractReader reader) -> {
+                    if (reader.getIndexedMode() != null) {
+                        List<ContentsItem> items = book.getContentsItems()
+                                .stream()
+                                .filter(i -> {
+                                    return i.getIndexMode() != null && i.getIndexMode().equals(reader.getIndexedMode());
+                                })
+                                .collect(Collectors.toList());
+                        this.items.addAll(items);
+                        this.items.sort(Comparator.comparingInt(itemA -> itemA.getId().intValue()));
+                    } else {
+                        this.items.addAll(book.getContentsItems());
+                        this.items.sort(Comparator.comparingInt(itemA -> itemA.getId().intValue()));
+                    }
+                });
     }
 
     @FXML

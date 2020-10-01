@@ -22,13 +22,11 @@ public class PDFReader extends AbstractReader<Image> {
 
     private PDFLocator locator;
 
-    private Book currentBook;
+    @Aware
+    private PDFRenderView view = null;
 
     @Aware
-    private PDFRenderView view;
-
-    @Aware
-    private PDFConfig config;
+    private PDFConfig config = null;
 
     @Override
     public void initialize() {
@@ -43,11 +41,6 @@ public class PDFReader extends AbstractReader<Image> {
         }
         locator = new PDFLocator(book, config);
         this.currentBook = book;
-    }
-
-    @Override
-    public Book getBook() {
-        return currentBook;
     }
 
     @Override
@@ -124,6 +117,7 @@ public class PDFReader extends AbstractReader<Image> {
 
     @Override
     public void finalizeResources() {
+        super.finalizeResources();
         locator.finalizeResources();
         ScrollPane pane = (ScrollPane) view.getView();
         pane.widthProperty().removeListener(this::onResize);

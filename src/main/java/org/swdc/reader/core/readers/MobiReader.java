@@ -21,22 +21,19 @@ import java.util.List;
 public class MobiReader extends AbstractReader<String> {
 
     @Aware
-    private TextConfig textConfig;
+    private TextConfig textConfig = null;
 
     @Aware
-    private MobiRenderView view;
-
+    private MobiRenderView view = null;
 
     @Aware
-    private CommonComponents commonComponents;
+    private CommonComponents commonComponents = null;
 
     private MobiLocator locator;
 
-    private Book book;
-
     @Override
     public void setBook(Book book) {
-        this.book = book;
+        this.currentBook = book;
         if (this.locator != null) {
             locator.finalizeResources();
             locator = null;
@@ -54,10 +51,6 @@ public class MobiReader extends AbstractReader<String> {
         return view;
     }
 
-    @Override
-    public Book getBook() {
-        return book;
-    }
 
     @Override
     public void renderPage(String pageData, BorderPane view) {

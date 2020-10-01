@@ -16,8 +16,10 @@ import org.swdc.reader.core.BookLocator;
 import org.swdc.reader.core.event.BookLocationEvent;
 import org.swdc.reader.core.event.BookProcessEvent;
 import org.swdc.reader.core.event.ContentItemFoundEvent;
+import org.swdc.reader.core.event.ContentsModeChangeEvent;
 import org.swdc.reader.core.readers.AbstractReader;
 import org.swdc.reader.core.views.PopupToolView;
+import org.swdc.reader.entity.Book;
 import org.swdc.reader.services.BookService;
 import org.swdc.reader.services.CommonComponents;
 import org.swdc.reader.ui.events.DocumentOpenEvent;
@@ -93,7 +95,6 @@ public class ReadController extends FXController {
         floatTools.disableProperty().bind(disabled);
         disabled.set(true);
     }
-
 
     @Listener(ContentItemFoundEvent.class)
     public void contentItemFound(ContentItemFoundEvent event) {

@@ -33,7 +33,14 @@ public class TextReader extends AbstractReader<String> {
     @Getter
     private BookLocator<String> locator;
 
-    private Book currentBook;
+    @Override
+    public String getIndexedMode() {
+        if (config.getDivideByChapter()) {
+            return TextLocator.PAGE_BY_CHAPTER;
+        } else {
+            return TextLocator.PAGE_BY_COUNT;
+        }
+    }
 
     @Override
     public void setBook(Book book) {
@@ -49,11 +56,6 @@ public class TextReader extends AbstractReader<String> {
     @Override
     public BookView getView() {
         return view;
-    }
-
-    @Override
-    public Book getBook() {
-        return currentBook;
     }
 
     @Override
