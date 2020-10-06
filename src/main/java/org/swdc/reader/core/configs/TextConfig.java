@@ -15,7 +15,7 @@ import org.swdc.reader.core.ReaderConfig;
 public class TextConfig extends FXProperties implements ReaderConfig{
 
     @Getter
-    private String name = "文本渲染";
+    private String name = "lang@tab-text-render";
 
 
     /**

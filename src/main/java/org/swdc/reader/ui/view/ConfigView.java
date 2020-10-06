@@ -24,8 +24,8 @@ public class ConfigView extends FXView {
                 continue;
             }
             ReaderConfig config = (ReaderConfig)prop;
-            tabs.getTabs().add(new Tab(config.getName(),prop.getEditor()));
+            tabs.getTabs().add(new Tab(this.i18n(config.getName()),prop.getEditor()));
         }
-        tabs.getTabs().add(new Tab("系统配置",findComponent(AppConfig.class).getEditor()));
+        tabs.getTabs().add(new Tab(this.i18n("lang@tab-config"),findComponent(AppConfig.class).getEditor()));
     }
 }

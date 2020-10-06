@@ -27,16 +27,45 @@
   "config-text-pageby": "Page By Chapter",
   "config-text-pageby-tooltip": "Do Not select it if you are not Chinese users.",
 
+  "config-epub-hyperlink-color": "Hyperlink color",
+  "config-epub-hyperlink-color-tooltip": "Color of hyperlinks built into Epub",
+  "config-epub-hyperlink-enable": "Enable HyperLinks",
+  "config-epub-hyperlink-enable-tooltip": "Enable ePub's internal hyperlinks, allowing you to click on links to jump",
+
+  "config-pdf-cache-size": "Cache Size",
+  "config-pdf-cache-size-tooltip": "Cache part of the page to speed up the load when browsing",
+  "config-pdf-quality": "Render Quality",
+  "config-pdf-quality-tooltip": "High quality rendering is slower.",
+
   "btn-prev": "PageUp",
   "btn-next": "PageDown",
   "btn-mark": "BookMarks",
   "btn-tools": "Tools",
   "btn-jump": "Turn To",
   "btn-contents": "Contents",
+  "btn-ok": "OK",
+  "btn-cancel": "Cancel",
+  "btn-delete": "Delete",
+  "btn-save": "Save",
+  "btn-open": "Open",
 
   "btn-search": "Search",
   "table-name": "File Name",
   "table-size": "Size",
   "table-modify": "Edit",
-  "table-place-holder": "No Book Files"
+  "table-place-holder": "No Book Files",
+
+  "dialog-add-type": "To add a category, please enter the category name:",
+  "dialog-add-title": "Add Category",
+  "dialog-book-title": "Book",
+  "dialog-contents": "Contents",
+  "dialog-marks": "Book Marks",
+
+  "tab-text-render": "Plain Text",
+  "tab-epub": "E-Public",
+  "tab-pdf": "Adobe-PDF",
+  "tab-config": "Preference",
+
+  "book-title": "Title",
+  "book-category": "Category"
 }

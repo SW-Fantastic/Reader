@@ -27,15 +27,44 @@
   "config-text-pageby": "按章节分页",
   "config-text-pageby-tooltip": "中文分页模式，按照正则表达式匹配章节。",
 
+  "config-epub-hyperlink-color": "链接颜色",
+  "config-epub-hyperlink-color-tooltip": "EPUB内建的超链接的颜色",
+  "config-epub-hyperlink-enable": "启用链接跳转",
+  "config-epub-hyperlink-enable-tooltip": "启用EPUB内部超链接，允许点击链接进行跳转",
+
+  "config-pdf-cache-size": "缓存大小",
+  "config-pdf-cache-size-tooltip": "缓存一部分页面以加快翻阅时的载入速度",
+  "config-pdf-quality": "渲染质量",
+  "config-pdf-quality-tooltip": "高质量的渲染会比较慢。",
+
   "btn-prev": "上一页",
   "btn-next": "下一页",
   "btn-mark": "书签",
   "btn-tools": "工具",
   "btn-jump": "跳转",
   "btn-contents": "目录",
+  "btn-ok": "确定",
+  "btn-cancel": "取消",
+  "btn-delete": "删除",
+  "btn-save": "保存",
+  "btn-open": "打开",
 
   "table-name": "名称",
   "table-size": "大小",
   "table-modify": "修改",
-  "table-place-holder": "还没有任何书籍数据"
+  "table-place-holder": "还没有任何书籍数据",
+
+  "dialog-add-type": "添加分类，请输入分类名称：",
+  "dialog-add-title": "添加分类",
+  "dialog-book-title": "书籍",
+  "dialog-contents": "目录",
+  "dialog-marks": "书签",
+
+  "tab-text-render": "文本渲染",
+  "tab-epub": "E-Public",
+  "tab-pdf": "Adobe-PDF",
+  "tab-config": "系统配置",
+
+  "book-title": "标题",
+  "book-category": "分类"
 }

@@ -15,18 +15,18 @@ import org.swdc.reader.core.ReaderConfig;
 public class EpubConfig extends FXProperties implements ReaderConfig {
 
     @Getter
-    private String name = "E-Public";
+    private String name = "lang@tab-epub";
 
     @Getter
     @Setter
-    @ConfigProp(type = PropType.COLOR, name = "链接颜色",
-            value = "", tooltip = "超级链接的颜色", propName = "link-color")
+    @ConfigProp(type = PropType.COLOR, name = "lang@config-epub-hyperlink-color",
+            value = "", tooltip = "lang@config-epub-hyperlink-color-tooltip", propName = "link-color")
     private String linkColor;
 
     @Getter
     @Setter
-    @ConfigProp(type = PropType.CHECK, name = "启用链接跳转",
-            value = "", tooltip = "可以使用超链接在页面间跳转",propName = "enable-hyper-links")
+    @ConfigProp(type = PropType.CHECK, name = "lang@config-epub-hyperlink-enable",
+            value = "", tooltip = "lang@config-epub-hyperlink-enable-tooltip",propName = "enable-hyper-links")
     private Boolean enableHyperLinks;
 
     public void setName(String name) {
