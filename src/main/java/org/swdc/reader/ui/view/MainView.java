@@ -18,7 +18,7 @@ import org.swdc.fx.resource.icons.FontSize;
 import org.swdc.fx.resource.icons.FontawsomeService;
 import org.swdc.reader.ui.events.ViewChangeEvent;
 
-@View(background = true,title = "幻想藏书阁",resizeable = true)
+@View(background = true,title = "lang@window-title",resizeable = true)
 public class MainView extends FXView {
 
     @Aware

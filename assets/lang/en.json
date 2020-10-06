@@ -1,0 +1,42 @@
+{
+  "window-title": "Fantastic Library",
+
+  "config-theme": "Theme",
+  "config-theme-tooltip": "Theme",
+  "config-lang": "Language",
+  "config-lang-tooltip": "Select the your language",
+
+  "config-text-font": "Font Family",
+  "config-text-font-tooltip": "the font style in text reading.",
+  "config-text-back": "Read Time Background",
+  "config-text-back-tooltip": "The background image which display in your reading.",
+  "config-text-enable-bg": "Enable Background",
+  "config-text-enable-bg-tooltip": "please select it if you want to using background image in reading",
+  "config-text-bg-color": "Read Background Color",
+  "config-text-bg-color-tooltip": "Background Color will appear when you disable background-image",
+  "config-text-font-size": "Font Size",
+  "config-text-font-size-tooltip": "The font size",
+  "config-text-font-color": "Text Color",
+  "config-text-font-color-tooltip": "ForeGround Color in text reading",
+  "config-text-font-shadow": "Enable Text Shadow",
+  "config-text-font-shadow-tooltip": "Text Shadow will make the feel batter",
+  "config-text-shadow-color": "Shadow Color",
+  "config-text-shadow-tooltip": "Color of the text shadow",
+  "config-text-pinyin": "Show PinYin",
+  "config-text-pinyin-tooltip": "Display HanYuPinYin for Chinese users",
+  "config-text-pageby": "Page By Chapter",
+  "config-text-pageby-tooltip": "Do Not select it if you are not Chinese users.",
+
+  "btn-prev": "PageUp",
+  "btn-next": "PageDown",
+  "btn-mark": "BookMarks",
+  "btn-tools": "Tools",
+  "btn-jump": "Turn To",
+  "btn-contents": "Contents",
+
+  "btn-search": "Search",
+  "table-name": "File Name",
+  "table-size": "Size",
+  "table-modify": "Edit",
+  "table-place-holder": "No Book Files"
+}

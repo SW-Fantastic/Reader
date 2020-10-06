@@ -79,7 +79,7 @@ public class BookController extends FXController {
         colSize.setCellValueFactory(new PropertyValueFactory<>("size"));
         colSha.setCellValueFactory(new PropertyValueFactory<>("shaCode"));
         colEdit.setCellFactory(view->new BookEditCell(findView(BookEditCellView.class)));
-        detailTable.setPlaceholder(new Label("还没有任何书籍数据"));
+        detailTable.setPlaceholder(new Label(this.i18n("lang@table-place-holder")));
         detailTable.setItems(books);
 
 
