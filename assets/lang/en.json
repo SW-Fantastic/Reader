@@ -48,6 +48,8 @@
   "btn-delete": "Delete",
   "btn-save": "Save",
   "btn-open": "Open",
+  "btn-export": "Export",
+  "btn-move": "Move To",
 
   "btn-search": "Search",
   "table-name": "File Name",
@@ -60,6 +62,9 @@
   "dialog-book-title": "Book",
   "dialog-contents": "Contents",
   "dialog-marks": "Book Marks",
+  "dialog-category": "Category Edit",
+  "dialog-category-name": "Category Name:",
+  "dialog-category-counts": "Document Counts:",
 
   "tab-text-render": "Plain Text",
   "tab-epub": "E-Public",
@@ -67,5 +72,6 @@
   "tab-config": "Preference",
 
   "book-title": "Title",
-  "book-category": "Category"
+  "book-category": "Category",
+  "text-loading": "File Loading:"
 }

@@ -48,6 +48,8 @@
   "btn-delete": "删除",
   "btn-save": "保存",
   "btn-open": "打开",
+  "btn-export": "导出",
+  "btn-move": "迁移",
 
   "table-name": "名称",
   "table-size": "大小",
@@ -59,6 +61,9 @@
   "dialog-book-title": "书籍",
   "dialog-contents": "目录",
   "dialog-marks": "书签",
+  "dialog-category": "分类编辑",
+  "dialog-category-name": "分类名称：",
+  "dialog-category-counts": "文档数量：",
 
   "tab-text-render": "文本渲染",
   "tab-epub": "E-Public",
@@ -66,5 +71,6 @@
   "tab-config": "系统配置",
 
   "book-title": "标题",
-  "book-category": "分类"
+  "book-category": "分类",
+  "text-loading": "正在载入："
 }
