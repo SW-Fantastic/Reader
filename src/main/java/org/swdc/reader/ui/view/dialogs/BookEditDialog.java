@@ -11,7 +11,7 @@ import org.swdc.reader.entity.BookType;
 /**
  * Created by lenovo on 2019/5/26.
  */
-@View(title = "书籍",dialog = true)
+@View(title = "lang@dialog-book-title",dialog = true)
 public class BookEditDialog extends FXView {
 
     @Getter

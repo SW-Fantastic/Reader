@@ -5,11 +5,11 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:controller="org.swdc.reader.ui.controller.ConfigController" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="469.0" prefWidth="707.0" styleClass="scene" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="469.0" prefWidth="707.0" styleClass="scene" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.swdc.reader.ui.controller.ConfigController">
    <top>
       <HBox alignment="CENTER_RIGHT" prefHeight="52.0" prefWidth="707.0" BorderPane.alignment="CENTER">
          <children>
-            <Button onAction="#saveConfigs" mnemonicParsing="false" prefHeight="32.0" prefWidth="65.0" styleClass="btn-txt" text="保存" />
+            <Button mnemonicParsing="false" onAction="#saveConfigs" prefHeight="32.0" prefWidth="65.0" styleClass="btn-txt" text="lang@btn-save" />
          </children>
          <BorderPane.margin>
             <Insets />

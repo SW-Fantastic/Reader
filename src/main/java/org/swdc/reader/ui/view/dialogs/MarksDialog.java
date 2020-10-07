@@ -7,7 +7,7 @@ import org.swdc.fx.anno.View;
 /**
  * Created by lenovo on 2019/6/7.
  */
-@View(title = "书签",dialog = true)
+@View(title = "lang@dialog-marks",dialog = true)
 public class MarksDialog extends FXView {
 
 }

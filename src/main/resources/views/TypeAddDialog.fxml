@@ -9,7 +9,7 @@
    <top>
       <HBox alignment="CENTER_LEFT" prefHeight="49.0" prefWidth="420.0" BorderPane.alignment="CENTER">
          <children>
-            <Label text="添加分类，请输入分类名称：">
+            <Label text="lang@dialog-add-type">
                <HBox.margin>
                   <Insets left="16.0" />
                </HBox.margin>
@@ -27,8 +27,8 @@
    <bottom>
       <HBox alignment="CENTER_RIGHT" prefHeight="39.0" prefWidth="420.0" spacing="8.0" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" onAction="#onCancel" prefHeight="29.0" prefWidth="55.0" styleClass="btn-txt" text="取消" />
-            <Button mnemonicParsing="false" onAction="#onOk" prefHeight="28.0" prefWidth="55.0" styleClass="btn-txt" text="确定" />
+            <Button mnemonicParsing="false" onAction="#onCancel" prefHeight="29.0" prefWidth="55.0" styleClass="btn-txt" text="lang@btn-cancel" />
+            <Button mnemonicParsing="false" onAction="#onOk" prefHeight="28.0" prefWidth="55.0" styleClass="btn-txt" text="lang@btn-ok" />
          </children>
          <padding>
             <Insets right="8.0" />

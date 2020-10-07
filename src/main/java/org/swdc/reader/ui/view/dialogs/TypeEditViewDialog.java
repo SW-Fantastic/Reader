@@ -13,7 +13,7 @@ import org.swdc.reader.entity.BookType;
  * Created by lenovo on 2019/6/8.
  */
 @Scope(ScopeType.MULTI)
-@View(title = "类型编辑",dialog = true)
+@View(title = "lang@dialog-category",dialog = true)
 public class TypeEditViewDialog extends FXView {
 
     @Getter

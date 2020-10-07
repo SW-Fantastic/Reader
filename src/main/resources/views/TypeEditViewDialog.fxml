@@ -9,10 +9,10 @@
    <bottom>
       <HBox alignment="CENTER_RIGHT" prefHeight="44.0" prefWidth="355.0" spacing="8.0" BorderPane.alignment="CENTER_RIGHT">
          <children>
-            <Button mnemonicParsing="false" onAction="#onDelete" prefHeight="29.0" prefWidth="55.0" styleClass="btn-txt" text="删除" />
-            <Button layoutX="302.0" layoutY="14.0" mnemonicParsing="false" onAction="#onMove" prefHeight="29.0" prefWidth="55.0" styleClass="btn-txt" text="迁移" />
-            <Button layoutX="239.0" layoutY="14.0" mnemonicParsing="false" onAction="#onExport" prefHeight="29.0" prefWidth="55.0" styleClass="btn-txt" text="导出" />
-            <Button layoutX="302.0" layoutY="14.0" mnemonicParsing="false" onAction="#onCancel" prefHeight="29.0" prefWidth="55.0" styleClass="btn-txt" text="取消" />
+            <Button mnemonicParsing="false" onAction="#onDelete" prefHeight="29.0" prefWidth="55.0" styleClass="btn-txt" text="lang@btn-delete" />
+            <Button layoutX="302.0" layoutY="14.0" mnemonicParsing="false" onAction="#onMove" prefHeight="29.0" prefWidth="55.0" styleClass="btn-txt" text="lang@btn-move" />
+            <Button layoutX="239.0" layoutY="14.0" mnemonicParsing="false" onAction="#onExport" prefHeight="29.0" prefWidth="55.0" styleClass="btn-txt" text="lang@btn-export" />
+            <Button layoutX="302.0" layoutY="14.0" mnemonicParsing="false" onAction="#onCancel" prefHeight="29.0" prefWidth="55.0" styleClass="btn-txt" text="lang@btn-cancel" />
          </children>
          <opaqueInsets>
             <Insets />
@@ -38,14 +38,14 @@
           <RowConstraints maxHeight="120.0" minHeight="10.0" prefHeight="61.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label text="分类名称：" GridPane.rowIndex="1" />
+            <Label text="lang@dialog-category-name" GridPane.rowIndex="1" />
             <TextField id="txtName" fx:id="txtName" prefHeight="28.0" prefWidth="155.0" styleClass="txt" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <GridPane.margin>
                   <Insets left="6.0" />
                </GridPane.margin>
             </TextField>
-            <Button mnemonicParsing="false" onAction="#nameModify" prefHeight="28.0" prefWidth="51.0" styleClass="btn-txt" text="修改" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-            <Label text="文档数量：" GridPane.rowIndex="2" />
+            <Button mnemonicParsing="false" onAction="#nameModify" prefHeight="28.0" prefWidth="51.0" styleClass="btn-txt" text="lang@btn-save" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <Label text="lang@dialog-category-counts" GridPane.rowIndex="2" />
             <TextField id="txtCount" fx:id="txtCount" editable="false" minHeight="28.0" styleClass="txt" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <GridPane.margin>
                   <Insets left="6.0" />

@@ -7,7 +7,6 @@ import org.swdc.fx.anno.PropType;
 import org.swdc.fx.anno.Properties;
 import org.swdc.fx.properties.FXProperties;
 import org.swdc.reader.core.ReaderConfig;
-import org.swdc.reader.core.event.ContentsModeChangeEvent;
 
 /**
  * 文本阅读器的相关配置
@@ -16,7 +15,7 @@ import org.swdc.reader.core.event.ContentsModeChangeEvent;
 public class TextConfig extends FXProperties implements ReaderConfig{
 
     @Getter
-    private String name = "文本渲染";
+    private String name = "lang@tab-text-render";
 
 
     /**
@@ -24,8 +23,10 @@ public class TextConfig extends FXProperties implements ReaderConfig{
      */
     @Getter
     @Setter
-    @ConfigProp(name = "阅读字体", type = PropType.FILE_SELECT_IMPORTABLE,
-            value = "assets/fonts", tooltip = "这是文本文件阅读的时候的字体样式", propName = "font-path")
+    @ConfigProp(name = "lang@config-text-font",
+            type = PropType.FILE_SELECT_IMPORTABLE,
+            value = "assets/fonts",
+            tooltip = "lang@config-text-font-tooltip", propName = "font-path")
     private String fontPath;
 
     /**
@@ -33,8 +34,9 @@ public class TextConfig extends FXProperties implements ReaderConfig{
      */
     @Getter
     @Setter
-    @ConfigProp(name = "阅读背景图", type = PropType.FILE_SELECT_IMPORTABLE,
-            value = "assets/readerBackground/",propName = "background-image", tooltip = "文本阅读的时候的背景图片")
+    @ConfigProp(name = "lang@config-text-back", type = PropType.FILE_SELECT_IMPORTABLE,
+            value = "assets/readerBackground/",
+            propName = "background-image", tooltip = "lang@config-text-back-tooltip")
     private String backgroundImage;
 
     /**
@@ -42,8 +44,9 @@ public class TextConfig extends FXProperties implements ReaderConfig{
      */
     @Getter
     @Setter
-    @ConfigProp(name = "使用阅读背景图", type = PropType.CHECK,
-            value = "", tooltip = "是否在阅读时使用背景图", propName = "enable-background-image")
+    @ConfigProp(name = "lang@config-text-enable-bg", type = PropType.CHECK,
+            value = "", tooltip = "lang@config-text-enable-bg-tooltip",
+            propName = "enable-background-image")
     private Boolean enableBackgroundImage;
 
     /**
@@ -51,8 +54,8 @@ public class TextConfig extends FXProperties implements ReaderConfig{
      */
     @Getter
     @Setter
-    @ConfigProp(name = "阅读背景色", type = PropType.COLOR, value = "",
-            tooltip = "阅读使用的背景颜色", propName = "background-color")
+    @ConfigProp(name = "lang@config-text-bg-color", type = PropType.COLOR, value = "",
+            tooltip = "lang@config-text-bg-color-tooltip", propName = "background-color")
     private String backgroundColor;
 
     /**
@@ -60,8 +63,9 @@ public class TextConfig extends FXProperties implements ReaderConfig{
      */
     @Getter
     @Setter
-    @ConfigProp(name = "文字大小", type = PropType.NUMBER_SELECTABLE, value = "42",
-            tooltip = "阅读时的文字大小", propName = "font-size")
+    @ConfigProp(name = "lang@config-text-font-size",
+            type = PropType.NUMBER_SELECTABLE, value = "42",
+            tooltip = "lang@config-text-font-size-tooltip", propName = "font-size")
     private Integer fontSize;
 
     /**
@@ -69,8 +73,10 @@ public class TextConfig extends FXProperties implements ReaderConfig{
      */
     @Getter
     @Setter
-    @ConfigProp(name = "字体颜色", type = PropType.COLOR, value = "",
-            tooltip = "字体的使用的颜色", propName = "font-color")
+    @ConfigProp(name = "lang@config-text-font-color",
+            type = PropType.COLOR, value = "",
+            tooltip = "lang@config-text-font-color-tooltip",
+            propName = "font-color")
     private String fontColor;
 
     /**
@@ -78,8 +84,9 @@ public class TextConfig extends FXProperties implements ReaderConfig{
      */
     @Getter
     @Setter
-    @ConfigProp(name = "渲染字体的阴影", type = PropType.CHECK,
-            value = "", tooltip = "渲染字体的阴影",propName = "enable-text-shadow")
+    @ConfigProp(name = "lang@config-text-font-shadow", type = PropType.CHECK,
+            value = "", tooltip = "lang@config-text-font-shadow-tooltip"
+            ,propName = "enable-text-shadow")
     private Boolean enableTextShadow;
 
     /**
@@ -87,8 +94,10 @@ public class TextConfig extends FXProperties implements ReaderConfig{
      */
     @Getter
     @Setter
-    @ConfigProp(name = "字体阴影的颜色", type = PropType.COLOR,
-            value = "", tooltip = "字体的阴影色", propName = "shadow-color")
+    @ConfigProp(name = "lang@config-text-shadow-color",
+            type = PropType.COLOR,
+            value = "", tooltip = "lang@config-text-shadow-color-tooltip",
+            propName = "shadow-color")
     private String shadowColor;
 
     /**
@@ -96,14 +105,14 @@ public class TextConfig extends FXProperties implements ReaderConfig{
      */
     @Getter
     @Setter
-    @ConfigProp(name="显示拼音", type = PropType.CHECK,
-            value = "", tooltip = "是否为汉字注音", propName = "show-pin-yin")
+    @ConfigProp(name="lang@config-text-pinyin", type = PropType.CHECK,
+            value = "", tooltip = "lang@config-text-pinyin-tooltip", propName = "show-pin-yin")
     private Boolean showPinYin;
 
     @Getter
     @Setter
-    @ConfigProp(name = "按章节分页",type = PropType.CHECK,value = "",
-            tooltip = "中文分页模式，按照正则表达式匹配章节。",propName = "divide-by-page")
+    @ConfigProp(name = "lang@config-text-pageby",type = PropType.CHECK,value = "",
+            tooltip = "lang@config-text-pageby-tooltip",propName = "divide-by-page")
     private Boolean divideByChapter;
 
     public void setName(String name) {

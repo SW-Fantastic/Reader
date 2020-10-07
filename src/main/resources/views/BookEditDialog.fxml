@@ -9,9 +9,9 @@
    <bottom>
       <HBox alignment="CENTER_RIGHT" prefHeight="54.0" prefWidth="388.0" spacing="8.0" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" onAction="#onCancel" prefHeight="32.0" prefWidth="58.0" styleClass="btn-txt" text="取消" />
-            <Button layoutX="328.0" layoutY="21.0" mnemonicParsing="false" onAction="#onDelete" prefHeight="32.0" prefWidth="58.0" styleClass="btn-txt" text="删除" />
-            <Button mnemonicParsing="false" onAction="#onModify" prefHeight="32.0" prefWidth="58.0" styleClass="btn-txt" text="修改">
+            <Button mnemonicParsing="false" onAction="#onCancel" prefHeight="32.0" prefWidth="58.0" styleClass="btn-txt" text="lang@btn-cancel" />
+            <Button layoutX="328.0" layoutY="21.0" mnemonicParsing="false" onAction="#onDelete" prefHeight="32.0" prefWidth="58.0" styleClass="btn-txt" text="lang@btn-delete" />
+            <Button mnemonicParsing="false" onAction="#onModify" prefHeight="32.0" prefWidth="58.0" styleClass="btn-txt" text="lang@btn-save">
                <HBox.margin>
                   <Insets right="12.0" />
                </HBox.margin>
@@ -31,13 +31,13 @@
           <RowConstraints maxHeight="61.0" minHeight="10.0" prefHeight="46.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label text="标题：" />
+            <Label text="lang@book-title" />
             <TextField id="txtTitle" editable="false" prefHeight="30.0" prefWidth="300.0" styleClass="txt" GridPane.columnIndex="1">
                <GridPane.margin>
                   <Insets right="24.0" />
                </GridPane.margin>
             </TextField>
-            <Label text="分类：" GridPane.rowIndex="1" />
+            <Label text="lang@book-category" GridPane.rowIndex="1" />
             <ComboBox id="cbxType" fx:id="cbxType" prefHeight="30.0" prefWidth="300.0" styleClass="comb" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
                <GridPane.margin>
                   <Insets right="24.0" />

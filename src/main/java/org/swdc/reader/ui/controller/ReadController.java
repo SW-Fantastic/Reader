@@ -117,7 +117,7 @@ public class ReadController extends FXController {
                         }
                     }
                     Platform.runLater(() -> {
-                        view.showToast("正在载入《" + event.getData().getTitle() + "》");
+                        view.showToast(this.i18n("lang@text-loading") + event.getData().getTitle());
                     });
                     this.currentReader = reader;
                     reader.setBook(event.getData());

@@ -15,8 +15,8 @@
             <Insets />
          </BorderPane.margin>
          <children>
-            <Button mnemonicParsing="false" onAction="#onOK" prefHeight="32.0" prefWidth="77.0" styleClass="btn-txt" text="打开章节" />
-            <Button mnemonicParsing="false" onAction="#onCancel" prefHeight="32.0" prefWidth="55.0" styleClass="btn-txt" text="取消" />
+            <Button mnemonicParsing="false" onAction="#onOK" prefHeight="32.0" prefWidth="77.0" styleClass="btn-txt" text="lang@btn-open" />
+            <Button mnemonicParsing="false" onAction="#onCancel" prefHeight="32.0" prefWidth="55.0" styleClass="btn-txt" text="lang@btn-cancel" />
          </children>
          <padding>
             <Insets right="8.0" />

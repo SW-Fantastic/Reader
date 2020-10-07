@@ -6,7 +6,7 @@ import org.swdc.fx.anno.View;
 /**
  *  用来显示目录的对话框
  */
-@View(title = "目录",dialog = true)
+@View(title = "lang@dialog-contents",dialog = true)
 public class ContentsItemView extends FXView {
 
 }
