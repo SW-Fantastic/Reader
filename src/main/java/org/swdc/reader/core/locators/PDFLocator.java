@@ -172,6 +172,10 @@ public class PDFLocator implements BookLocator<Image> {
             return data;
         } catch (Exception ex) {
             log.error(ex);
+        } catch (OutOfMemoryError error) {
+            locationDataMap.clear();
+            System.gc();
+            return renderPage(page);
         }
         return null;
     }
