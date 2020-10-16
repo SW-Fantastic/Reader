@@ -11,6 +11,7 @@
 .root-pane {
   -fx-background-size: cover;
   -fx-font-family: "FZMiaoWuS-GB";
+  -fx-font-size: 14;
 }
 .root-tools {
   -fx-background-color: rgba(253, 255, 223, 0.8);
@@ -92,14 +93,14 @@
   -fx-background-color: #786a7b;
   -fx-text-fill: #FFF;
   -fx-border-radius: 0;
-  -fx-font-size: 13;
+  -fx-font-size: 15;
 }
 .scene-dlg {
   -fx-font-family: "FZMiaoWuS-GB";
   -fx-background-color: #f5eee8;
 }
 .scene-dlg .label {
-  -fx-font-size: 14;
+  -fx-font-size: 15;
 }
 .comb {
   -fx-background-color: rgba(255, 255, 255, 0.7);
@@ -161,7 +162,10 @@
   -fx-border-style: dashed;
   -fx-border-width: 1px;
   -fx-outline: none;
-  -fx-font-size: 14;
+}
+.config-panels .property-pane .label,
+.config-panels .property-pane .tooltip {
+  -fx-font-size: 15;
 }
 .check .box {
   -fx-background-color: rgba(255, 255, 255, 0.6);
