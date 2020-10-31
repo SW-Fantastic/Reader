@@ -8,7 +8,7 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="470.0" prefWidth="729.0" styleClass="scene" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.swdc.reader.ui.controller.ReadController">
    <top>
-      <HBox alignment="CENTER_RIGHT" prefHeight="53.0" prefWidth="637.0" spacing="6.0" BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER_RIGHT" prefHeight="53.0" prefWidth="637.0" spacing="6.0" styleClass="read-tools" BorderPane.alignment="CENTER">
          <children>
             <Button fx:id="prevButton" mnemonicParsing="false" onAction="#onPrevPage" prefHeight="24.0" prefWidth="70.0" styleClass="btn-txt" text="lang@btn-prev" />
             <Button fx:id="nextButton" mnemonicParsing="false" onAction="#onNextPage" prefHeight="24.0" prefWidth="70.0" styleClass="btn-txt" text="lang@btn-next" />
