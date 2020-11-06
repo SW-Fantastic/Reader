@@ -3,13 +3,14 @@ package org.swdc.reader.ui.controller.dialog;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ComboBox;
+import javafx.scene.control.*;
+import javafx.util.Duration;
+import org.controlsfx.control.PopOver;
 import org.swdc.fx.FXController;
 import org.swdc.fx.anno.Aware;
 import org.swdc.fx.anno.Listener;
 import org.swdc.reader.entity.Book;
+import org.swdc.reader.entity.BookTag;
 import org.swdc.reader.entity.BookType;
 import org.swdc.reader.services.BookService;
 import org.swdc.reader.ui.events.TypeRefreshEvent;
@@ -17,14 +18,21 @@ import org.swdc.reader.ui.view.ReadView;
 import org.swdc.reader.ui.view.dialogs.BookEditDialog;
 
 import java.net.URL;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class BookEditDialogController extends FXController  {
 
     @FXML
     protected ComboBox<BookType> cbxType;
+
+    @FXML
+    protected TextField txtTag;
+
+    @FXML
+    protected TextField txtAuthor;
+
+    @FXML
+    protected TextField txtPublisher;
 
     @Aware
     private BookService service = null;
@@ -59,10 +67,37 @@ public class BookEditDialogController extends FXController  {
     @FXML
     public void onModify() {
         BookEditDialog view = getView();
+
         Book book = view.getBook();
         book.setType(cbxType.getSelectionModel().getSelectedItem());
+        book.setAuthor(txtAuthor.getText());
+        book.setPublisher(txtPublisher.getText());
+        book.setTags(new HashSet<>(view.getTags()));
         service.modifyBook(book);
         view.close();
+    }
+
+    @FXML
+    public void saveTag() {
+        BookEditDialog view = getView();
+        if (txtTag.getText().isBlank() || txtTag.getText().isEmpty()) {
+            view.getPopOver().hide();
+            return;
+        }
+        String name = txtTag.getText();
+        BookTag tag = service.getTag(name);
+        if (tag != null) {
+            view.getTags().add(tag);
+            view.getPopOver().hide();
+            txtTag.clear();
+            return;
+        }
+        tag = new BookTag();
+        tag.setName(name);
+        tag = service.saveTag(tag);
+        view.getTags().add(tag);
+        view.getPopOver().hide();
+        txtTag.clear();
     }
 
     @FXML

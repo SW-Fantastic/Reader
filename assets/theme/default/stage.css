@@ -27,6 +27,47 @@
   -fx-border-radius: 8px;
   -fx-effect: dropshadow(three-pass-box, #ffa3a3, 8, 0, 0, 0);
 }
+.tag-list {
+  -fx-background-color: rgba(0, 0, 0, 0);
+}
+.tag-list .tag-cell {
+  -fx-background-color: #786a7b;
+  -fx-background-radius: 999;
+}
+.tag-list .tag-cell .label {
+  -fx-font-family: "FZMiaoWuS-GB";
+  -fx-text-fill: #FFF;
+}
+.tag-list .tag-cell .button {
+  -fx-text-fill: #FFF;
+  -fx-background-color: rgba(0, 0, 0, 0);
+}
+.tag-popup {
+  -fx-background-color: #feeee0;
+}
+.tag-popup .list-view {
+  -fx-background-color: rgba(0, 0, 0, 0);
+}
+.tag-popup .list-view .list-cell:filled {
+  -fx-background-color: rgba(0, 0, 0, 0);
+}
+.tag-popup .list-view .list-cell:empty {
+  -fx-background-color: rgba(0, 0, 0, 0);
+}
+.tag-popup .list-view .tag-cell {
+  -fx-background-color: rgba(0, 0, 0, 0);
+  -fx-background-radius: 8;
+}
+.tag-popup .list-view .tag-cell .label {
+  -fx-text-fill: #786a7b;
+}
+.tag-popup .list-view .tag-cell .button {
+  -fx-text-fill: #786a7b;
+  -fx-background-color: rgba(0, 0, 0, 0);
+}
+.tag-popup .list-view .tag-cell:hover {
+  -fx-background-color: #f5eee8;
+}
 .history-list {
   -fx-font-size: 15;
   -fx-background-color: rgba(0, 0, 0, 0);
@@ -84,6 +125,13 @@
   -fx-border-style: dashed;
   -fx-border-width: 1px;
   -fx-border-radius: 8;
+}
+.btn-without-bg {
+  -fx-background-color: rgba(0, 0, 0, 0);
+  -fx-text-fill: #786a7b;
+}
+.btn-without-bg:hover {
+  -fx-effect: dropshadow(three-pass-box, #786a7b, 12, 0, 0, 0);
 }
 .book-card {
   -fx-background-color: rgba(255, 255, 255, 0.8);

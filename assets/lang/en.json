@@ -65,6 +65,9 @@
   "dialog-category": "Category Edit",
   "dialog-category-name": "Category Name:",
   "dialog-category-counts": "Document Counts:",
+  "dialog-author": "Author:",
+  "dialog-publisher": "Publisher:",
+  "dialog-tag": "Tags:",
 
   "tab-text-render": "Plain Text",
   "tab-epub": "E-Public",

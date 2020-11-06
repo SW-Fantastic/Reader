@@ -26,10 +26,8 @@ import org.swdc.reader.ui.view.dialogs.TypeAddDialog;
 import org.swdc.reader.utils.DataUtil;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class BookController extends FXController {
 
@@ -151,9 +149,16 @@ public class BookController extends FXController {
         books.clear();
         if (type == null) {
             BookType defaultType = service.getDefaultType();
-            books.addAll(defaultType.getBooks());
+            Set<Book> books = defaultType.getBooks();
+            books = books.stream()
+                    .sorted(Comparator.comparingLong(Book::getId))
+                    .collect(Collectors.toCollection(LinkedHashSet::new));
+            this.books.addAll(books);
         } else {
-            books.addAll(service.getBooks(type));
+            Set<Book> books = service.getBooks(type).stream()
+                    .sorted(Comparator.comparingLong(Book::getId))
+                    .collect(Collectors.toCollection(LinkedHashSet::new));
+            this.books.addAll(books);
             typeListView.getSelectionModel().select(type);
         }
     }
@@ -162,8 +167,13 @@ public class BookController extends FXController {
     @Listener(value = TypeRefreshEvent.class,updateUI = true)
     public void onTypeRefresh(TypeRefreshEvent event) {
         List<BookType> types = service.listTypes();
+        BookType typeSelected = typeListView.getSelectionModel().getSelectedItem();
+        if (typeSelected != null) {
+            typeSelected = service.getType(typeSelected.getId());
+        }
         bookTypes.clear();
         bookTypes.addAll(types);
+        typeListView.getSelectionModel().select(typeSelected);
     }
 
     @FXML
@@ -197,7 +207,7 @@ public class BookController extends FXController {
     }
 
     @FXML
-    public void onSearch(){
+    public void onSearch() {
         if (txtSearch.getText().trim().equals("")) {
             return;
         }

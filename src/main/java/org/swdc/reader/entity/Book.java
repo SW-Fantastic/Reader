@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.Set;
 
 @Entity
@@ -73,4 +74,33 @@ public class Book {
     @Getter
     @Setter
     private String mimeData;
+
+    /**
+     * 创建日期
+     */
+    @Getter
+    @Setter
+    private Date createDate;
+
+    /**
+     * 出版社
+     */
+    @Getter
+    @Setter
+    private String publisher;
+
+    /**
+     * 作者
+     */
+    @Getter
+    @Setter
+    private String author;
+
+    /**
+     * 标签
+     */
+    @Getter
+    @Setter
+    @ManyToMany(cascade = {CascadeType.PERSIST},fetch = FetchType.EAGER)
+    private Set<BookTag> tags;
 }

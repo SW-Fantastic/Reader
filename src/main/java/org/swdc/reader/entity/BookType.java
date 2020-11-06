@@ -29,4 +29,25 @@ public class BookType {
         return this.getName();
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof BookType) {
+            BookType otherOne = (BookType)obj;
+            if (otherOne.getId() != null && this.getId() != null) {
+                return otherOne.getId().equals(this.getId());
+            } else if (this.getId() == null && otherOne.getId() == null && this.getName().equals(otherOne.getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        if (this.getId() != null) {
+            return this.getId().intValue();
+        } else {
+            return this.getName().hashCode();
+        }
+    }
 }

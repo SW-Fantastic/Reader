@@ -96,7 +96,7 @@
 }
 .scene-dlg {
   -fx-font-family: "HYDaShengTiJ";
-  -fx-background-color: #f5eee8;
+  -fx-background-color: #fffcf9;
 }
 .scene-dlg .label {
   -fx-font-size: 15;
@@ -217,8 +217,8 @@
   -fx-font-size: 16px;
 }
 .dialog-pane .button {
-  -fx-background-radius: 0;
-  -fx-background-color: #786a7b;
+  -fx-background-radius: 2;
+  -fx-background-color: #06d6a0;
   -fx-text-fill: #fdffdf;
   -fx-font-size: 14px;
 }
@@ -231,12 +231,78 @@
 .progress .bar {
   -fx-background-color: #4f9b6a;
 }
+.btn-without-bg {
+  -fx-background-color: rgba(0, 0, 0, 0);
+  -fx-text-fill: #06d6a0;
+}
+.btn-without-bg:hover {
+  -fx-effect: dropshadow(three-pass-box, #06d6a0, 12, 0, 0, 0);
+}
+.tag-list {
+  -fx-background-color: rgba(0, 0, 0, 0);
+}
+.tag-list .tag-cell {
+  -fx-background-color: #34344a;
+  -fx-background-radius: 1;
+}
+.tag-list .tag-cell .label {
+  -fx-font-family: "HYDaShengTiJ";
+  -fx-text-fill: #FFF;
+}
+.tag-list .tag-cell .button {
+  -fx-text-fill: #FFF;
+  -fx-background-color: rgba(0, 0, 0, 0);
+}
+.tag-popup .list-view {
+  -fx-background-color: rgba(0, 0, 0, 0);
+}
+.tag-popup .list-view .list-cell:filled {
+  -fx-background-color: rgba(0, 0, 0, 0);
+}
+.tag-popup .list-view .list-cell:empty {
+  -fx-background-color: rgba(0, 0, 0, 0);
+}
+.tag-popup .list-view .tag-cell {
+  -fx-background-color: rgba(0, 0, 0, 0);
+  -fx-background-radius: 0;
+}
+.tag-popup .list-view .tag-cell .label {
+  -fx-text-fill: #34344a;
+}
+.tag-popup .list-view .tag-cell .button {
+  -fx-text-fill: #34344a;
+  -fx-background-color: rgba(0, 0, 0, 0);
+}
+.tag-popup .list-view .tag-cell:hover {
+  -fx-background-color: #06d6a0;
+}
+.tag-popup .list-view .tag-cell:hover .label {
+  -fx-text-fill: #FFF;
+}
+.tag-popup .list-view .tag-cell:hover .button {
+  -fx-text-fill: #FFF;
+}
 .read-tools {
   -fx-background-color: #5c5c6e;
 }
 .read-tools .txt {
-  -fx-background-color: #34344a;
+  -fx-background-color: #5c5c6e;
   -fx-text-fill: #fffcf9;
+  -fx-border-style: solid;
+  -fx-border-color: #34344a;
+  -fx-border-width: 0 0.5 0.5 0;
+  -fx-border-radius: 2px;
+  -fx-effect: innershadow(three-pass-box, #34344a, 12, 0.2, 4, 6);
+}
+.read-tools .btn-txt {
+  -fx-background-color: rgba(0, 0, 0, 0);
+  -fx-border-color: linear-gradient(to bottom, #06d6a0 0%, #06d6a0 25%, rgba(0, 0, 0, 0) 26%, rgba(0, 0, 0, 0) 27%, rgba(0, 0, 0, 0) 75%, #06d6a0 76%, #06d6a0);
+  -fx-border-width: 1.5px;
+  -fx-border-style: solid;
+  -fx-text-fill: #06d6a0;
+}
+.read-tools .btn-txt:hover {
+  -fx-effect: dropshadow(three-pass-box, #ffffff, 14, 0, 0, 0);
 }
 .table-view {
   -fx-font-size: 16px;
@@ -323,7 +389,7 @@
 }
 .float-tools .button {
   -fx-background-color: rgba(0, 0, 0, 0);
-  -fx-text-fill: #786a7b;
+  -fx-text-fill: #06d6a0;
   -fx-border-radius: 8;
   -fx-border-color: rgba(0, 0, 0, 0);
   -fx-border-style: dashed;

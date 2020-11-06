@@ -6,14 +6,8 @@ import org.apache.commons.io.FileUtils;
 import org.swdc.fx.anno.Aware;
 import org.swdc.fx.jpa.anno.Transactional;
 import org.swdc.fx.services.Service;
-import org.swdc.reader.entity.Book;
-import org.swdc.reader.entity.BookMark;
-import org.swdc.reader.entity.BookType;
-import org.swdc.reader.entity.ContentsItem;
-import org.swdc.reader.repository.BookRepository;
-import org.swdc.reader.repository.BookTypeRepository;
-import org.swdc.reader.repository.ContentsRepository;
-import org.swdc.reader.repository.MarksRepository;
+import org.swdc.reader.entity.*;
+import org.swdc.reader.repository.*;
 import org.swdc.reader.utils.DataUtil;
 
 import java.io.File;
@@ -38,6 +32,9 @@ public class BookService extends Service {
 
     @Aware
     private MarksRepository marksRepository = null;
+
+    @Aware
+    private BookTagRepository tagRepository = null;
 
     /**
      * 更新书籍数据，和文件夹的内容同步
@@ -79,8 +76,41 @@ public class BookService extends Service {
         }
     }
 
+    @Transactional
+    public BookType getType(Long typeId) {
+        return typeRepository.getOne(typeId);
+    }
+
     public List<BookType> listTypes() {
         return typeRepository.getAll();
+    }
+
+    @Transactional
+    public List<BookTag> getTags(String name) {
+        if (name == null || name.isBlank()) {
+            return tagRepository.getAll();
+        }
+        return tagRepository.findByNameContaining(name);
+    }
+
+    @Transactional
+    public BookTag getTag(String name) {
+        if (name == null || name.isEmpty()||name.isBlank()) {
+            return null;
+        }
+        return tagRepository.findByName(name);
+    }
+
+    @Transactional
+    public void removeTag(BookTag tag) {
+        BookTag bookTag = tagRepository.getOne(tag.getId());
+        tagRepository.remove(bookTag);
+    }
+
+
+    @Transactional
+    public BookTag saveTag(BookTag tag) {
+        return tagRepository.save(tag);
     }
 
     public BookType getDefaultType() {

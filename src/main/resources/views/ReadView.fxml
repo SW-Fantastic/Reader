@@ -21,7 +21,7 @@
             <Button fx:id="contentsButton" mnemonicParsing="false" onAction="#onContentsItem" prefHeight="24.0" prefWidth="70.0" styleClass="btn-txt" text="lang@btn-contents" />
          </children>
          <padding>
-            <Insets left="12.0" right="12.0" top="12.0" />
+            <Insets left="12.0" right="12.0" top="8.0" />
          </padding>
          <BorderPane.margin>
             <Insets />

@@ -64,6 +64,9 @@
   "dialog-category": "分类编辑",
   "dialog-category-name": "分类名称：",
   "dialog-category-counts": "文档数量：",
+  "dialog-author": "作者",
+  "dialog-tag": "标签",
+  "dialog-publisher": "出版发行",
 
   "tab-text-render": "文本渲染",
   "tab-epub": "E-Public",

@@ -114,7 +114,7 @@
 }
 .scene-dlg {
   -fx-font-family: "HYDaShengTiJ";
-  -fx-background-color: rgb(245,238,232);
+  -fx-background-color: @background;
   .label {
     -fx-font-size: 15;
   }
@@ -239,8 +239,8 @@
   -fx-font-size: 16px;
 }
 .dialog-pane .button {
-  -fx-background-radius: 0;
-  -fx-background-color:rgb(120,106,123);
+  -fx-background-radius: 2;
+  -fx-background-color: @primary;
   -fx-text-fill: rgb(253,255,223);
   -fx-font-size: 14px;
 }
@@ -253,11 +253,84 @@
 .progress .bar {
   -fx-background-color:rgba(79,155,106, 1);
 }
+
+.btn-without-bg {
+  -fx-background-color: @color-none;
+  -fx-text-fill: @primary;
+  &:hover {
+    -fx-effect: dropshadow(three-pass-box,@primary, 12, 0, 0, 0);
+  }
+}
+
+
+.tag-list {
+  -fx-background-color: @color-none;
+  .tag-cell {
+    -fx-background-color:  @color-silder-dark;
+    -fx-background-radius: 1;
+    .label {
+      -fx-font-family: "HYDaShengTiJ";
+      -fx-text-fill: #FFF;
+    }
+    .button {
+      -fx-text-fill: #FFF;
+      -fx-background-color: @color-none;
+    }
+
+  }
+}
+
+.tag-popup {
+  .list-view {
+    -fx-background-color: @color-none;
+    .list-cell:filled {
+      -fx-background-color: @color-none;
+    }
+    .list-cell:empty {
+      -fx-background-color: @color-none;
+    }
+    .tag-cell {
+      -fx-background-color:  @color-none;
+      -fx-background-radius: 0;
+      .label {
+        -fx-text-fill: @color-silder-dark;
+      }
+      .button {
+        -fx-text-fill: @color-silder-dark;
+        -fx-background-color: @color-none;
+      }
+      &:hover {
+        -fx-background-color:  @primary;
+        .label {
+          -fx-text-fill: #FFF;
+        }
+        .button {
+          -fx-text-fill: #FFF;
+        }
+      }
+    }
+  }
+}
 .read-tools {
   -fx-background-color: rgb(92,92,110);
   .txt{
-    -fx-background-color: @color-silder-dark;
+    -fx-background-color: rgb(92,92,110);
     -fx-text-fill: @background;
+    -fx-border-style: solid;
+    -fx-border-color: @color-silder-dark;
+    -fx-border-width: 0 0.5 0.5 0;
+    -fx-border-radius: 2px;
+    -fx-effect: innershadow(three-pass-box,@color-silder-dark, 12, 0.2, 4, 6);
+  }
+  .btn-txt {
+    -fx-background-color: @color-none;
+    -fx-border-color: linear-gradient(to bottom, @primary 0%, @primary 25%, @color-none 26%, @color-none 27%, @color-none 75%, @primary 76%, @primary);
+    -fx-border-width: 1.5px;
+    -fx-border-style: solid;
+    -fx-text-fill: @primary;
+    &:hover {
+      -fx-effect:dropshadow(three-pass-box, #FFF,14,0,0,0);
+    }
   }
 }
 .table-view {
@@ -344,7 +417,7 @@
   -fx-effect:dropshadow(three-pass-box, rgba(120,106,123,1),10,0,0,0);
   .button {
     -fx-background-color: rgba(0,0,0,0);
-    -fx-text-fill: rgb(120,106,123);
+    -fx-text-fill: @primary;
     -fx-border-radius: 8;
     -fx-border-color: rgba(0,0,0,0);
     -fx-border-style: dashed;
