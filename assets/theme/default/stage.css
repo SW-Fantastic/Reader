@@ -71,9 +71,6 @@
 .history-list {
   -fx-font-size: 15;
   -fx-background-color: rgba(0, 0, 0, 0);
-  -fx-border-style: dashed;
-  -fx-border-width: 0 1 0 1;
-  -fx-border-color: linear-gradient(to bottom, rgba(0, 0, 0, 0) 5%, #735b4e, rgba(0, 0, 0, 0) 95%);
 }
 .history-list .list-cell {
   -fx-background-color: rgba(0, 0, 0, 0);
@@ -125,6 +122,31 @@
   -fx-border-style: dashed;
   -fx-border-width: 1px;
   -fx-border-radius: 8;
+}
+.books-split {
+  -fx-background-color: rgba(0, 0, 0, 0);
+  -fx-border-style: dashed;
+  -fx-border-width: 0 1 0 1;
+  -fx-border-color: linear-gradient(to bottom, rgba(0, 0, 0, 0) 5%, #735b4e, rgba(0, 0, 0, 0) 95%);
+}
+.books-split .split-pane-divider {
+  -fx-background-color: #f5edf0;
+  -fx-padding: 0 1 0 1;
+  -fx-effect: dropshadow(three-pass-box, #bf86ae, 8, 0, 0, 0);
+}
+.index-tree {
+  -fx-background-color: rgba(0, 0, 0, 0);
+  -fx-font-size: 16;
+}
+.index-tree .tree-cell {
+  -fx-background-color: rgba(0, 0, 0, 0);
+}
+.index-tree .tree-cell:filled {
+  -fx-background-color: rgba(255, 255, 255, 0.4);
+}
+.index-tree .tree-cell:selected {
+  -fx-background-color: #786a7b;
+  -fx-text-fill: #FFF;
 }
 .btn-without-bg {
   -fx-background-color: rgba(0, 0, 0, 0);

@@ -29,6 +29,10 @@ module FReader {
     // 用来释放MappedBuffer
     requires org.agrona.core;
 
+    //索引引擎
+    requires lucene.core;
+    requires ik.analyzer;
+
     opens org.swdc.reader.aspect to
             fx.framework.core,
             fx.framework.aop;
@@ -73,6 +77,9 @@ module FReader {
             fx.framework.core,
             fx.framework.aop,
             javafx.fxml;
+
+     opens org.swdc.reader.services.index to
+             fx.framework.core;
 
     // 导出被aop的类的包和他们需要的类所在的包，因为aop后新类在未命名模块
     // 不导出未命名模块无法使用它们

@@ -10,6 +10,7 @@ import org.swdc.fx.properties.ConfigManager;
 import org.swdc.reader.config.AppConfig;
 import org.swdc.reader.core.ext.ExternResolverManager;
 import org.swdc.reader.core.readers.ReaderManager;
+import org.swdc.reader.services.index.IndexerManager;
 import org.swdc.reader.ui.view.MainView;
 
 import java.util.ArrayList;
@@ -17,7 +18,6 @@ import java.util.List;
 
 @SFXApplication(singleton = true,mainView = MainView.class, splash = FXSplash.class)
 public class ReaderApplication extends FXApplication {
-
 
     public static void main(String[] args) {
         Application.launch(ReaderApplication.class, args);
@@ -32,6 +32,7 @@ public class ReaderApplication extends FXApplication {
     protected void onStart(ApplicationContainer container) {
         container.register(ReaderManager.class);
         container.register(ExternResolverManager.class);
+        container.register(IndexerManager.class);
     }
 
     @Override

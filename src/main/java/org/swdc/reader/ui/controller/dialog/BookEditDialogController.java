@@ -13,6 +13,7 @@ import org.swdc.reader.entity.Book;
 import org.swdc.reader.entity.BookTag;
 import org.swdc.reader.entity.BookType;
 import org.swdc.reader.services.BookService;
+import org.swdc.reader.services.CommonComponents;
 import org.swdc.reader.ui.events.TypeRefreshEvent;
 import org.swdc.reader.ui.view.ReadView;
 import org.swdc.reader.ui.view.dialogs.BookEditDialog;
@@ -36,6 +37,9 @@ public class BookEditDialogController extends FXController  {
 
     @Aware
     private BookService service = null;
+
+    @Aware
+    private CommonComponents commonComponents = null;
 
     private ObservableList<BookType> typeList = FXCollections.observableArrayList();
 
@@ -73,7 +77,9 @@ public class BookEditDialogController extends FXController  {
         book.setAuthor(txtAuthor.getText());
         book.setPublisher(txtPublisher.getText());
         book.setTags(new HashSet<>(view.getTags()));
-        service.modifyBook(book);
+
+        commonComponents.submitTask(() -> service.modifyBook(book));
+
         view.close();
     }
 

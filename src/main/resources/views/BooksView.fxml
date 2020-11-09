@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import java.lang.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="scene" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.swdc.reader.ui.controller.BookController">
-   <left>
-      <ListView id="typelist" fx:id="typeListView" prefHeight="506.0" prefWidth="231.0" styleClass="history-list" BorderPane.alignment="CENTER">
-         <padding>
-            <Insets right="8.0" top="12.0" />
-         </padding>
-         <BorderPane.margin>
-            <Insets right="8.0" />
-         </BorderPane.margin></ListView>
-   </left>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="scene" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.swdc.reader.ui.controller.BookController">
    <center>
       <BorderPane prefHeight="497.0" prefWidth="400.0" BorderPane.alignment="CENTER">
          <top>
@@ -33,7 +30,8 @@
                            </HBox.margin>
                         </Button>
                         <Button id="btnRefresh" mnemonicParsing="false" onAction="#onSyncFiles" styleClass="btn" text="refresh" />
-                     </children></HBox>
+                     </children>
+                  </HBox>
                   <HBox prefHeight="61.0" prefWidth="81.0" HBox.hgrow="ALWAYS" />
                   <TextField fx:id="txtSearch" onKeyTyped="#onTextSearchChange" prefHeight="29.0" prefWidth="258.0" styleClass="txt">
                      <HBox.margin>
@@ -61,9 +59,30 @@
                </columnResizePolicy>
             </TableView>
          </center>
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
+         <padding>
+            <Insets left="8.0" />
+         </padding>
       </BorderPane>
    </center>
    <opaqueInsets>
       <Insets />
    </opaqueInsets>
+   <left>
+      <SplitPane dividerPositions="0.5551839464882943" orientation="VERTICAL" prefHeight="600.0" prefWidth="245.0" styleClass="books-split" BorderPane.alignment="CENTER">
+         <items>
+            <ListView id="typelist" fx:id="typeListView" minHeight="280.0" prefHeight="506.0" prefWidth="231.0" styleClass="history-list">
+               <padding>
+                  <Insets right="8.0" top="12.0" />
+               </padding>
+            </ListView>
+            <TreeView fx:id="indexTree" minHeight="240.0" prefHeight="200.0" prefWidth="200.0" styleClass="index-tree">
+               <padding>
+                  <Insets top="8.0" />
+               </padding></TreeView>
+         </items>
+      </SplitPane>
+   </left>
 </BorderPane>

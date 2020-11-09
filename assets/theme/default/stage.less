@@ -86,9 +86,6 @@
 .history-list {
   -fx-font-size: 15;
   -fx-background-color: @color-none;
-  -fx-border-style: dashed;
-  -fx-border-width: 0 1 0 1;
-  -fx-border-color: linear-gradient(to bottom, @color-none 5%, rgb(115,91,78), @color-none 95%);
   .list-cell {
     -fx-background-color: rgba(0,0,0,0);
     .cell-content {
@@ -141,6 +138,33 @@
     -fx-border-style: dashed;
     -fx-border-width: 1px;
     -fx-border-radius: 8;
+  }
+}
+
+.books-split{
+  -fx-background-color: @color-none;
+  -fx-border-style: dashed;
+  -fx-border-width: 0 1 0 1;
+  -fx-border-color: linear-gradient(to bottom, @color-none 5%, rgb(115,91,78), @color-none 95%);
+  .split-pane-divider{
+    -fx-background-color: rgba(245,237,240, 1);
+    -fx-padding: 0 1 0 1;
+    -fx-effect: dropshadow(three-pass-box,rgb(191, 134, 174), 8, 0, 0, 0);
+  }
+}
+
+.index-tree {
+  -fx-background-color: @color-none;
+  -fx-font-size: 16;
+  .tree-cell {
+    -fx-background-color: @color-none;
+    &:filled {
+      -fx-background-color: rgba(255,255,255,0.4);
+    }
+    &:selected {
+      -fx-background-color: @primary;
+      -fx-text-fill: #FFF;
+    }
   }
 }
 

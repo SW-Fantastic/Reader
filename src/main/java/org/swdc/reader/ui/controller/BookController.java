@@ -1,5 +1,6 @@
 package org.swdc.reader.ui.controller;
 
+import javafx.beans.Observable;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -16,6 +17,8 @@ import org.swdc.fx.anno.Listener;
 import org.swdc.reader.entity.Book;
 import org.swdc.reader.entity.BookType;
 import org.swdc.reader.services.BookService;
+import org.swdc.reader.services.index.AbstractIndexer;
+import org.swdc.reader.services.index.IndexTreeNode;
 import org.swdc.reader.ui.actions.BookCellActions;
 import org.swdc.reader.ui.events.*;
 import org.swdc.reader.ui.view.MainView;
@@ -61,6 +64,9 @@ public class BookController extends FXController {
     @FXML
     private TableColumn<Book, Void> colEdit;
 
+    @FXML
+    private TreeView<IndexTreeNode> indexTree;
+
     private ObservableList<BookType> bookTypes = FXCollections.observableArrayList();
 
     private ObservableList<Book> books = FXCollections.observableArrayList();
@@ -79,7 +85,6 @@ public class BookController extends FXController {
         colEdit.setCellFactory(view->new BookEditCell(findView(BookEditCellView.class)));
         detailTable.setPlaceholder(new Label(this.i18n("lang@table-place-holder")));
         detailTable.setItems(books);
-
 
         detailTable.setOnMouseClicked(e -> {
             if (e.getClickCount() >= 2) {
@@ -118,6 +123,29 @@ public class BookController extends FXController {
             disableMenu.setValue(false);
         }));
 
+        List<AbstractIndexer> indexers = getScoped(AbstractIndexer.class);
+        TreeItem<IndexTreeNode> nodeTreeItem = new TreeItem<>();
+        List<TreeItem<IndexTreeNode>> indexTreeNodes = nodeTreeItem.getChildren();
+
+        for (AbstractIndexer indexer: indexers) {
+            TreeItem<IndexTreeNode> node = new TreeItem<>(new IndexTreeNode(indexer));
+            indexTreeNodes.add(node);
+
+            List<String> keywords = indexer.getKeyWords();
+            for (String key: keywords) {
+                if (key == null || key.isBlank() || key.isEmpty()) {
+                    continue;
+                }
+                TreeItem<IndexTreeNode> keyNode = new TreeItem<>(new IndexTreeNode(key));
+                node.getChildren().add(keyNode);
+            }
+        }
+
+        nodeTreeItem.setExpanded(true);
+        indexTree.setRoot(nodeTreeItem);
+        indexTree.setShowRoot(false);
+
+        indexTree.getSelectionModel().selectedItemProperty().addListener(this::onIndexTreeSelect);
 
         try {
             Image icon = new Image(this.getClass().getModule().getResourceAsStream("appicons/label.png"));
@@ -139,6 +167,22 @@ public class BookController extends FXController {
 
     }
 
+    private void onIndexTreeSelect(Observable observable, TreeItem<IndexTreeNode> old, TreeItem<IndexTreeNode> next) {
+        if (next == null || next.getValue() == null) {
+            return;
+        }
+        IndexTreeNode node = next.getValue();
+        if (node.isIndexer()) {
+            return;
+        }
+        typeListView.getSelectionModel().clearSelection();
+        IndexTreeNode indexerNode = next.getParent().getValue();
+        AbstractIndexer indexer = (AbstractIndexer) findComponent(indexerNode.getIndexerClass());
+        List<Book> books = indexer.search(node.getKeywordName());
+        this.books.clear();
+        this.books.addAll(books);
+    }
+
     private void typeChange(ObservableValue<? extends BookType> typeObservableValue, BookType old, BookType newVal) {
         this.emit(new BooksRefreshEvent(this));
     }
@@ -146,15 +190,19 @@ public class BookController extends FXController {
     @Listener(value = BooksRefreshEvent.class,updateUI = true)
     public void onRefreshList(BooksRefreshEvent event) {
         BookType type = typeListView.getSelectionModel().getSelectedItem();
-        books.clear();
         if (type == null) {
-            BookType defaultType = service.getDefaultType();
-            Set<Book> books = defaultType.getBooks();
-            books = books.stream()
-                    .sorted(Comparator.comparingLong(Book::getId))
-                    .collect(Collectors.toCollection(LinkedHashSet::new));
-            this.books.addAll(books);
+            if (indexTree.getSelectionModel() == null) {
+                books.clear();
+                BookType defaultType = service.getDefaultType();
+                Set<Book> books = defaultType.getBooks();
+                books = books.stream()
+                        .sorted(Comparator.comparingLong(Book::getId))
+                        .collect(Collectors.toCollection(LinkedHashSet::new));
+                this.books.addAll(books);
+            }
         } else {
+            books.clear();
+            this.indexTree.getSelectionModel().clearSelection();
             Set<Book> books = service.getBooks(type).stream()
                     .sorted(Comparator.comparingLong(Book::getId))
                     .collect(Collectors.toCollection(LinkedHashSet::new));

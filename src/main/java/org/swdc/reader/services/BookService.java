@@ -36,6 +36,9 @@ public class BookService extends Service {
     @Aware
     private BookTagRepository tagRepository = null;
 
+    @Aware
+    private BookIndexService indexService = null;
+
     /**
      * 更新书籍数据，和文件夹的内容同步
      */
@@ -70,6 +73,7 @@ public class BookService extends Service {
                 MagicMatch magicMatch = Magic.getMagicMatch(bookFile,true,false);
                 book.setMimeData(magicMatch.getMimeType());
                 bookRepository.save(book);
+                indexService.updateBookIndex(book);
             }catch (Exception e) {
               logger.error("fail to create book : " + book.getName(),e);
             }
@@ -195,7 +199,8 @@ public class BookService extends Service {
         }
         try {
             FileUtils.copyFile(sourceFile, new File("./data/library/" + sourceFile.getName()));
-            bookRepository.save(book);
+            book = bookRepository.save(book);
+            indexService.updateBookIndex(book);
         } catch (IOException e) {
             logger.error("fail to create book",e);
         }
@@ -216,6 +221,7 @@ public class BookService extends Service {
     @Transactional
     public void modifyBook(Book modifiedBook) {
         bookRepository.save(modifiedBook);
+        indexService.updateBookIndex(modifiedBook);
     }
 
     @Transactional
@@ -233,6 +239,7 @@ public class BookService extends Service {
         if (!file.delete()) {
             file.deleteOnExit();
         }
+        indexService.removeBookIndex(deleteTarget);
         bookRepository.remove(deleteTarget);
     }
 
