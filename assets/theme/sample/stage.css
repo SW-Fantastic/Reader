@@ -28,6 +28,41 @@
   -fx-border-radius: 8px;
   -fx-effect: dropshadow(three-pass-box, #0cc7a9, 8, 0, 0, 0);
 }
+.index-tree {
+  -fx-background-color: rgba(0, 0, 0, 0);
+  -fx-font-size: 16;
+}
+.index-tree .tree-cell {
+  -fx-text-fill: #FFF;
+  -fx-background-color: rgba(0, 0, 0, 0);
+}
+.index-tree .tree-cell .arrow {
+  -fx-background-color: #06d6a0;
+}
+.index-tree .tree-cell:selected {
+  -fx-background-color: #06d6a0;
+  -fx-text-fill: #000;
+}
+.index-tree .tree-cell:selected .arrow {
+  -fx-background-color: #000;
+}
+.index-tree .scroll-bar {
+  -fx-font-size: 10;
+  -fx-background-color: rgba(0, 0, 0, 0);
+}
+.index-tree .scroll-bar .track {
+  -fx-background-color: rgba(0, 0, 0, 0.2);
+  -fx-background-radius: 99;
+}
+.index-tree .scroll-bar .thumb {
+  -fx-background-color: rgba(0, 0, 0, 0.6);
+}
+.index-tree .scroll-bar .decrement-arrow {
+  -fx-background-color: #06d6a0;
+}
+.index-tree .scroll-bar .increment-arrow {
+  -fx-background-color: #06d6a0;
+}
 .history-list {
   -fx-font-size: 15;
   -fx-background-color: #34344a;

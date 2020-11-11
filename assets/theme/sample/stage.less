@@ -43,6 +43,42 @@
   }
 }
 
+.index-tree {
+  -fx-background-color: @color-none;
+  -fx-font-size: 16;
+  .tree-cell {
+    -fx-text-fill: #FFF;
+    -fx-background-color: @color-none;
+    .arrow{
+      -fx-background-color: @primary;
+    }
+    &:selected {
+      -fx-background-color: @primary;
+      -fx-text-fill: #000;
+      .arrow{
+        -fx-background-color: #000;
+      }
+    }
+  }
+  .scroll-bar {
+    -fx-font-size: 10;
+    -fx-background-color:@color-none;
+    .track {
+      -fx-background-color:rgba(0,0,0, 0.2);
+      -fx-background-radius: 99;
+    }
+    .thumb {
+      -fx-background-color:rgba(0,0,0,0.6);
+    }
+    .decrement-arrow {
+      -fx-background-color: @primary;
+    }
+    .increment-arrow{
+      -fx-background-color: @primary;
+    }
+  }
+}
+
 .history-list {
   -fx-font-size: 15;
   -fx-background-color: @color-silder-dark;

@@ -14,6 +14,7 @@ import javafx.stage.FileChooser;
 import org.swdc.fx.FXController;
 import org.swdc.fx.anno.Aware;
 import org.swdc.fx.anno.Listener;
+import org.swdc.reader.aspect.BookAspect;
 import org.swdc.reader.entity.Book;
 import org.swdc.reader.entity.BookType;
 import org.swdc.reader.services.BookService;
@@ -172,10 +173,10 @@ public class BookController extends FXController {
             return;
         }
         IndexTreeNode node = next.getValue();
+        typeListView.getSelectionModel().clearSelection();
         if (node.isIndexer()) {
             return;
         }
-        typeListView.getSelectionModel().clearSelection();
         IndexTreeNode indexerNode = next.getParent().getValue();
         AbstractIndexer indexer = (AbstractIndexer) findComponent(indexerNode.getIndexerClass());
         List<Book> books = indexer.search(node.getKeywordName());
@@ -189,6 +190,30 @@ public class BookController extends FXController {
 
     @Listener(value = BooksRefreshEvent.class,updateUI = true)
     public void onRefreshList(BooksRefreshEvent event) {
+
+        // 切面发送的Event，刷新树的keywords节点
+        if (event.getSource().getClass() == BookAspect.class) {
+            TreeItem<IndexTreeNode> treeItem = indexTree.getRoot();
+            ObservableList<TreeItem<IndexTreeNode>> indexers = treeItem.getChildren();
+            for (TreeItem<IndexTreeNode> indexer: indexers) {
+                IndexTreeNode node = indexer.getValue();
+                if (!node.isIndexer()) {
+                    continue;
+                }
+                indexer.getChildren().clear();
+                AbstractIndexer indexerItem = (AbstractIndexer) findComponent(node.getIndexerClass());
+                List<String> keywords = indexerItem.getKeyWords();
+                for (String key: keywords) {
+                    if (key == null || key.isBlank() || key.isEmpty()) {
+                        continue;
+                    }
+                    TreeItem<IndexTreeNode> keyNode = new TreeItem<>(new IndexTreeNode(key));
+                    indexer.getChildren().add(keyNode);
+                }
+            }
+        }
+
+        // 刷新books
         BookType type = typeListView.getSelectionModel().getSelectedItem();
         if (type == null) {
             if (indexTree.getSelectionModel() == null) {

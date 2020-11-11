@@ -73,10 +73,14 @@ public class BookService extends Service {
                 MagicMatch magicMatch = Magic.getMagicMatch(bookFile,true,false);
                 book.setMimeData(magicMatch.getMimeType());
                 bookRepository.save(book);
-                indexService.updateBookIndex(book);
             }catch (Exception e) {
               logger.error("fail to create book : " + book.getName(),e);
             }
+        }
+        try {
+            indexService.rebuildIndex();
+        } catch (Exception e) {
+            logger.error("failed to rebuild index",e);
         }
     }
 

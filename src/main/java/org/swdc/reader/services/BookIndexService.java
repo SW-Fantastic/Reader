@@ -73,11 +73,14 @@ public class BookIndexService extends Service {
 
                 IndexWriter writer = getLuceneWriter();
 
+                String author = Optional.ofNullable(book.getAuthor()).orElse("");
+                String publisher = Optional.ofNullable(book.getPublisher()).orElse("");
+
                 Document doc = new Document();
                 Field idField = new StringField("id",book.getId().toString(),Field.Store.YES);
                 Field titleField = new TextField("title",book.getTitle(), Field.Store.YES);
-                Field authorField = new StringField("author",book.getAuthor(),Field.Store.YES);
-                Field publisherField = new StringField("publisher",book.getPublisher(),Field.Store.YES);
+                Field authorField = new StringField("author",author,Field.Store.YES);
+                Field publisherField = new StringField("publisher",publisher,Field.Store.YES);
                 Field tagsField = new StringField("tags",tagText,Field.Store.YES);
 
                 doc.add(idField);
@@ -112,15 +115,17 @@ public class BookIndexService extends Service {
                         .orElse("");
             }
 
+            String author = Optional.ofNullable(book.getAuthor()).orElse("");
+            String publisher = Optional.ofNullable(book.getPublisher()).orElse("");
 
             doc.removeField("title");
             doc.add(new TextField("title",book.getTitle(),Field.Store.YES));
 
             doc.removeField("author");
-            doc.add(new StringField("author",book.getAuthor(),Field.Store.YES));
+            doc.add(new StringField("author",author,Field.Store.YES));
 
             doc.removeField("publisher");
-            doc.add(new StringField("publisher",book.getPublisher(),Field.Store.YES));
+            doc.add(new StringField("publisher",publisher,Field.Store.YES));
 
             doc.removeField("tags");
             doc.add(new StringField("tags",tagText,Field.Store.YES));
@@ -128,16 +133,24 @@ public class BookIndexService extends Service {
             writer.updateDocument(new Term("id",book.getId().toString()),doc);
 
             writer.commit();
+            writer.flush();
         } catch (Exception e){
             logger.error("fail to update index",e);
         }
     }
 
-    public synchronized void cleanAllIndexes() throws IOException {
+    public synchronized void rebuildIndex() throws IOException {
         IndexWriter writer = getLuceneWriter();
         writer.deleteAll();
         writer.forceMergeDeletes();
+
+        List<Book> books = repository.getAll();
+        for (Book book : books) {
+            this.updateBookIndex(book);
+        }
+
         writer.commit();
+        writer.flush();
     }
 
     @Transactional
