@@ -134,17 +134,21 @@
   -fx-padding: 0 1 0 1;
   -fx-effect: dropshadow(three-pass-box, #bf86ae, 8, 0, 0, 0);
 }
-.index-tree {
+.index-tree,
+.tree-rss {
   -fx-background-color: rgba(0, 0, 0, 0);
   -fx-font-size: 16;
 }
-.index-tree .tree-cell {
+.index-tree .tree-cell,
+.tree-rss .tree-cell {
   -fx-background-color: rgba(0, 0, 0, 0);
 }
-.index-tree .tree-cell:filled {
+.index-tree .tree-cell:filled,
+.tree-rss .tree-cell:filled {
   -fx-background-color: rgba(255, 255, 255, 0.4);
 }
-.index-tree .tree-cell:selected {
+.index-tree .tree-cell:selected,
+.tree-rss .tree-cell:selected {
   -fx-background-color: #786a7b;
   -fx-text-fill: #FFF;
 }

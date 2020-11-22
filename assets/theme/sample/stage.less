@@ -79,6 +79,25 @@
   }
 }
 
+.tree-rss {
+  -fx-background-color: @color-none;
+  -fx-font-size: 16;
+  .tree-cell {
+    -fx-text-fill: @color-silder-dark;
+    -fx-background-color: @color-none;
+    .arrow{
+      -fx-background-color: @primary;
+    }
+    &:selected {
+      -fx-background-color: @color-silder-dark;
+      -fx-text-fill: #FFF;
+      .arrow{
+        -fx-background-color: @primary;
+      }
+    }
+  }
+}
+
 .history-list {
   -fx-font-size: 15;
   -fx-background-color: @color-silder-dark;

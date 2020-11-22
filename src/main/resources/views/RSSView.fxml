@@ -22,7 +22,7 @@
                     <ListView fx:id="feedList" prefHeight="459.0" prefWidth="228.0" styleClass="list-rss" />
                 </Tab>
                 <Tab text="lang@feed-download">
-                    <TreeView prefHeight="466.0" prefWidth="242.0" />
+                    <TreeView fx:id="favoriteTree" prefHeight="466.0" prefWidth="242.0" styleClass="tree-rss" />
                 </Tab>
               </tabs>
             </TabPane>
@@ -54,7 +54,13 @@
    <center>
       <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <top>
-            <HBox prefHeight="55.0" prefWidth="516.0" BorderPane.alignment="CENTER" />
+            <HBox fx:id="readTools" alignment="CENTER_RIGHT" prefHeight="55.0" prefWidth="516.0" spacing="8.0" styleClass="read-tools" BorderPane.alignment="CENTER">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#onRSSSave" prefHeight="30.0" prefWidth="65.0" styleClass="btn-txt" text="lang@feed-download" />
+               </children>
+               <padding>
+                  <Insets right="16.0" />
+               </padding></HBox>
          </top>
          <center>
             <WebView fx:id="contentView" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />

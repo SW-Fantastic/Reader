@@ -63,6 +63,24 @@
 .index-tree .scroll-bar .increment-arrow {
   -fx-background-color: #06d6a0;
 }
+.tree-rss {
+  -fx-background-color: rgba(0, 0, 0, 0);
+  -fx-font-size: 16;
+}
+.tree-rss .tree-cell {
+  -fx-text-fill: #34344a;
+  -fx-background-color: rgba(0, 0, 0, 0);
+}
+.tree-rss .tree-cell .arrow {
+  -fx-background-color: #06d6a0;
+}
+.tree-rss .tree-cell:selected {
+  -fx-background-color: #34344a;
+  -fx-text-fill: #FFF;
+}
+.tree-rss .tree-cell:selected .arrow {
+  -fx-background-color: #06d6a0;
+}
 .history-list {
   -fx-font-size: 15;
   -fx-background-color: #34344a;

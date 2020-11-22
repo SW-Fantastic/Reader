@@ -11,6 +11,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.web.WebView;
 import org.jsoup.Jsoup;
@@ -21,7 +22,6 @@ import org.jsoup.select.Elements;
 import org.swdc.fx.FXController;
 import org.swdc.fx.anno.Aware;
 import org.swdc.fx.anno.Listener;
-import org.swdc.fx.resource.icons.FontawsomeService;
 import org.swdc.reader.core.ext.AbstractResolver;
 import org.swdc.reader.core.locators.TextLocator;
 import org.swdc.reader.entity.RSSSource;
@@ -31,17 +31,24 @@ import org.swdc.reader.ui.events.RSSRefreshEvent;
 import org.swdc.reader.ui.view.RSSView;
 import org.swdc.reader.ui.view.cells.RSSCellView;
 import org.swdc.reader.ui.view.cells.RSSListCell;
+import org.swdc.reader.ui.view.cells.RSSTreeItem;
 import org.swdc.reader.ui.view.dialogs.RSSAddDialog;
 import org.swdc.reader.ui.view.dialogs.RSSEditDialog;
+import org.swdc.reader.utils.DataUtil;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class RSSController extends FXController {
 
@@ -68,7 +75,13 @@ public class RSSController extends FXController {
     private WebView contentView;
 
     @FXML
+    private HBox readTools;
+
+    @FXML
     private HBox tools;
+
+    @FXML
+    private TreeView<RSSTreeItem> favoriteTree;
 
     @Aware
     private CommonComponents components = null;
@@ -93,50 +106,104 @@ public class RSSController extends FXController {
             contentView.disableProperty().bind(disable);
             tools.disableProperty().bind(disable);
 
+            readTools.setDisable(true);
+
             feedList.setOnMouseClicked(e -> {
                 RSSData data = feedList.getSelectionModel().getSelectedItem();
                 if (data == null) {
+                    readTools.setDisable(true);
                     return;
                 }
+                readTools.setDisable(true);
                 disable.setValue(true);
                 contentView.getEngine().loadContent(loadingPage);
-                Runnable task = () -> {
-                    try {
-                        Document doc = Jsoup.connect(data.getUrl()).get();
-                        Element result = getContent(doc.body());
-                        this.resolveImages(result, doc.baseUri());
-                        StringBuilder sb = new StringBuilder("<html><head><style>");
-                        List<AbstractResolver> resolvers = getScoped(AbstractResolver.class);
-                        for (AbstractResolver resolver : resolvers) {
-                            if (resolver.support(TextLocator.class)) {
-                                resolver.renderStyle(sb);
-                            }
-                        }
-                        sb.append("</style></head><body><div>")
-                                .append(result.html())
-                                .append("</div></body></html>");
-                        result = Jsoup.parse(sb.toString());
-                        for (AbstractResolver resolver : resolvers) {
-                            if (resolver.support(TextLocator.class)) {
-                                resolver.renderContent(result);
-                            }
-                        }
-                        result.getElementsByTag("a").remove();
-                        String contentText = result.html();
-                        Platform.runLater(() -> {
-                            disable.setValue(false);
-                            contentView.getEngine().loadContent(contentText);
-                        });
-                    } catch (Exception ex) {
-                        logger.error("fail to load rss content", ex);
-                    }
-                };
-                components.submitTask(task);
+                this.loadData(data, (content) -> {
+                    Platform.runLater(() -> {
+                        disable.setValue(false);
+                        contentView.getEngine().loadContent(content);
+                        readTools.setDisable(false);
+                    });
+                });
             });
 
+            ContextMenu favoriteMenu = new ContextMenu();
+
+            MenuItem openItem = DataUtil.createMenuItem("打开",e -> {
+                this.openFavoriteTreeItem();
+            });
+
+            MenuItem deleteItem = DataUtil.createMenuItem("删除",e -> {
+                this.deleteFavoriteItem();
+            });
+
+            favoriteMenu.getItems().addAll(openItem,deleteItem);
+            favoriteTree.setContextMenu(favoriteMenu);
+            favoriteTree.setOnMouseClicked(e -> {
+               if (e.getButton() == MouseButton.PRIMARY && e.getClickCount() > 1) {
+                   this.openFavoriteTreeItem();
+               }
+            });
 
         } catch (Exception e) {
             logger.error("unknown error",e);
+        }
+    }
+
+    private void openFavoriteTreeItem () {
+        TreeItem<RSSTreeItem> item = favoriteTree.getSelectionModel().getSelectedItem();
+        if (item == null || item.getValue() == null) {
+            return;
+        }
+        try {
+            RSSTreeItem val = item.getValue();
+            if (val.getRssArchive() != null) {
+                if (item.getChildren().size() == 0) {
+                    item.setExpanded(true);
+                }
+                FileSystem fs = FileSystems.newFileSystem(Paths.get(val.getRssArchive().getAbsolutePath()),Map.of("create",true));
+                List<Path> files = Files.list(fs.getPath("/")).collect(Collectors.toList());
+                item.getChildren().clear();
+                for (Path file: files) {
+                    RSSTreeItem rssItem = new RSSTreeItem(file.getFileName().toString().replace(".data",""));
+                    TreeItem<RSSTreeItem> treeItem = new TreeItem<>(rssItem);
+                    item.getChildren().add(treeItem);
+                }
+                fs.close();
+            } else {
+                TreeItem<RSSTreeItem> parent = item.getParent();
+                File file = parent.getValue().getRssArchive();
+                FileSystem fs = FileSystems.newFileSystem(Paths.get(file.getAbsolutePath()),Map.of("create",true));
+                Path target = fs.getPath("/" + item.getValue().getPath() + ".data");
+                String content = Files.readString(target);
+                contentView.getEngine().loadContent(content);
+                fs.close();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void deleteFavoriteItem() {
+        TreeItem<RSSTreeItem> item = favoriteTree.getSelectionModel().getSelectedItem();
+        if (item == null || item.getValue() == null) {
+            return;
+        }
+        try {
+            RSSTreeItem val = item.getValue();
+            if (val.getRssArchive() != null) {
+                Files.delete(Paths.get(val.getRssArchive().getAbsolutePath()));
+                item.getChildren().clear();
+            } else {
+                TreeItem<RSSTreeItem> parent = item.getParent();
+                File file = parent.getValue().getRssArchive();
+                FileSystem fs = FileSystems.newFileSystem(Paths.get(file.getAbsolutePath()),Map.of("create",true));
+                Path target = fs.getPath("/" + item.getValue().getPath() + ".data");
+                Files.delete(target);
+                parent.getChildren().remove(item);
+                fs.close();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
@@ -147,16 +214,75 @@ public class RSSController extends FXController {
         this.onRefresh();
     }
 
+    private void loadData(RSSData data, Consumer<String> next) {
+        if (data == null) {
+            return;
+        }
+        Runnable task = () -> {
+            try {
+                Document doc = Jsoup.connect(data.getUrl()).get();
+                Element result = getContent(doc.body());
+                if (result == null) {
+                    next.accept("没有可以显示的内容。");
+                    return;
+                }
+                this.resolveImages(result, doc.baseUri());
+                StringBuilder sb = new StringBuilder("<html><head><style>");
+                List<AbstractResolver> resolvers = getScoped(AbstractResolver.class);
+                for (AbstractResolver resolver : resolvers) {
+                    if (resolver.support(TextLocator.class)) {
+                        resolver.renderStyle(sb);
+                    }
+                }
+                sb.append("</style></head><body><div>")
+                        .append(result.html())
+                        .append("</div></body></html>");
+                result = Jsoup.parse(sb.toString());
+                for (AbstractResolver resolver : resolvers) {
+                    if (resolver.support(TextLocator.class)) {
+                        resolver.renderContent(result);
+                    }
+                }
+                result.getElementsByTag("a").remove();
+                String contentText = result.html();
+                next.accept(contentText);
+            } catch (Exception ex) {
+                logger.error("fail to load rss content", ex);
+            }
+        };
+        components.submitTask(task);
+    }
+
     @Override
     public void initialize() {
+        List<RSSSource> sources = service.getAllRss();
         rssList.clear();
-        rssList.addAll(service.getAllRss());
+        rssList.addAll(sources);
+
+        TreeItem<RSSTreeItem> favoriteRoot = new TreeItem<>();
+        favoriteRoot.setExpanded(true);
+        favoriteTree.setShowRoot(false);
+        favoriteTree.setRoot(favoriteRoot);
+
+        for (RSSSource source: sources) {
+            RSSTreeItem item = new RSSTreeItem(new File("data/feeds/" + source.getName() + ".zip"));
+            favoriteRoot.getChildren().add(new TreeItem<>(item));
+        }
+
     }
 
     @Listener(RSSRefreshEvent.class)
     public void onRssRefresh(RSSRefreshEvent event) {
+        List<RSSSource> sources = service.getAllRss();
         rssList.clear();
-        rssList.addAll(service.getAllRss());
+        rssList.addAll(sources);
+
+        TreeItem<RSSTreeItem> favoriteRoot = favoriteTree.getRoot();
+        favoriteRoot.getChildren().clear();
+        for (RSSSource source: sources) {
+            RSSTreeItem item = new RSSTreeItem(new File("data/feeds/" + source.getName() + ".zip"));
+            favoriteRoot.getChildren().add(new TreeItem<>(item));
+        }
     }
 
     @FXML
@@ -198,6 +324,7 @@ public class RSSController extends FXController {
                     data.setUrl(entry.getLink());
                     feeds.add(data);
                 }
+
                 Platform.runLater(() -> {
                     this.feeds.clear();
                     this.feeds.addAll(feeds);
@@ -208,6 +335,58 @@ public class RSSController extends FXController {
             }
         };
         components.submitTask(task);
+    }
+
+    @FXML
+    public void onRSSSave() {
+        RSSData data = feedList.getSelectionModel().getSelectedItem();
+        if (data == null) {
+            return;
+        }
+        try {
+            RSSSource source = sources.getSelectionModel().getSelectedItem();
+            if (source == null) {
+                return;
+            }
+            FileSystem sourceFs = FileSystems
+                    .newFileSystem(Paths.get("data/feeds/" + source.getName() + ".zip"),
+                            Map.of("create",true));
+            Path path = sourceFs.getPath("/" + data.getTitle() + ".data");
+            if (!Files.exists(path)) {
+                this.loadData(data, (contentText) -> {
+                    try {
+                        OutputStream out = Files.newOutputStream(path);
+                        out.write(contentText.getBytes());
+                        out.flush();
+                        out.close();
+
+                        sourceFs.close();
+
+                        Platform.runLater(() -> {
+
+                            TreeItem<RSSTreeItem> favoriteRoot = favoriteTree.getRoot();
+                            for (TreeItem<RSSTreeItem> item: favoriteRoot.getChildren()) {
+                                if (item.getValue().toString().equals(source.getName())) {
+                                    if (item.isExpanded()) {
+                                        RSSTreeItem added = new RSSTreeItem(data.getTitle());
+                                        item.getChildren().add(new TreeItem<>(added));
+                                    }
+                                }
+                            }
+                            RSSView view = getView();
+                            view.showToast("已经收藏此文，请在收藏中查看。");
+                        });
+                    } catch (Exception ex) {
+                        logger.error("fail to load rss content", ex);
+                    }
+                });
+            } else {
+                RSSView view = getView();
+                view.showToast("已经收藏此文，请在底部收藏选项卡中查看。");
+            }
+        } catch (Exception e) {
+            logger.error("fail to save rss data",e);
+        }
     }
 
     @FXML
