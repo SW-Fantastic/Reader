@@ -76,5 +76,26 @@
 
   "book-title": "Title",
   "book-category": "Category",
-  "text-loading": "File Loading:"
+  "text-loading": "File Loading:",
+
+  "menu-open": "Open",
+  "menu-edit": "Edit",
+  "menu-contents": "Show Contents",
+  "menu-bookmarks": "Show Bookmarks",
+
+  "chooser-open": "Open",
+  "dialog-delete": "Are you sure you want to delete：",
+  "dialog-warn": "Warning",
+  "dialog-warn-name": "name can not be blank",
+  "type-conflict": "A category with the same name already exists：",
+  "type-delete": "The book file will also be deleted！",
+  "config-save": "Configuration saved! Some configurations need to be restarted to take effect.",
+  "type-export": "all documents have been exported to the specified folder.",
+
+  "feed-add": "Add Feed/RSS",
+  "feed-edit": "Edit Feed/RSS",
+  "feed-current": "Feed",
+  "feed-download": "Favorites",
+  "feed-address": "Feed Address:",
+  "feed-name": "Feed Name:"
 }

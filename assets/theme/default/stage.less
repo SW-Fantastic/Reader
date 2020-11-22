@@ -186,6 +186,11 @@
   -fx-border-radius: 0;
   -fx-font-size: 15;
 }
+.btn-block {
+  -fx-background-color:rgb(120,106,123) ;
+  -fx-text-fill: #FFF;
+  -fx-border-radius: 0;
+}
 .scene-dlg {
   -fx-font-family: "FZMiaoWuS-GB";
   -fx-background-color: rgb(245,238,232);
@@ -234,6 +239,38 @@
       -fx-background-radius: 6;
     }
   }
+}
+
+.list-rss {
+  -fx-background-color: rgba(255,255,255,0.4);
+  .list-cell {
+    -fx-border-color: @primary;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    .title {
+      -fx-font-size: 16;
+    }
+    &:filled {
+      -fx-background-color: #FFF;
+      -fx-border-style: dashed;
+      -fx-border-color: @primary;
+    }
+    &:empty {
+      -fx-border-style: none;
+      -fx-background-color: @color-none;
+    }
+    &:selected {
+      -fx-background-color: @primary;
+      .label {
+        -fx-effect: dropshadow(three-pass-box,#FFF, 6, 0, 0, 0);
+        -fx-text-fill: #FFF;
+      }
+    }
+  }
+}
+.tool-rss {
+  -fx-background-color: rgba(255,255,255,0.6);
 }
 
 .config-panels .tab-header-background {

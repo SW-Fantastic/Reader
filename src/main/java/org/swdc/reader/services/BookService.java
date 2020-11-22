@@ -8,6 +8,7 @@ import org.swdc.fx.jpa.anno.Transactional;
 import org.swdc.fx.services.Service;
 import org.swdc.reader.entity.*;
 import org.swdc.reader.repository.*;
+import org.swdc.reader.ui.events.TypeRefreshEvent;
 import org.swdc.reader.utils.DataUtil;
 
 import java.io.File;
@@ -124,8 +125,10 @@ public class BookService extends Service {
     public BookType getDefaultType() {
         BookType defaultType = typeRepository.getDefault();
         if (defaultType == null) {
-            this.createType("未分类");
-            defaultType = typeRepository.getDefault();
+            defaultType = new BookType();
+            defaultType.setName("未分类");
+            defaultType = this.createType(defaultType);
+            this.emit(new TypeRefreshEvent(this));
         }
         return defaultType;
     }
@@ -212,12 +215,13 @@ public class BookService extends Service {
 
 
     @Transactional
-    public BookType createType(String name) {
-        if (isTypeExist(name)) {
-            return typeRepository.findByName(name);
+    public BookType createType(BookType type) {
+        if (type == null || type.getName().isBlank()) {
+            return null;
         }
-        BookType type = new BookType();
-        type.setName(name);
+        if (isTypeExist(type.getName())) {
+            return typeRepository.findByName(type.getName());
+        }
         type = typeRepository.save(type);
         return type;
     }

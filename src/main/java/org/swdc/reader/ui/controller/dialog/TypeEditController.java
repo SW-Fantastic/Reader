@@ -28,9 +28,11 @@ public class TypeEditController extends FXController {
         if (view.getType() == null) {
             return;
         }
-        view.showAlertDialog("删除","确定要删除《"
-                + view.getType().getName() +
-                "》吗？这将会同时删除分类的文件以及相关记录。", Alert.AlertType.CONFIRMATION).ifPresent(btn -> {
+        view.showAlertDialog(i18n("lang@dialog-warn"),
+                i18n("lang@dialog-delete") +
+                        "《" + view.getType().getName() + "》？"
+                        + i18n("lang@type-delete")
+                , Alert.AlertType.CONFIRMATION).ifPresent(btn -> {
             if (btn == ButtonType.OK) {
                 service.deleteType(view.getType());
                 view.close();
@@ -55,7 +57,9 @@ public class TypeEditController extends FXController {
             return;
         }
         service.exportType(target, view.getType());
-        view.showAlertDialog("提示","所有的文档已经导出到了指定的文件夹。", Alert.AlertType.INFORMATION);
+        view.showAlertDialog(i18n("lang@dialog-warn"),
+                i18n("lang@type-export"),
+                Alert.AlertType.INFORMATION);
     }
 
     @FXML

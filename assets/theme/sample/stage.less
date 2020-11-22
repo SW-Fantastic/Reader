@@ -165,6 +165,11 @@
   -fx-background-radius: 2;
   -fx-font-size: 15;
 }
+.btn-block {
+  -fx-background-color:@primary ;
+  -fx-text-fill: #FFF;
+  -fx-background-radius: 2;
+}
 .scene-dlg {
   -fx-font-family: "HYDaShengTiJ";
   -fx-background-color: @background;
@@ -215,6 +220,35 @@
     }
   }
 }
+
+.list-rss {
+  -fx-background-color: @color-none;
+  .list-cell {
+    -fx-border-color: @primary;
+    -fx-border-width: 0 0 1 0;
+    .title {
+      -fx-font-size: 16;
+    }
+    &:filled {
+      -fx-background-color: #FFF;
+      -fx-border-style: dashed;
+    }
+    &:empty {
+      -fx-border-style: none;
+      -fx-background-color: @color-none;
+    }
+    &:selected {
+      -fx-border-style: dashed;
+      -fx-background-color:rgba(120,106,123,0.6);
+      .label {
+        -fx-text-fill: #FFF;
+        -fx-effect: dropshadow(three-pass-box,#FFF, 6, 0, 0, 0);
+      }
+    }
+  }
+}
+
+
 
 .config-panels .tab-header-background {
   -fx-background-color: rgb(92,92,110);

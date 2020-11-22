@@ -106,10 +106,10 @@ public class BookController extends FXController {
         ContextMenu contextMenu = new ContextMenu();
         ObservableList<MenuItem> menuItems = contextMenu.getItems();
         ObservableValue<Book> selectedBook = detailTable.getSelectionModel().selectedItemProperty();
-        menuItems.add(DataUtil.createMenuItem("打开",actions.openBook(selectedBook)));
-        menuItems.add(DataUtil.createMenuItem("查看目录",actions.openContentDialog(selectedBook)));
-        menuItems.add(DataUtil.createMenuItem("查看书签",actions.openBookMarksDialog(selectedBook)));
-        menuItems.add(DataUtil.createMenuItem("编辑",actions.openEditDialog(selectedBook)));
+        menuItems.add(DataUtil.createMenuItem(i18n("lang@menu-open"),actions.openBook(selectedBook)));
+        menuItems.add(DataUtil.createMenuItem(i18n("lang@menu-contents"),actions.openContentDialog(selectedBook)));
+        menuItems.add(DataUtil.createMenuItem(i18n("lang@menu-bookmarks"),actions.openBookMarksDialog(selectedBook)));
+        menuItems.add(DataUtil.createMenuItem(i18n("lang@menu-edit"),actions.openEditDialog(selectedBook)));
 
         detailTable.setContextMenu(contextMenu);
 
@@ -257,7 +257,7 @@ public class BookController extends FXController {
     @FXML
     public void onOpen() {
         FileChooser chooser = new FileChooser();
-        chooser.setTitle("打开");
+        chooser.setTitle(i18n("lang@chooser-open"));
         File target = chooser.showOpenDialog(findView(MainView.class).getStage());
         if (target == null || !target.exists() || target.isDirectory()) {
             return;

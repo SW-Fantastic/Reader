@@ -23,7 +23,7 @@ public class ConfigController extends FXController {
         AppConfig config = findComponent(AppConfig.class);
         config.saveProperties();
         ConfigView configView = getView();
-        configView.showToast("配置已经保存！部分配置需要重启才能生效。");
+        configView.showToast(i18n("lang@config-save"));
     }
 
 }

@@ -9,9 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * Created by lenovo on 2019/5/19.
@@ -57,6 +55,10 @@ public class CommonComponents extends Service {
 
     public void submitTask(Runnable runnable) {
         this.executor.submit(runnable);
+    }
+
+    public <T> Future<T>  submitFuture(FutureTask<T> future) {
+        return (Future<T>) this.executor.submit(future);
     }
 
     public String getFontFamily(String fileName) {

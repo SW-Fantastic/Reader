@@ -28,6 +28,9 @@ public class MainView extends FXView {
     private ReadView readView = null;
 
     @Aware
+    private RSSView rssView = null;
+
+    @Aware
     private ConfigView configView = null;
 
     @Aware
@@ -92,6 +95,7 @@ public class MainView extends FXView {
         this.initToggleBtn(findById("books"), "book", this::onBooksChange);
         this.initToggleBtn(findById("read"), "sticky_note", this::onReadChange);
         this.initToggleBtn(findById("conf"), "cog", this::onConfigChange);
+        this.initToggleBtn(findById("rss"),"rss",this::onRssChange);
         this.group.selectedToggleProperty().addListener(this::onSelectionChange);
         ToggleButton books = findById("books");
         books.setSelected(true);
@@ -103,6 +107,12 @@ public class MainView extends FXView {
         button.selectedProperty().addListener(onChange);
         button.focusTraversableProperty().bind(silderFocusable);
         group.getToggles().add(button);
+    }
+
+    private void onRssChange(ObservableValue<? extends Boolean> observableValue, Boolean oldVal, Boolean newVal) {
+        if (newVal != null && newVal) {
+            this.emit(new ViewChangeEvent("rss",this));
+        }
     }
 
     private void onBooksChange(ObservableValue<? extends Boolean> observableValue, Boolean oldVal, Boolean newVal) {
@@ -139,6 +149,9 @@ public class MainView extends FXView {
         BorderPane readPane = readView.getView();
         readPane.setPrefWidth(pane.getWidth() - toolBar.getPrefWidth() - 12);
 
+        BorderPane rssPane = rssView.getView();
+        rssPane.setPrefWidth(pane.getWidth() - toolBar.getPrefWidth() - 12);
+
         BorderPane configPane = configView.getView();
         configPane.setPrefWidth(pane.getWidth() - toolBar.getPrefWidth() - 12);
     }
@@ -151,6 +164,9 @@ public class MainView extends FXView {
 
         BorderPane readPane = readView.getView();
         readPane.setPrefHeight(pane.getHeight() + 10);
+
+        BorderPane rssPane = rssView.getView();
+        rssPane.setPrefHeight(pane.getHeight() + 10);
 
         BorderPane configPane = configView.getView();
         configPane.setPrefHeight(pane.getHeight() + 10);
@@ -167,6 +183,10 @@ public class MainView extends FXView {
             case "read":
                 pane.setCenter(readView.getView());
                 group.selectToggle(findById("read"));
+                break;
+            case "rss":
+                pane.setCenter(rssView.getView());
+                group.selectToggle(findById("rss"));
                 break;
             case "config":
                 pane.setCenter(configView.getView());

@@ -5,9 +5,12 @@ import org.swdc.fx.aop.ExecutablePoint;
 import org.swdc.fx.aop.anno.AfterReturning;
 import org.swdc.fx.aop.anno.Around;
 import org.swdc.reader.entity.Book;
+import org.swdc.reader.entity.BookType;
 import org.swdc.reader.entity.ContentsItem;
+import org.swdc.reader.entity.RSSSource;
 import org.swdc.reader.ui.events.BooksRefreshEvent;
 import org.swdc.reader.ui.events.ContentItemChangeEvent;
+import org.swdc.reader.ui.events.RSSRefreshEvent;
 import org.swdc.reader.ui.events.TypeRefreshEvent;
 
 /**
@@ -19,11 +22,11 @@ import org.swdc.reader.ui.events.TypeRefreshEvent;
 public class BookAspect extends Advisor {
 
 
-    @Around(pattern = "org.swdc.reader.services.BookService.create[\\S]+")
+    @Around(pattern = "org.swdc.reader.services.[\\S]+Service.create[\\S]+")
     public Object onCreate(ExecutablePoint point) {
         try {
             Object result = point.process();
-            this.publishRefreshEvent(point.getOriginal().getName(), getBook(point));
+            this.dispatchRefreshEvents(result,point);
             return result;
         } catch (Exception exc) {
             logger.error("fail to execute creation method",exc);
@@ -31,22 +34,24 @@ public class BookAspect extends Advisor {
         return null;
     }
 
-    @Around(pattern = "org.swdc.reader.services.BookService.modify*[\\S]+")
+    @Around(pattern = "org.swdc.reader.services.[\\S]+Service.modify[\\S]+")
     public Object onModify(ExecutablePoint point) {
         try {
-            this.publishRefreshEvent(point.getOriginal().getName(), getBook(point));
-            return point.process();
+            Object result = point.process();
+            this.dispatchRefreshEvents(result,point);
+            return result;
         } catch (Exception exc) {
             logger.error("fail ot execute modify method",exc);
         }
         return null;
     }
 
-    @Around(pattern = "org.swdc.reader.services.BookService.delete[\\S]+")
+    @Around(pattern = "org.swdc.reader.services.[\\S]+Service.delete[\\S]+")
     public Object onDelete(ExecutablePoint point) {
         try {
-            this.publishRefreshEvent(point.getOriginal().getName(), getBook(point));
-            return point.process();
+            Object result = point.process();
+            this.dispatchRefreshEvents(result,point);
+            return result;
         } catch (Throwable throwable) {
             logger.error("fail to execute delete method",throwable);
         }
@@ -62,27 +67,39 @@ public class BookAspect extends Advisor {
         }
     }
 
-    private void publishRefreshEvent(String name, Book book) {
-        if (name.toLowerCase().contains("type")) {
-            this.emit(new TypeRefreshEvent(this));
-        } else if (name.toLowerCase().contains("book")){
+    private void dispatchRefreshEvents(Object result,ExecutablePoint point) {
+        Book book = getParam(point,Book.class);
+        if (book != null) {
             this.emit(new BooksRefreshEvent(this));
-        } else if (name.toLowerCase().contains("contentitems")) {
-            this.emit(new ContentItemChangeEvent(book,this));
+            return;
+        }
+
+        ContentsItem contentsItem = getParam(point,ContentsItem.class);
+        if (contentsItem != null) {
+            this.emit(new ContentItemChangeEvent(contentsItem.getLocated(),this));
+            return;
+        }
+
+        BookType type = getParam(point,BookType.class);
+        if (type != null) {
+            this.emit(new TypeRefreshEvent(this));
+            return;
+        }
+
+        RSSSource rssSource = getParam(point,RSSSource.class);
+        if (rssSource != null) {
+            this.emit(new RSSRefreshEvent(this));
         }
     }
 
-    private Book getBook(ExecutablePoint point) {
-        Book book = null;
+    private <T> T getParam(ExecutablePoint point, Class<T> paramType) {
+        T result = null;
         for (Object arg: point.getParams()) {
-            if (arg instanceof Book) {
-                book = (Book)arg;
-            }
-            if (arg instanceof ContentsItem) {
-                book = ((ContentsItem)arg).getLocated();
+            if (arg.getClass() == paramType) {
+                result = (T) arg;
             }
         }
-        return book;
+        return result;
     }
 
 }

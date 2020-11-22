@@ -5,6 +5,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import org.swdc.fx.FXController;
 import org.swdc.fx.anno.Aware;
+import org.swdc.reader.entity.BookType;
 import org.swdc.reader.services.BookService;
 import org.swdc.reader.ui.view.dialogs.TypeAddDialog;
 
@@ -20,11 +21,21 @@ public class TypeAddDialogController extends FXController {
     protected void onOk() {
         TypeAddDialog dialog = getView();
         if (txtName.getText().trim().equals("")) {
-            dialog.showAlertDialog("提示","名字不能为空", Alert.AlertType.ERROR);
+
+            dialog.showAlertDialog(i18n("lang@dialog-warn"),
+                    i18n("lang@dialog-warn-name"),
+                    Alert.AlertType.ERROR);
+
         } else if (bookService.isTypeExist(txtName.getText())) {
-            dialog.showAlertDialog("提示","名字为《" + txtName.getText() + "》的类别已经存在", Alert.AlertType.ERROR);
+
+            dialog.showAlertDialog(i18n("lang@dialog-warn"),
+                    i18n("lang@type-conflict") + txtName.getText(),
+                    Alert.AlertType.ERROR);
+
         } else {
-            bookService.createType(txtName.getText());
+            BookType type = new BookType();
+            type.setName(txtName.getText());
+            bookService.createType(type);
             dialog.close();
             txtName.setText("");
         }

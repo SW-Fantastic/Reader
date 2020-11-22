@@ -33,6 +33,9 @@ module FReader {
     requires lucene.core;
     requires ik.analyzer;
 
+    requires com.rometools.rome;
+    requires com.rometools.rome.utils;
+
     opens org.swdc.reader.aspect to
             fx.framework.core,
             fx.framework.aop;

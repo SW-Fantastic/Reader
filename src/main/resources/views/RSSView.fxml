@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.web.WebView?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="543.0" prefWidth="758.0" styleClass="scene" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.swdc.reader.ui.controller.RSSController">
+   <left>
+      <BorderPane prefHeight="543.0" prefWidth="265.0" BorderPane.alignment="CENTER">
+         <center>
+            <TabPane prefHeight="200.0" prefWidth="200.0" side="BOTTOM" styleClass="config-panels" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+              <tabs>
+                <Tab text="lang@feed-current">
+                    <ListView fx:id="feedList" prefHeight="459.0" prefWidth="228.0" styleClass="list-rss" />
+                </Tab>
+                <Tab text="lang@feed-download">
+                    <TreeView prefHeight="466.0" prefWidth="242.0" />
+                </Tab>
+              </tabs>
+            </TabPane>
+         </center>
+         <top>
+            <VBox prefHeight="97.0" prefWidth="265.0" BorderPane.alignment="CENTER">
+               <children>
+                  <HBox alignment="CENTER" prefHeight="49.0" prefWidth="265.0" spacing="6.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <ComboBox fx:id="sources" prefHeight="28.0" prefWidth="229.0" styleClass="comb" />
+                     </children>
+                  </HBox>
+                  <HBox fx:id="tools" alignment="CENTER_LEFT" prefHeight="42.0" prefWidth="265.0" spacing="8.0" styleClass="tool-rss">
+                     <children>
+                        <Button id="rssAdd" mnemonicParsing="false" onAction="#onAddRss" prefHeight="28.0" prefWidth="28.0" styleClass="btn-block" text="+" />
+                        <Button id="editRss" mnemonicParsing="false" onAction="#onRssEdit" prefHeight="28.0" prefWidth="28.0" styleClass="btn-block" text="E" />
+                        <Button id="refresh" layoutX="58.0" layoutY="17.0" mnemonicParsing="false" onAction="#onRefresh" prefHeight="28.0" prefWidth="28.0" styleClass="btn-block" text="R" />
+                        <Button id="delete" layoutX="94.0" layoutY="17.0" mnemonicParsing="false" onAction="#onDeleteSource" prefHeight="28.0" prefWidth="28.0" styleClass="btn-block" text="D" />
+                     </children>
+                     <padding>
+                        <Insets left="12.0" />
+                     </padding>
+                  </HBox>
+               </children>
+            </VBox>
+         </top>
+      </BorderPane>
+   </left>
+   <center>
+      <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <top>
+            <HBox prefHeight="55.0" prefWidth="516.0" BorderPane.alignment="CENTER" />
+         </top>
+         <center>
+            <WebView fx:id="contentView" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+         </center>
+      </BorderPane>
+   </center>
+</BorderPane>

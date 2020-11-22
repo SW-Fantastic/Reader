@@ -110,7 +110,9 @@ public class BookEditDialogController extends FXController  {
     public void onDelete() {
         BookEditDialog view = getView();
         Book book = view.getBook();
-        Optional<ButtonType> selected = view.showAlertDialog("提示","确定要删除《" + book.getTitle() + "》吗？", Alert.AlertType.CONFIRMATION);
+        Optional<ButtonType> selected = view.showAlertDialog(i18n("lang@dialog-warn"),
+                i18n("lang@dialog-delete") + book.getTitle() + "？"
+                , Alert.AlertType.CONFIRMATION);
         selected.ifPresent(type -> {
             if (type.equals(ButtonType.OK)) {
                 ReadView readView = findView(ReadView.class);

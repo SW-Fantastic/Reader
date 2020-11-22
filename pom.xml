@@ -164,12 +164,14 @@
             <artifactId>mapstruct-processor</artifactId>
             <version>1.3.1.Final</version>
         </dependency>
+        <!-- 汉语拼音 -->
         <!-- https://mvnrepository.com/artifact/com.belerweb/pinyin4j -->
         <dependency>
             <groupId>com.belerweb</groupId>
             <artifactId>pinyin4j</artifactId>
             <version>2.5.1</version>
         </dependency>
+        <!-- 安全使用Nio的Map的API所需要的解除mapBuffer的api -->
         <dependency>
             <groupId>org.agrona</groupId>
             <artifactId>agrona</artifactId>
@@ -181,6 +183,7 @@
             <artifactId>lucene-core</artifactId>
             <version>8.7.0</version>
         </dependency>
+        <!-- 搜索引擎和索引框架 Lucene -->
         <!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-queryparser -->
         <dependency>
             <groupId>org.apache.lucene</groupId>
@@ -198,7 +201,14 @@
             <artifactId>ik-analyzer</artifactId>
             <version>8.4.0</version>
             <scope>system</scope>
-            <systemPath>${pom.basedir}/assets/ik-analyzer-8.4.0.jar</systemPath>
+            <systemPath>${pom.basedir}/libs/ik-analyzer-8.4.0.jar</systemPath>
+        </dependency>
+        <!-- RSS订阅功能 -->
+        <!-- https://mvnrepository.com/artifact/com.rometools/rome -->
+        <dependency>
+            <groupId>com.rometools</groupId>
+            <artifactId>rome</artifactId>
+            <version>1.15.0</version>
         </dependency>
     </dependencies>
 

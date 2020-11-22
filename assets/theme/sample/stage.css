@@ -143,6 +143,11 @@
   -fx-background-radius: 2;
   -fx-font-size: 15;
 }
+.btn-block {
+  -fx-background-color: #06d6a0;
+  -fx-text-fill: #FFF;
+  -fx-background-radius: 2;
+}
 .scene-dlg {
   -fx-font-family: "HYDaShengTiJ";
   -fx-background-color: #fffcf9;
@@ -191,6 +196,32 @@
   -fx-background-color: #786a7b;
   -fx-text-fill: #FFF;
   -fx-background-radius: 6;
+}
+.list-rss {
+  -fx-background-color: rgba(0, 0, 0, 0);
+}
+.list-rss .list-cell {
+  -fx-border-color: #06d6a0;
+  -fx-border-width: 0 0 1 0;
+}
+.list-rss .list-cell .title {
+  -fx-font-size: 16;
+}
+.list-rss .list-cell:filled {
+  -fx-background-color: #FFF;
+  -fx-border-style: dashed;
+}
+.list-rss .list-cell:empty {
+  -fx-border-style: none;
+  -fx-background-color: rgba(0, 0, 0, 0);
+}
+.list-rss .list-cell:selected {
+  -fx-border-style: dashed;
+  -fx-background-color: rgba(120, 106, 123, 0.6);
+}
+.list-rss .list-cell:selected .label {
+  -fx-text-fill: #FFF;
+  -fx-effect: dropshadow(three-pass-box, #ffffff, 6, 0, 0, 0);
 }
 .config-panels .tab-header-background {
   -fx-background-color: #5c5c6e;

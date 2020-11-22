@@ -165,6 +165,11 @@
   -fx-border-radius: 0;
   -fx-font-size: 15;
 }
+.btn-block {
+  -fx-background-color: #786a7b;
+  -fx-text-fill: #FFF;
+  -fx-border-radius: 0;
+}
 .scene-dlg {
   -fx-font-family: "FZMiaoWuS-GB";
   -fx-background-color: #f5eee8;
@@ -213,6 +218,37 @@
   -fx-text-fill: #FFF;
   -fx-background-radius: 6;
 }
+.list-rss {
+  -fx-background-color: rgba(255, 255, 255, 0.4);
+}
+.list-rss .list-cell {
+  -fx-border-color: #786a7b;
+  -fx-border-width: 0 0 1 0;
+  -fx-border-radius: 8;
+  -fx-background-radius: 8;
+}
+.list-rss .list-cell .title {
+  -fx-font-size: 16;
+}
+.list-rss .list-cell:filled {
+  -fx-background-color: #FFF;
+  -fx-border-style: dashed;
+  -fx-border-color: #786a7b;
+}
+.list-rss .list-cell:empty {
+  -fx-border-style: none;
+  -fx-background-color: rgba(0, 0, 0, 0);
+}
+.list-rss .list-cell:selected {
+  -fx-background-color: #786a7b;
+}
+.list-rss .list-cell:selected .label {
+  -fx-effect: dropshadow(three-pass-box, #ffffff, 6, 0, 0, 0);
+  -fx-text-fill: #FFF;
+}
+.tool-rss {
+  -fx-background-color: rgba(255, 255, 255, 0.6);
+}
 .config-panels .tab-header-background {
   -fx-background-color: rgba(255, 255, 255, 0.4);
 }
@@ -256,10 +292,6 @@
   -fx-border-width: 0.4px;
   -fx-border-color: #786a7b;
 }
-.scroll-bar .thumb {
-  -fx-background-color: rgba(120, 106, 123, 0.6);
-  -fx-effect: dropshadow(three-pass-box, #786a7b, 10, 0, 0, 0);
-}
 .scroll-bar {
   -fx-font-size: 10;
   -fx-background-color: rgba(253, 255, 223, 0);
@@ -267,6 +299,10 @@
 .scroll-bar .track {
   -fx-background-color: rgba(255, 255, 255, 0.6);
   -fx-background-radius: 99;
+}
+.scroll-bar .thumb {
+  -fx-background-color: rgba(120, 106, 123, 0.6);
+  -fx-effect: dropshadow(three-pass-box, #786a7b, 10, 0, 0, 0);
 }
 .scroll-bar .decrement-arrow {
   -fx-background-color: #4f9b6a;

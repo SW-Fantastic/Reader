@@ -75,5 +75,27 @@
 
   "book-title": "标题",
   "book-category": "分类",
-  "text-loading": "正在载入："
+  "text-loading": "正在载入：",
+
+  "menu-open": "打开",
+  "menu-edit": "编辑",
+  "menu-contents": "查看目录",
+  "menu-bookmarks": "查看书签",
+
+  "chooser-open": "打开",
+
+  "dialog-delete": "你确定要删除：",
+  "dialog-warn": "提示",
+  "dialog-warn-name": "名字不能为空。",
+  "type-conflict": "相同名字的分类已经存在：",
+  "type-delete": "将会同时删除书籍文件！",
+  "config-save": "配置已经保存！部分配置需要重启才能生效。",
+  "type-export": "所有的文档已经导出到了指定的文件夹。",
+
+  "feed-add": "添加Feed订阅",
+  "feed-edit": "编辑Feed订阅",
+  "feed-current": "当前",
+  "feed-download": "收藏",
+  "feed-address": "订阅地址：",
+  "feed-name": "订阅名称："
 }
