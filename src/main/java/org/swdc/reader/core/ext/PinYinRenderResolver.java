@@ -1,6 +1,6 @@
 package org.swdc.reader.core.ext;
 
-import lombok.extern.apachecommons.CommonsLog;
+import jakarta.inject.Inject;
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
@@ -9,9 +9,10 @@ import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.swdc.fx.anno.Aware;
-import org.swdc.reader.core.BookLocator;
+import org.slf4j.Logger;
+import org.swdc.dependency.annotations.MultipleImplement;
 import org.swdc.reader.core.configs.TextConfig;
+import org.swdc.reader.core.locators.BookLocator;
 import org.swdc.reader.core.locators.EpubLocator;
 import org.swdc.reader.core.locators.MobiLocator;
 import org.swdc.reader.core.locators.TextLocator;
@@ -21,11 +22,14 @@ import org.swdc.reader.core.locators.TextLocator;
  *
  * 开启显示拼音后，这里渲染拼音
  */
-@CommonsLog
+@MultipleImplement(RenderResolver.class)
 public class PinYinRenderResolver extends AbstractResolver {
 
-    @Aware
+    @Inject
     private TextConfig config;
+
+    @Inject
+    private Logger logger;
 
     @Override
     public boolean support(Class<? extends BookLocator> clazz) {
@@ -73,7 +77,7 @@ public class PinYinRenderResolver extends AbstractResolver {
                 }
             }
         } catch (Exception ex) {
-            log.error(ex);
+            logger.error("渲染失败：",ex);
         }
     }
 }

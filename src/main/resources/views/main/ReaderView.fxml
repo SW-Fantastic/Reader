@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="511.0" prefWidth="773.0" styleClass="content" xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.swdc.reader.ui.ReaderViewController">
+   <center>
+      <TabPane fx:id="tabs" prefHeight="200.0" prefWidth="200.0" styleClass="tab-outher" BorderPane.alignment="CENTER">
+        <tabs>
+          <Tab closable="false" text="书库">
+               <content>
+                  <BorderPane prefHeight="200.0" prefWidth="200.0">
+                     <center>
+                        <TableView id="bookTableView" fx:id="bookTableView" prefHeight="200.0" prefWidth="200.0" styleClass="books-table" BorderPane.alignment="CENTER">
+                           <columns>
+                              <TableColumn id="title" fx:id="titleColumn" prefWidth="133.0" text="文档名" />
+                              <TableColumn fx:id="authorColumn" prefWidth="75.0" text="作者" />
+                              <TableColumn fx:id="publisherColumn" prefWidth="101.0" text="来源" />
+                              <TableColumn fx:id="createColumn" prefWidth="108.0" text="收录日期" />
+                              <TableColumn fx:id="editColumn" editable="false" maxWidth="151.0" minWidth="112.0" prefWidth="112.0" resizable="false" sortable="false" text="操作" />
+                           </columns>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+                        </TableView>
+                     </center>
+                     <left>
+                        <VBox prefHeight="482.0" prefWidth="241.0" styleClass="left" BorderPane.alignment="CENTER">
+                           <children>
+                              <ToolBar fx:id="toolbar" minHeight="38.0" prefWidth="234.0" styleClass="tools-header">
+                                <items>
+                                  <Button id="open" mnemonicParsing="false" onAction="#showOpenFile" text="P" />
+                                    <Separator orientation="VERTICAL" prefHeight="0.0" prefWidth="0.0" />
+                                    <Button id="refresh" mnemonicParsing="false" onAction="#syncLibrary" text="P" />
+                                    <Separator orientation="VERTICAL" prefHeight="0.0" prefWidth="0.0" />
+                                    <Button id="plus" mnemonicParsing="false" onAction="#showAddType" text="P" />
+                                    <Separator orientation="VERTICAL" prefHeight="14.0" prefWidth="4.0" />
+                                    <Button id="import" mnemonicParsing="false" onAction="#showOpenFolder" text="P" />
+                                    <Separator orientation="VERTICAL" prefHeight="0.0" prefWidth="0.0" />
+                                    <Button id="find" fx:id="searchToolButton" mnemonicParsing="false" onAction="#showSearch" text="P" />
+                                    <Separator orientation="VERTICAL" prefHeight="0.0" prefWidth="0.0" />
+                                    <Button id="help" mnemonicParsing="false" onAction="#showAbout" text="P" />
+                                </items>
+                              </ToolBar>
+                              <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="482.0" prefWidth="240.0" styleClass="main-spread" VBox.vgrow="ALWAYS">
+                                <items>
+                                    <ListView id="typeList" fx:id="typeList" prefHeight="200.0" prefWidth="200.0" styleClass="list-type" />
+                                    <TreeView fx:id="detailsTree" prefHeight="200.0" prefWidth="200.0" styleClass="tree-tag">
+                                       <padding>
+                                          <Insets top="16.0" />
+                                       </padding></TreeView>
+                                </items>
+                              </SplitPane>
+                           </children>
+                        </VBox>
+                     </left>
+                  </BorderPane>
+               </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+   </center>
+</BorderPane>

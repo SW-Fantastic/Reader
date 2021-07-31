@@ -5,29 +5,27 @@ import hu.webhejj.pdb.PalmDataBase;
 import hu.webhejj.pdb.PalmRecord;
 import hu.webhejj.pdb.mobi.MobiAdapter;
 import hu.webhejj.pdb.mobi.MobiHeaderRecord;
-import lombok.extern.apachecommons.CommonsLog;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.swdc.reader.core.BookLocator;
-import org.swdc.reader.core.RenderResolver;
 import org.swdc.reader.core.configs.TextConfig;
-import org.swdc.reader.core.event.BookProcessEvent;
-import org.swdc.reader.core.event.ContentItemFoundEvent;
+import org.swdc.reader.core.ext.RenderResolver;
 import org.swdc.reader.entity.Book;
 import org.swdc.reader.entity.ContentsItem;
-import org.swdc.reader.services.CommonComponents;
+import org.swdc.reader.services.HelperServices;
 
 import java.io.File;
 import java.nio.charset.Charset;
 import java.util.Base64;
 import java.util.List;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  * Created by lenovo on 2019/9/29.
  */
-@CommonsLog
 public class MobiLocator implements BookLocator<String> {
 
     private static class TextMobiAdapter extends MobiAdapter {
@@ -48,52 +46,32 @@ public class MobiLocator implements BookLocator<String> {
 
     private TextConfig textConfig;
 
-    private String backgroundImageData;
-
     private static final String HTML5 = "<!DOCTYPE HTML>";
 
     private List<? extends RenderResolver> resolvers;
 
-    public MobiLocator(List<? extends RenderResolver> resolvers, CommonComponents commonComponents, Book book, TextConfig config){
-        this.resolvers = resolvers;
-        PDBReader reader = new PDBReader();
-        adapter = new TextMobiAdapter();
-        commonComponents.submitTask(() -> {
-            try {
-                palmDataBase = reader.read(new File("./data/library/" + book.getName()));
-                adapter.initialize(palmDataBase);
-                this.textConfig = config;
-                if (book.getContentsItems() == null || book.getContentsItems().size() == 0) {
-                    this.initContentItems(book);
-                }
-            } catch (Exception ex) {
-                log.error(ex);
-            }
-        });
+    public MobiLocator(List<? extends RenderResolver> resolvers, ThreadPoolExecutor executor, Book book, TextConfig config, File assets){
+        try {
+            this.resolvers = resolvers;
+            PDBReader reader = new PDBReader();
+            adapter = new TextMobiAdapter();
+            File bookFile = new File(assets.getAbsolutePath() + "/library/" + book.getName());
+            palmDataBase = reader.read(bookFile);
+            adapter.initialize(palmDataBase);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
-    private void initContentItems(Book book) {
+    public void indexTableOfContents(Consumer<Integer> pageIndexer) {
         int recordCount = adapter.getHeaderRecord().getRecordCount();
-        int counter = 0;
-        int chapterCounter = 1;
         double totals = recordCount;
         for (int index = 1; index < recordCount; ++index) {
-            double progress = 1 - (index / totals);
-            BookProcessEvent processEvent = new BookProcessEvent(progress, "正在索引页面",textConfig);
-            textConfig.emit(processEvent);
-            if (counter < 2) {
-                counter++;
-            } else {
-                ContentsItem item = new ContentsItem();
-                item.setLocated(book);
-                item.setLocation(index + "");
-                item.setTitle("第" + chapterCounter++ + "页");
-                textConfig.emit(new ContentItemFoundEvent(item,textConfig));
-            }
+            pageIndexer.accept(index);
         }
-        BookProcessEvent processEvent = new BookProcessEvent(1.0, "",textConfig);
-        textConfig.emit(processEvent);
     }
+
 
     @Override
     public String prevPage() {

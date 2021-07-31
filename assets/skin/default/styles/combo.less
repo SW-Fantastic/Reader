@@ -1,0 +1,58 @@
+.comb(){
+    -fx-background-color: @primaryLight;
+    -fx-prompt-text-fill: rgba(120,106,123, 0.6) ;
+    -fx-text-fill: @accent;
+    -fx-border-color: @nothing;
+    -fx-border-width: 0;
+    -fx-effect: dropshadow(three-pass-box,@accent, 6, 0, 0, 0);
+    -fx-font-size: 15;
+    * {
+      -fx-text-fill: @accent ;
+      .label{
+        -fx-font-size: 15;
+      }
+    }
+    .combo-box-popup, .list-view{
+      -fx-background-color: @primaryLight;
+      .list-cell:filled{
+        &:selected {
+          -fx-text-fill:#FFF;
+          -fx-background-color: @accent;
+        }
+        &:hover,&:focus {
+          -fx-background-color:@selection;
+          -fx-text-fill: #FFF;
+        }
+      }
+    }
+  }
+
+  .comb-custom(@background,@text){
+    -fx-background-color: @background;
+    -fx-prompt-text-fill: rgba(120,106,123, 0.6) ;
+    -fx-text-fill: @text;
+    -fx-border-color: @nothing;
+    -fx-border-width: 0;
+    -fx-effect: dropshadow(three-pass-box,@text, 6, 0, 0, 0);
+    -fx-font-size: 15;
+    * {
+      -fx-text-fill: @accent ;
+      .label{
+        -fx-font-size: 15;
+      }
+    }
+    .combo-box-popup, .list-view{
+      -fx-background-color: @background;
+      .list-cell:filled{
+        &:selected {
+          -fx-text-fill:@text;
+          -fx-background-color: @background;
+        }
+        &:hover,&:focus {
+          -fx-background-color:@selection;
+          -fx-text-fill: #FFF;
+        }
+      }
+    }
+  }
+  

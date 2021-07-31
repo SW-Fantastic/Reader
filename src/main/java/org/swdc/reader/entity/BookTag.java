@@ -1,7 +1,5 @@
 package org.swdc.reader.entity;
 
-import lombok.Getter;
-import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -10,18 +8,12 @@ import java.util.Set;
 public class BookTag {
 
     @Id
-    @Getter
-    @Setter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Getter
-    @Setter
-    @ManyToMany(mappedBy = "tags",fetch = FetchType.EAGER,cascade = CascadeType.REMOVE)
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Book> books;
 
-    @Getter
-    @Setter
     private String name;
 
     @Override
@@ -44,5 +36,29 @@ public class BookTag {
         } else {
             return this.getName().hashCode();
         }
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Set<Book> getBooks() {
+        return books;
+    }
+
+    public void setBooks(Set<Book> books) {
+        this.books = books;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

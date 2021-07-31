@@ -1,55 +1,76 @@
 package org.swdc.reader.core.ext;
 
-import lombok.extern.apachecommons.CommonsLog;
+import jakarta.annotation.PostConstruct;
+import jakarta.inject.Inject;
+import javafx.scene.paint.Color;
 import org.jsoup.nodes.Element;
-import org.swdc.fx.anno.Aware;
-import org.swdc.reader.core.BookLocator;
+import org.slf4j.Logger;
+import org.swdc.dependency.annotations.EventListener;
+import org.swdc.dependency.annotations.MultipleImplement;
 import org.swdc.reader.core.configs.EpubConfig;
 import org.swdc.reader.core.configs.TextConfig;
+import org.swdc.reader.core.locators.BookLocator;
 import org.swdc.reader.core.locators.EpubLocator;
 import org.swdc.reader.core.locators.MobiLocator;
 import org.swdc.reader.core.locators.TextLocator;
-import org.swdc.reader.services.CommonComponents;
+import org.swdc.reader.events.ConfigChangedEvent;
+import org.swdc.reader.services.HelperServices;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
+import java.nio.file.Files;
 import java.util.Base64;
 
 /**
  * 基础文本渲染器
  * 文本类型的数据在这里渲染样式
  */
-@CommonsLog
+@MultipleImplement(RenderResolver.class)
 public class BaseTextRenderResolver extends AbstractResolver {
 
-    @Aware
+    @Inject
     private TextConfig textConfig;
 
-    @Aware
+    @Inject
     private EpubConfig epubConfig;
 
-    @Aware
-    private CommonComponents commonComponents;
-
+    @Inject
     private String backgroundImageData;
 
-    @Override
+    @Inject
+    private HelperServices helperServices;
+
+    @Inject
+    private Logger logger;
+
+    @PostConstruct
     public void initialize() {
         try {
-            ByteArrayOutputStream bot = new ByteArrayOutputStream();
-            DataInputStream backgroundInput = new DataInputStream(new FileInputStream(new File(getAssetsPath() + "/readerBackground/" + textConfig.getBackgroundImage())));
-            byte[] data = new byte[1024];
-            while (backgroundInput.read(data) != -1) {
-                bot.write(data);
+            if (textConfig.getEnableBackgroundImage()) {
+                ByteArrayOutputStream bot = new ByteArrayOutputStream();
+                DataInputStream backgroundInput = new DataInputStream(
+                        Files.newInputStream(helperServices.getAssetsFolder()
+                                .toPath()
+                                .resolve("pageBg")
+                                .resolve(textConfig.getBackgroundImage())));
+
+                byte[] data = new byte[1024];
+                while (backgroundInput.read(data) != -1) {
+                    bot.write(data);
+                }
+                bot.flush();
+                backgroundInput.close();
+                backgroundImageData = Base64.getEncoder().encodeToString(bot.toByteArray());
             }
-            bot.flush();
-            backgroundInput.close();
-            backgroundImageData = Base64.getEncoder().encodeToString(bot.toByteArray());
         } catch (Exception ex) {
-            log.error(ex);
+            logger.error("载入失败",ex);
         }
+    }
+
+    @EventListener(type = ConfigChangedEvent.class)
+    public void resourceReload(ConfigChangedEvent event) {
+        this.backgroundImageData = null;
+        this.initialize();
     }
 
     @Override
@@ -61,9 +82,15 @@ public class BaseTextRenderResolver extends AbstractResolver {
 
     @Override
     public void renderStyle(StringBuilder builder) {
+
+        String fontFamily = "Microsoft YaHei";
+        if (textConfig.getFontFileName() != null && !textConfig.getFontFileName().isEmpty()) {
+            fontFamily = helperServices.getFontFamily(textConfig.getFontFileName());
+        }
+
         builder.append("body {")
                 .append("font-family:\"")
-                .append(commonComponents.getFontFamily(textConfig.getFontPath()) != null ? commonComponents.getFontFamily(textConfig.getFontPath()):"Microsoft YaHei").append("\";")
+                .append(fontFamily).append("\";")
                 .append("font-color:").append(textConfig.getFontColor()).append(";")
                 .append("font-size:").append(textConfig.getFontSize()).append("px;")
                 .append("background-color:").append(textConfig.getBackgroundColor()).append(";")
@@ -103,6 +130,7 @@ public class BaseTextRenderResolver extends AbstractResolver {
             builder.append("text-shadow: 0px 0px 5px ").append(textConfig.getShadowColor()).append(";");
         }
         builder.append("}");
+
     }
 
     @Override

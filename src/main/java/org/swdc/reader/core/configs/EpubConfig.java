@@ -1,35 +1,33 @@
 package org.swdc.reader.core.configs;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.swdc.fx.anno.ConfigProp;
-import org.swdc.fx.anno.PropType;
-import org.swdc.fx.anno.Properties;
-import org.swdc.fx.properties.FXProperties;
-import org.swdc.reader.core.ReaderConfig;
+
+import org.swdc.config.AbstractConfig;
+import org.swdc.config.annotations.ConfigureSource;
+import org.swdc.config.annotations.Property;
+import org.swdc.config.configs.PropertiesHandler;
+import org.swdc.fx.config.PropEditor;
+import org.swdc.fx.config.editors.ColorEditor;
 
 /**
  * Created by lenovo on 2019/6/13.
  */
-@Properties(value = "epub.reader.properties",prefix = "epub")
-public class EpubConfig extends FXProperties implements ReaderConfig {
+@ConfigureSource(value = "assets/epub.reader.properties", handler = PropertiesHandler.class)
+public class EpubConfig extends AbstractConfig {
 
-    @Getter
-    private String name = "lang@tab-epub";
+    private String name = "EPUB电子出版物";
 
-    @Getter
-    @Setter
-    @ConfigProp(type = PropType.COLOR, name = "lang@config-epub-hyperlink-color",
-            value = "", tooltip = "lang@config-epub-hyperlink-color-tooltip", propName = "link-color")
+    @PropEditor(name = "链接颜色",
+            description = "EPUB文档可以存在超链接，这里可以指定超链接字体的颜色。",
+            editor = ColorEditor.class)
+    @Property("link-color")
     private String linkColor;
 
-    @Getter
-    @Setter
-    @ConfigProp(type = PropType.CHECK, name = "lang@config-epub-hyperlink-enable",
-            value = "", tooltip = "lang@config-epub-hyperlink-enable-tooltip",propName = "enable-hyper-links")
-    private Boolean enableHyperLinks;
-
-    public void setName(String name) {
-        return;
+    public String getLinkColor() {
+        return linkColor;
     }
+
+    public void setLinkColor(String linkColor) {
+        this.linkColor = linkColor;
+    }
+
 }

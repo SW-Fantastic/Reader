@@ -5,12 +5,9 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.swdc.reader.core.BookLocator;
-import org.swdc.reader.core.RenderResolver;
+import org.swdc.fx.FXResources;
 import org.swdc.reader.core.configs.TextConfig;
-import org.swdc.reader.core.event.BookProcessEvent;
-import org.swdc.reader.core.event.ContentItemFoundEvent;
-import org.swdc.reader.core.event.ContentsModeChangeEvent;
+import org.swdc.reader.core.ext.RenderResolver;
 import org.swdc.reader.entity.Book;
 import org.swdc.reader.entity.ContentsItem;
 
@@ -43,11 +40,6 @@ public class TextLocator implements BookLocator<String> {
     private Integer currentPage = 0;
 
     /**
-     * 用来匹配章节的正则表达式
-     */
-    private List<Pattern> chapterPatterns;
-
-    /**
      * 当前适用的章节正则
      */
     private Pattern patternForChapter;
@@ -62,10 +54,6 @@ public class TextLocator implements BookLocator<String> {
      */
     private String chapterNext=null;
 
-    public static final String PAGE_BY_CHAPTER = "PAGE-BY-REGEX";
-
-    public static final String PAGE_BY_COUNT = "PAGE-BY-COUNT";
-
     private final int pageSize = 1200;
 
     private TextConfig config;
@@ -78,16 +66,15 @@ public class TextLocator implements BookLocator<String> {
 
     private List<? extends RenderResolver> resolvers;
 
-    private boolean divideByChapter = false;
-
     private Charset charset;
 
-    public TextLocator(List<? extends RenderResolver> resolvers, Book book, CodepageDetectorProxy codepageDetectorProxy, TextConfig config) {
+    private FXResources resources;
+
+    public TextLocator(List<? extends RenderResolver> resolvers, Book book, CodepageDetectorProxy codepageDetectorProxy, TextConfig config,File assets) {
         this.resolvers = resolvers;
-        File bookFile = new File("./data/library/" + book.getName());
+        File bookFile = new File(assets.getAbsolutePath() + "/library/" + book.getName());
         this.bookEntity = book;
         this.config = config;
-        this.divideByChapter = config.getDivideByChapter();
         try {
             try {
                 charset = codepageDetectorProxy.detectCodepage(bookFile.toURI().toURL());
@@ -104,11 +91,6 @@ public class TextLocator implements BookLocator<String> {
             } else {
                 reader = new BufferedReader(new InputStreamReader(new FileInputStream(bookFile)));
             }
-            this.chapterPatterns = new ArrayList<>();
-            this.chapterPatterns.add(Pattern.compile("^第[^章]+章[\\s\\S]*?(?:(?=第[^章]+章)|$)"));
-            this.chapterPatterns.add(Pattern.compile("^第[^回]+回[\\s\\S]*?(?:(?=回[^回]+回)|$)"));
-            this.chapterPatterns.add(Pattern.compile("^第[^节]+节[\\s\\S]*?(?:(?=节[^节]+节)|$)"));
-            this.chapterPatterns.add(Pattern.compile("第[^章]+章[\\s\\S]*?(?:(?=第[^章]+章)|$)"));
             available = true;
         } catch (IOException e) {
             logger.error("error on create locator",e);
@@ -118,9 +100,6 @@ public class TextLocator implements BookLocator<String> {
     @Override
     public String prevPage() {
         try {
-            if (divideByChapter != config.getDivideByChapter()) {
-                this.reloadFile();
-            }
             this.currentPage --;
             String data = chapterAt(currentPage);
             if (data != null) {
@@ -154,16 +133,12 @@ public class TextLocator implements BookLocator<String> {
         } else {
             reader = new BufferedReader(new InputStreamReader(new FileInputStream(bookFile)));
         }
-        divideByChapter = config.getDivideByChapter();
-        config.emit(new ContentsModeChangeEvent(config));
+        //config.emit(new ContentsModeChangeEvent(config));
     }
 
     @Override
     public String nextPage() {
         try {
-            if (divideByChapter != config.getDivideByChapter()) {
-                this.reloadFile();
-            }
             currentPage ++;
             // 当前页内容已经存在
             String data = chapterAt(currentPage);
@@ -175,7 +150,7 @@ public class TextLocator implements BookLocator<String> {
                 this.chapterName = chapterNext;
                 chapterNext = null;
             }
-            String line = chapterName.equals("序章") ? "" : chapterName;
+            String line;
             StringBuilder sb = new StringBuilder("<!docutype html><html><head><style>");
 
             for (RenderResolver resolver : resolvers) {
@@ -184,45 +159,17 @@ public class TextLocator implements BookLocator<String> {
                 }
             }
             sb.append("</style></head><body><div>");
-            if (config.getDivideByChapter()) {
-                sb.append("<p><h2 style=\"text-align: center\">")
-                        .append(line)
-                        .append("</h2></p>");
-                sb.append("\n");
-                readerLoop: while ((line = reader.readLine()) != null) {
-                    if (patternForChapter == null){
-                        // 查找合用的章节正则
-                        for (Pattern pattern: chapterPatterns) {
-                            Matcher matcher = pattern.matcher(line);
-                            if (matcher.find()) {
-                                patternForChapter = pattern;
-                                this.locationTitleMap.put(currentPage, chapterName);
-                                this.chapterNext = line.trim();
-                                break readerLoop;
-                            }
-                        }
-                    } else {
-                        Matcher matcher = patternForChapter.matcher(line);
-                        if (matcher.find()) {
-                            this.locationTitleMap.put(currentPage, chapterName);
-                            this.chapterNext = line;
-                            break;
-                        }
-                    }
+
+            int totalSize = 0;
+            while ((line = reader.readLine()) != null) {
+                if (totalSize < pageSize) {
+                    totalSize = totalSize + line.length();
                     sb.append("<p>").append(line).append("</p>");
+                    continue;
                 }
-            } else {
-                int totalSize = 0;
-                while ((line = reader.readLine()) != null) {
-                    if (totalSize < pageSize) {
-                        totalSize = totalSize + line.length();
-                        sb.append("<p>").append(line).append("</p>");
-                        continue;
-                    }
-                    this.chapterName = "第" + currentPage + "页";
-                    this.locationTitleMap.put(currentPage, this.chapterName);
-                    break;
-                }
+                this.chapterName = "第" + currentPage + "页";
+                this.locationTitleMap.put(currentPage, this.chapterName);
+                break;
             }
 
             sb.append("</div></body></html>");
@@ -231,8 +178,7 @@ public class TextLocator implements BookLocator<String> {
             item.setLocated(bookEntity);
             item.setLocation(currentPage + "");
             item.setTitle(chapterName);
-            item.setIndexMode(config.getDivideByChapter() ? PAGE_BY_CHAPTER: PAGE_BY_COUNT);
-            config.emit(new ContentItemFoundEvent(item,config));
+            //config.emit(new ContentItemFoundEvent(item,config));
 
             String content = sb.toString();
             Document document = Jsoup.parse(content);
@@ -277,20 +223,20 @@ public class TextLocator implements BookLocator<String> {
         if (page > currentPage) {
             while (page > currentPage) {
                 double target = 1 - ((page - currentPage) / totals);
-                BookProcessEvent processEvent = new BookProcessEvent(target, "正在加载页面",config);
-                config.emit(processEvent);
+                //BookProcessEvent processEvent = new BookProcessEvent(target, "正在加载页面",config);
+                //config.emit(processEvent);
                 this.nextPage();
             }
         } else if (page < currentPage) {
             while (page < currentPage) {
                 double target = 1 - ((currentPage - page) / totals);
-                BookProcessEvent processEvent = new BookProcessEvent(target, "正在加载页面",config);
-                config.emit(processEvent);
+                //BookProcessEvent processEvent = new BookProcessEvent(target, "正在加载页面",config);
+                //config.emit(processEvent);
                 this.prevPage();
             }
         }
-        BookProcessEvent processEvent = new BookProcessEvent(1.0, "",config);
-        config.emit(processEvent);
+        //BookProcessEvent processEvent = new BookProcessEvent(1.0, "",config);
+        //config.emit(processEvent);
         return currentPage();
     }
 

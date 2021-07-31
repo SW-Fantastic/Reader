@@ -1,6 +1,5 @@
 package org.swdc.reader.core.locators;
 
-import lombok.extern.apachecommons.CommonsLog;
 import nl.siegmann.epublib.domain.Resource;
 import nl.siegmann.epublib.domain.Spine;
 import nl.siegmann.epublib.domain.TOCReference;
@@ -8,28 +7,20 @@ import nl.siegmann.epublib.epub.EpubReader;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.swdc.reader.core.BookLocator;
-import org.swdc.reader.core.RenderResolver;
 import org.swdc.reader.core.configs.EpubConfig;
 import org.swdc.reader.core.configs.TextConfig;
-import org.swdc.reader.core.event.BookProcessEvent;
-import org.swdc.reader.core.event.ContentItemFoundEvent;
+import org.swdc.reader.core.ext.RenderResolver;
 import org.swdc.reader.entity.Book;
-import org.swdc.reader.entity.ContentsItem;
-import org.swdc.reader.utils.DataUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Base64;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.BiConsumer;
 
 /**
  * Created by lenovo on 2019/6/13.
  */
-@CommonsLog
 public class EpubLocator implements BookLocator<String> {
 
     private Book book;
@@ -59,12 +50,12 @@ public class EpubLocator implements BookLocator<String> {
 
     private List<? extends RenderResolver> resolvers;
 
-    public EpubLocator(List<? extends RenderResolver> resolvers, Book book, EpubConfig config, TextConfig textConfig){
+    public EpubLocator(List<? extends RenderResolver> resolvers, Book book, EpubConfig config, TextConfig textConfig,File assets){
         this.resolvers = resolvers;
         this.book = book;
         this.config = config;
         this.txtConfig = textConfig;
-        File bookFile = new File("./data/library/" + book.getName());
+        File bookFile = new File(assets.getAbsolutePath() + "/library/" + book.getName());
         this.reader = new EpubReader();
         indexContentMap = new LinkedHashMap<>();
         locationIndexMap = new LinkedHashMap<>();
@@ -72,9 +63,7 @@ public class EpubLocator implements BookLocator<String> {
         try {
             FileInputStream fin = new FileInputStream(bookFile);
             epubBook = reader.readEpub(fin);
-            if (book.getContentsItems() == null || book.getContentsItems().size() == 0) {
-                initContents(epubBook.getTableOfContents().getTocReferences(), "章",true);
-            }
+
             fin.close();
             this.availbale = true;
         } catch (IOException e) {
@@ -82,32 +71,42 @@ public class EpubLocator implements BookLocator<String> {
         }
     }
 
-    private void initContents(List<TOCReference> toc, String subfix, boolean isOuther) {
+    public void indexContents(BiConsumer<TOCReference,Integer> resolver) {
+        List<TOCReference>tocs = epubBook.getTableOfContents().getTocReferences();
+        this.reverseIndexContents(tocs,resolver);
+    }
 
-        if (toc == null || toc.size() == 0) {
-            return;
-        }
-        double totals = toc.size();
-        for (int idx = 0; idx < toc.size(); idx++) {
-            TOCReference ref = toc.get(idx);
-            ContentsItem item = new ContentsItem();
-            String title = ref.getTitle();
-            if (title == null || title.trim().equals("")) {
-                title = "第" + idx + subfix;
+    private void reverseIndexContents(List<TOCReference> tocs, BiConsumer<TOCReference,Integer> resolver) {
+        for (TOCReference item: tocs) {
+            resolver.accept(item,tocs.indexOf(item));
+            if (item.getChildren() != null && item.getChildren().size() > 0) {
+                this.reverseIndexContents(item.getChildren(),resolver);
             }
-            item.setTitle(title);
-            item.setLocation(ref.getResource().getHref());
-            item.setLocated(book);
-            config.emit(new ContentItemFoundEvent(item,config));
-            double progress = 1 - (idx/totals);
-            BookProcessEvent processEvent = new BookProcessEvent(progress, "正在索引目录：" + title,config);
-            config.emit(processEvent);
-            if (ref.getChildren() != null && ref.getChildren().size() > 0) {
-                this.initContents(ref.getChildren(), "节",false);
-            }
-            processEvent = new BookProcessEvent(isOuther ? 1.0 : 0.8, isOuther ? "完成": "正在索引目录：" + title,config);
-            config.emit(processEvent);
         }
+    }
+
+    public static String resolveRelativePath(String base, String target) {
+        // 获取base的基目录
+        String[] baseParts = base.split("/");
+        String baseDir = base;
+        if (baseParts[baseParts.length - 1].split("[.]").length > 1  && baseParts.length > 1) {
+            baseDir = base.substring(0, base.lastIndexOf("/"));
+        } else {
+            return target;
+        }
+        // 拼接
+        String targetPath = baseDir + "/" + target;
+        List<String> targetParts = Arrays.asList(targetPath.split("/"));
+        LinkedList<String> result = new LinkedList<>();
+        for (int idx = 0; idx < targetParts.size(); idx ++) {
+            String part = targetParts.get(idx);
+            if (part.equals("..")) {
+                result.remove(idx - 1);
+                continue;
+            }
+            result.add(part);
+        }
+        return result.stream().reduce((partA, partB) -> partA + "/" + partB).orElse("");
     }
 
     private Element preparImages(Document doc) throws IOException {
@@ -122,7 +121,7 @@ public class EpubLocator implements BookLocator<String> {
                     continue;
                 }else{
                     String path = epubBook.getSpine().getResource(pageIndex).getHref();
-                    Resource res = epubBook.getResources().getByHref(DataUtil.resolveRelativePath(path, element.attr("src")));
+                    Resource res = epubBook.getResources().getByHref(resolveRelativePath(path, element.attr("src")));
                     Base64.Encoder enc = Base64.getEncoder();
                     element.attr("src", "data:image/png;base64,"+enc.encodeToString(res.getData()));
                 }
@@ -238,7 +237,7 @@ public class EpubLocator implements BookLocator<String> {
             resource = epubBook.getResources().getByHref(location);
             if (resource == null){
                 String currentLoc = epubBook.getSpine().getResource(pageIndex).getHref();
-                location = DataUtil.resolveRelativePath(currentLoc, location);
+                location = resolveRelativePath(currentLoc, location);
                 resource = epubBook.getResources().getByHref(location);
             }
         }

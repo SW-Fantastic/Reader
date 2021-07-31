@@ -1,55 +1,35 @@
 package org.swdc.reader;
 
-import javafx.application.Application;
-import javafx.scene.image.Image;
+import org.swdc.dependency.DependencyContext;
+import org.swdc.dependency.EnvironmentLoader;
 import org.swdc.fx.FXApplication;
-import org.swdc.fx.FXSplash;
-import org.swdc.fx.anno.SFXApplication;
-import org.swdc.fx.container.ApplicationContainer;
-import org.swdc.fx.properties.ConfigManager;
-import org.swdc.reader.config.AppConfig;
-import org.swdc.reader.core.ext.ExternResolverManager;
-import org.swdc.reader.core.readers.ReaderManager;
-import org.swdc.reader.services.index.IndexerManager;
-import org.swdc.reader.ui.view.MainView;
+import org.swdc.fx.SWFXApplication;
+import org.swdc.reader.entity.EMFProviderImpl;
+import org.swdc.reader.ui.MainView;
 
-import java.util.ArrayList;
-import java.util.List;
-
-@SFXApplication(singleton = true,mainView = MainView.class, splash = FXSplash.class)
+/**
+ * 应用启动和依赖控制的类
+ * @author SW-Fantastic
+ */
+@SWFXApplication(assetsFolder = "./assets",
+        splash = SplashScreen.class,
+        configs = { ApplicationConfig.class },
+        icons = { "book16.png","book24.png","book32.png","book48.png","book64.png","book72.png" })
 public class ReaderApplication extends FXApplication {
 
-    public static void main(String[] args) {
-        Application.launch(ReaderApplication.class, args);
+    @Override
+    public void onConfig(EnvironmentLoader loader) {
+        loader.withProvider(EMFProviderImpl.class);
     }
 
     @Override
-    protected void onLaunch(ConfigManager configManager) {
-        configManager.register(AppConfig.class);
+    public void onStarted(DependencyContext dependencyContext) {
+        MainView view = dependencyContext.getByClass(MainView.class);
+        view.show();
     }
 
     @Override
-    protected void onStart(ApplicationContainer container) {
-        container.register(ReaderManager.class);
-        container.register(ExternResolverManager.class);
-        container.register(IndexerManager.class);
-    }
-
-    @Override
-    protected List<Image> loadIcons() {
-        try {
-            Module module = this.getClass().getModule();
-
-            ArrayList<Image> icons = new ArrayList<>();
-            icons.add(new Image(module.getResourceAsStream("appicons/book16.png")));
-            icons.add(new Image(module.getResourceAsStream("appicons/book24.png")));
-            icons.add(new Image(module.getResourceAsStream("appicons/book32.png")));
-            icons.add(new Image(module.getResourceAsStream("appicons/book48.png")));
-            icons.add(new Image(module.getResourceAsStream("appicons/book64.png")));
-            icons.add(new Image(module.getResourceAsStream("appicons/book72.png")));
-            return icons;
-        } catch (Exception ex) {
-            return super.loadIcons();
-        }
+    public void stop() throws Exception {
+        super.stop();
     }
 }
