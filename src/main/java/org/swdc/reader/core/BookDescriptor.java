@@ -1,0 +1,28 @@
+package org.swdc.reader.core;
+
+import javafx.stage.FileChooser;
+import org.swdc.dependency.annotations.ImplementBy;
+import org.swdc.reader.core.readers.EpubBookDescriptor;
+import org.swdc.reader.core.readers.MobiBookDescriptor;
+import org.swdc.reader.core.readers.PDFBookDescriptor;
+import org.swdc.reader.core.readers.TextBookDescriptor;
+import org.swdc.reader.entity.Book;
+
+/**
+ * 这个类是描述支持的文件类型的组件类
+ * 他提供支持的文件类型以及对应的Reader对象。
+ */
+@ImplementBy(value = {
+        TextBookDescriptor.class,
+        EpubBookDescriptor.class,
+        PDFBookDescriptor.class,
+        MobiBookDescriptor.class})
+public interface BookDescriptor {
+
+    boolean support(Book file);
+
+    <T extends BookReader> T createReader(Book book);
+
+    FileChooser.ExtensionFilter getFilter();
+
+}

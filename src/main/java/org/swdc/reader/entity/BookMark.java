@@ -1,7 +1,5 @@
 package org.swdc.reader.entity;
 
-import lombok.Getter;
-import lombok.Setter;
 
 import javax.persistence.*;
 
@@ -11,27 +9,48 @@ import javax.persistence.*;
 @Entity
 public class BookMark {
 
-    @Getter
-    @Setter
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Getter
-    @Setter
     private String location;
 
-    @Getter
-    @Setter
-    @ManyToOne(cascade = CascadeType.DETACH,fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Book markFor;
 
-    @Getter
-    @Setter
     private String description;
 
-    @Override
-    public String toString() {
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public Book getMarkFor() {
+        return markFor;
+    }
+
+    public void setMarkFor(Book markFor) {
+        this.markFor = markFor;
+    }
+
+    public String getDescription() {
         return description;
     }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+
 }

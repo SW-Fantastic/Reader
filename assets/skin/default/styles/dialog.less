@@ -1,0 +1,174 @@
+@import "./colors.less";
+@dialog-secondary: rgb(196,235,199);
+
+.dialog-pane {
+
+    -fx-font-family: 'kinemarub';
+    -fx-background-color: @primary;
+    -fx-font-size: 13px;
+
+    .text-field{
+        -fx-background-color: @primaryLight;
+        -fx-border-style: solid;
+        -fx-border-width: 0 0 0 0;
+        -fx-background-radius: 0;
+        -fx-effect: dropshadow(three-pass-box, @accent, 12, 0, 0, 0);
+    }
+
+    .button {
+        -fx-background-color: @accent;
+        -fx-background-radius: 0;
+        -fx-text-fill:#FFF;
+        &:hover {
+         -fx-background-color: @accentLight;
+         -fx-text-fill: @accent;
+         -fx-effect: dropshadow(three-pass-box, @accent, 6, 0, 0, 0);
+        }
+    }
+
+    .cbx-types {
+        .comb()
+    }
+
+    .toc-tab {
+        .tabDefault(@primary, @accent,@secondary);
+    }
+
+
+    .popover {
+        .border {
+            -fx-fill: #FFF;
+            -fx-stroke: @nothing;
+            -fx-stroke-width: 0;
+            -fx-effect:dropshadow(three-pass-box,@selection,10,0,0,0);
+        }
+    }
+
+    .scroll-bar {
+        -fx-font-size: 10;
+        -fx-background-color:@nothing;
+        .track {
+          -fx-background-color:@nothing;
+          -fx-background-radius: 99;
+        }
+        .thumb {
+          -fx-background-color:@accent;
+          -fx-effect:dropshadow(three-pass-box,@selection,10,0,0,0);
+        }
+        .decrement-arrow {
+          -fx-background-color: @nothing;
+        }
+        .increment-arrow{
+          -fx-background-color: @nothing;
+        }
+    }
+    .list-view {
+        -fx-border-style:solid;
+        -fx-border-width:1 0 1 0;
+        -fx-border-color: @accent;
+        -fx-background-color: @nothing;
+        .list-cell {
+
+            -fx-background-color: @nothing;
+            -fx-font-size:14px;
+
+            &:selected:filled:focused {
+                -fx-background-color:@accent;
+                .type-cell {
+                    .label {
+                        -fx-text-fill: #FFF;
+                    }
+                }
+            }
+        }
+
+    }
+
+    .tag-cell {
+        -fx-background-color: @accent;
+        .label {
+            -fx-text-fill: #FFF;
+        }
+        .button{
+            -fx-background-color: @nothing;
+            -fx-text-fill: #FFF;
+        }
+    }
+
+    .btn-ghost {
+        -fx-background-color: @nothing;
+        -fx-text-fill: @accent;
+        &:hover {
+            -fx-background-color: @nothing;
+            -fx-effect:dropshadow(three-pass-box,@selection,10,0,0,0);
+        }
+    }
+
+    .books-table {
+        -fx-background-color: @primary;
+        -fx-border-style: dashed;
+        -fx-border-width: 1.2 1 0 0;
+        -fx-border-radius: 0 0 5 0;
+        -fx-border-color: @accent;
+        -fx-focus-color: rgba(0,0,0,0);
+        -fx-faint-focus-color: rgba(0,0,0,0);
+
+        .column-header-background {
+            -fx-background-color:  rgba(255,255,255,0);
+            .filler {
+              -fx-background-color:@accent;
+              -fx-background-radius: 0;
+            }
+        }
+
+        .column-header {
+            -fx-font-size: 14px;
+            -fx-background-color:@accent;
+            .label {
+              -fx-effect:dropshadow(three-pass-box,#666,12,0,0,0);
+              -fx-text-fill: @secondary;
+            }
+        }
+
+      .table-row-cell{
+        -fx-table-cell-border-color:@nothing;
+        -fx-font-size: 14;
+        .combo-box {
+            .comb-custom(@accent, #FFF)
+        }
+        .text {
+            -fx-fill:@accent;
+        }
+        .cell {
+            -fx-alignment: center;
+            .button {
+                -fx-background-color: @nothing;
+                -fx-text-fill: @accent;
+                &:hover {
+                    -fx-effect: dropshadow(three-pass-box, @accent, 12, 0.0, 0, 3);
+                }
+            }
+        }
+
+        -fx-background-color:@primary;
+        &:empty {
+           -fx-text-fill:@accent;
+        }
+
+        &:selected:filled {
+            -fx-background-color:@selection;
+            .text {
+                -fx-fill:#FFF;
+                -fx-font-size: 14px;
+            }
+            .cell {
+                .button {
+                    -fx-text-fill:#FFF;
+                }
+            }
+        }
+
+    }
+  }
+
+}

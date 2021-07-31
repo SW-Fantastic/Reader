@@ -1,41 +1,61 @@
 package org.swdc.reader.entity;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import javax.persistence.*;
 
 /**
  * 目录
+ *
+ *  在ReaderView中通过TOCAndFavoriteDialog操作，也可以使用Service直接控制。
  */
 @Entity
 public class ContentsItem {
 
-    @Getter
-    @Setter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Getter
-    @Setter
-    @ManyToOne(cascade = CascadeType.DETACH)
+    @ManyToOne
     private Book located;
 
-    @Getter
-    @Setter
     private String location;
 
-    @Getter
-    @Setter
     private String title;
-
-    @Getter
-    @Setter
-    private String indexMode;
 
     @Override
     public String toString() {
         return title;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Book getLocated() {
+        return located;
+    }
+
+    public void setLocated(Book located) {
+        this.located = located;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
 }

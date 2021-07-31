@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="438.0" prefWidth="693.0" styleClass="content" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.swdc.reader.ui.ConfigureViewController">
+   <center>
+      <TabPane id="configTab" prefHeight="350.0" prefWidth="693.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+         <styleClass>
+            <String fx:value="config-border" />
+            <String fx:value="tab-outher" />
+         </styleClass>
+      </TabPane>
+   </center>
+   <bottom>
+      <HBox alignment="TOP_RIGHT" prefHeight="87.0" prefWidth="693.0" styleClass="config-bottom-bar" BorderPane.alignment="CENTER">
+         <padding>
+            <Insets right="24.0" />
+         </padding>
+         <children>
+            <Button mnemonicParsing="false" onAction="#saveConfigures" prefHeight="33.0" prefWidth="77.0" styleClass="primary-button" text="保存">
+               <HBox.margin>
+                  <Insets top="16.0" />
+               </HBox.margin>
+            </Button>
+         </children>
+      </HBox>
+   </bottom>
+</BorderPane>

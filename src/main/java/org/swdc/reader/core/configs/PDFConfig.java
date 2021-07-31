@@ -1,37 +1,54 @@
 package org.swdc.reader.core.configs;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.swdc.fx.anno.ConfigProp;
-import org.swdc.fx.anno.PropType;
-import org.swdc.fx.anno.Properties;
-import org.swdc.fx.properties.FXProperties;
-import org.swdc.reader.core.ReaderConfig;
+
+import org.swdc.config.AbstractConfig;
+import org.swdc.config.annotations.ConfigureSource;
+import org.swdc.config.annotations.Property;
+import org.swdc.config.configs.PropertiesHandler;
+import org.swdc.fx.config.PropEditor;
+import org.swdc.fx.config.editors.NumberEditor;
 
 /**
  * Created by lenovo on 2019/6/9.
  */
-@Properties(value = "pdf.reader.properties",prefix = "pdf")
-public class PDFConfig extends FXProperties implements ReaderConfig {
+@ConfigureSource(value = "assets/pdf.reader.properties",handler = PropertiesHandler.class)
+public class PDFConfig extends AbstractConfig {
 
-    @Getter
-    private String name = "lang@tab-pdf";
+    private String name = "AdobePDF 文档";
 
-
-    @Getter
-    @Setter
-    @ConfigProp(name = "lang@config-pdf-cache-size",  type = PropType.NUMBER_SELECTABLE,
-            value = "40", tooltip = "lang@config-pdf-cache-size-tooltip", propName = "render-map-size")
+    @PropEditor(name = "缓存大小",
+            description = "一定程度影响性能。",
+            editor = NumberEditor.class,
+            resource = "12,24")
+    @Property("reader-map-size")
     private Integer renderMapSize;
 
-    @Getter
-    @Setter
-    @ConfigProp(name = "lang@config-pdf-quality", type = PropType.NUMBER,
-            value = "4", tooltip = "lang@config-pdf-quality-tooltip", propName = "render-quality")
+    @PropEditor(name = "渲染质量",
+            description = "页面的清晰度。",
+            editor = NumberEditor.class,
+            resource = "1,4")
+    @Property("reader-quality")
     private Float renderQuality;
+
+    public Integer getRenderMapSize() {
+        return renderMapSize;
+    }
+
+    public void setRenderMapSize(Integer renderMapSize) {
+        this.renderMapSize = renderMapSize;
+    }
+
+    public Float getRenderQuality() {
+        return renderQuality;
+    }
+
+    public void setRenderQuality(Float renderQuality) {
+        this.renderQuality = renderQuality;
+    }
 
     public void setName(String name) {
         return;
     }
+
 
 }

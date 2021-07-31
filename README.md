@@ -8,8 +8,23 @@ RSS（Feed）电子订阅，基于SpringBoot，javaFX。
 搞事结束，已经不在用 springboot了，但是会留着一个springboot的分支。
 目前已经移植到了自己的框架上。
 
+本项目于20211/7/3日重新设计，便为新的基础框架，这使得工程结构更加清晰。
+
+如果需要构建（build）此工程，需要提前在本地安装以下工程：
+[Application-Dependency](https://github.com/SW-Fantastic/swdc-dependency)
+
+[Application-JavaFX](https://github.com/SW-Fantastic/swdc-javafx)
+
+[Application-Configure](https://github.com/SW-Fantastic/swdc-configure)
+
+[Application-Data](https://github.com/SW-Fantastic/application-db)
+
+本工程以及以上的组件需要Java 11 以上（建议JDK14），安装以上工程后直接安装一般的maven工程启动即可。
+
+就目前而言，此工程还在完善之中。
+
 this is a Reader for EBooks ，planning supports most common formats like txt epub pdf and more
-include RSS （Feeds），based javaFX and SpringBoot
+include RSS （Feeds）。
 
 ## 进度 Process
 
@@ -22,7 +37,7 @@ include RSS （Feeds），based javaFX and SpringBoot
  - [x] PDF阅读的实现（Adobe PDF reader implement）
  - [x] EPublic阅读的实现（EPUB File Reader implement）
  - [x] MOBI文件的基础支撑（Mobi kindle format implement)
- - [x] Feed/RSS阅读（Feed RSS read implement）
+ - [ ] Feed/RSS阅读（Feed RSS read implement）
 
 #### 细节功能 Details
  - [x] 基本的书籍数据管理（Book Metadata）
@@ -30,4 +45,3 @@ include RSS （Feeds），based javaFX and SpringBoot
  - [x] 书籍数据索引功能（index tree from metadata） 
  - [x] 文本内容可以通过键盘左右方向键快速翻页，回车可以重定向焦点。（key-board support）
  - [x] 增加i18n语言切换（i18n language，Chinese English）
- - [x] 增加一个纯色主题

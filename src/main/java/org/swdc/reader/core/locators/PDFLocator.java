@@ -1,15 +1,15 @@
 package org.swdc.reader.core.locators;
 
 import javafx.scene.image.Image;
-import lombok.extern.apachecommons.CommonsLog;
+import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.destination.PDPageDestination;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocumentOutline;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 import org.apache.pdfbox.rendering.PDFRenderer;
-import org.swdc.reader.core.BookLocator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.swdc.reader.core.configs.PDFConfig;
-import org.swdc.reader.core.event.ContentItemFoundEvent;
 import org.swdc.reader.entity.Book;
 import org.swdc.reader.entity.ContentsItem;
 
@@ -21,11 +21,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.function.BiConsumer;
 
 /**
  * 处理pdf文档的解析
  */
-@CommonsLog
 public class PDFLocator implements BookLocator<Image> {
 
     private Book bookEntity;
@@ -44,35 +44,38 @@ public class PDFLocator implements BookLocator<Image> {
 
     private Boolean available;
 
-    public PDFLocator(Book book, PDFConfig config) {
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    public PDFLocator(Book book, PDFConfig config,File assetsFolder) {
         this.config = config;
         this.bookEntity = book;
-        File file = new File("data/library/" + book.getName());
+        File file = new File(assetsFolder.getAbsolutePath() + "/library/" + book.getName());
         try {
-            this.document = PDDocument.load(file);
+            this.document = Loader.loadPDF(file);
             this.renderer = new PDFRenderer(document);
-            if (bookEntity.getContentsItems() == null || bookEntity.getContentsItems().size() == 0) {
-                this.loadOutLines();
-            }
             this.available = true;
         } catch (IOException e) {
-           log.error(e);
+           logger.error("载入PDF失败。",e);
         }
     }
 
-    private void loadOutLines() throws IOException {
-        PDDocumentOutline outline = document.getDocumentCatalog().getDocumentOutline();
-        if (outline == null) {
-            return;
+    public void indexOutlines(BiConsumer<String,String> resolver) {
+        try {
+            PDDocumentOutline outline = document.getDocumentCatalog().getDocumentOutline();
+            if (outline == null) {
+                return;
+            }
+            PDOutlineItem item = outline.getFirstChild();
+            if (item == null) {
+                return;
+            }
+            loadContentTree(item,resolver);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        PDOutlineItem item = outline.getFirstChild();
-        if (item == null) {
-            return;
-        }
-        loadContentTree(item);
     }
 
-    private void loadContentTree(PDOutlineItem item) throws IOException {
+    private void loadContentTree(PDOutlineItem item,BiConsumer<String,String> resolver) throws IOException {
         if(item.getDestination() instanceof PDPageDestination) {
             PDPageDestination  destination = (PDPageDestination) item.getDestination();
             String title = item.getTitle();
@@ -81,13 +84,13 @@ public class PDFLocator implements BookLocator<Image> {
             contentsItem.setLocated(bookEntity);
             contentsItem.setLocation(location + "");
             contentsItem.setTitle(title == null ? "Page：" + location : title);
-            config.emit(new ContentItemFoundEvent(contentsItem,config));
+            resolver.accept(location + "", title);
             if (item.hasChildren()) {
-                this.loadContentTree(item.getFirstChild());
+                this.loadContentTree(item.getFirstChild(),resolver);
             }
             if (item.getNextSibling() != null) {
                 item = item.getNextSibling();
-                this.loadContentTree(item);
+                this.loadContentTree(item,resolver);
             }
         }
     }
@@ -120,7 +123,7 @@ public class PDFLocator implements BookLocator<Image> {
             this.location = page;
             return renderPage(page);
         } catch (Exception e) {
-            log.error(e);
+            logger.error("载入失败。",e);
         }
         return null;
     }
@@ -150,7 +153,7 @@ public class PDFLocator implements BookLocator<Image> {
                 this.available = false;
             }
         } catch (IOException e) {
-            log.error(e);
+            logger.error("无法释放资源",e);
         }
     }
 
@@ -169,9 +172,10 @@ public class PDFLocator implements BookLocator<Image> {
             ImageIO.write(image,"png",byteArrayOutputStream);
             Image data = new Image(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
             locationDataMap.put(page, data);
+            chapter = "第" + page + "页";
             return data;
         } catch (Exception ex) {
-            log.error(ex);
+            //log.error(ex);
         } catch (OutOfMemoryError error) {
             locationDataMap.clear();
             System.gc();
