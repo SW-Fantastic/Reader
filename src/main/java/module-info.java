@@ -17,7 +17,7 @@ module reader {
     requires javafx.fxml;
     requires javafx.web;
 
-    requires slf4j.api;
+    requires org.slf4j;
     requires java.persistence;
 
     requires org.jsoup;

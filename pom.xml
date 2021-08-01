@@ -74,7 +74,7 @@
             <artifactId>epublib</artifactId>
             <version>0.1</version>
             <scope>system</scope>
-            <systemPath>${pom.basedir}/libs/epublib-core-3.1.jar</systemPath>
+            <systemPath>${pom.basedir}/libs/epublib-core-4.0.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>mobi</groupId>
