@@ -122,12 +122,12 @@ public class BaseTextRenderResolver extends AbstractResolver {
                     .append("padding: 24px")
                     .append("}");
         }
-        builder.append("p {")
-                .append("line-height: 2;")
+        builder.append("div,p {")
+                .append("line-height: 2.5;")
                 .append("text-indent: ").append(textConfig.getFontSize() *2 + "px;")
                 .append("letter-spacing: 1.2px;");
         if (textConfig.getEnableTextShadow()){
-            builder.append("text-shadow: 0px 0px 5px ").append(textConfig.getShadowColor()).append(";");
+            builder.append("text-shadow: 0px 0px 7px ").append(textConfig.getShadowColor()).append(";");
         }
         builder.append("}");
 

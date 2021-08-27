@@ -113,10 +113,16 @@ public class BookEditDialogController implements Initializable {
             book.setPublisher(publisher);
         }
 
+        BookType type = typeCombo.getValue();
+        BookType bookType = book.getType();
+
+        if (type != null && !type.getId().equals(bookType.getId())) {
+            book.setType(type);
+        }
         book = bookServices.save(book);
 
-        BookType type = book.getType();
         this.view.emit(new TypeSelectEvent(type));
+        this.view.emit(new TypeSelectEvent(bookType));
         this.view.emit(new TreeRefreshEvent(null));
         this.onCancel();
     }

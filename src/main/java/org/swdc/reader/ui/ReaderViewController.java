@@ -6,10 +6,16 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.Mnemonic;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
@@ -237,6 +243,22 @@ public class ReaderViewController implements Initializable {
             List<Book> books = bookServices.searchByName(prefix);
             this.books.addAll(books);
         });
+        this.tabs.addEventFilter(KeyEvent.KEY_PRESSED,ev -> {
+            if(ev.isConsumed()) {
+                return;
+            }
+            ev.consume();
+            Tab tab = this.tabs.getSelectionModel().getSelectedItem();
+            if (tab.getUserData() == null) {
+                return;
+            }
+            BookReader reader = (BookReader) tab.getUserData();
+            if (ev.getCode() == KeyCode.LEFT) {
+                reader.goPreviousPage();
+            } else if (ev.getCode() == KeyCode.RIGHT) {
+                reader.goNextPage();
+            }
+        });
     }
 
     public void beforeHide(Object o) {
@@ -267,7 +289,8 @@ public class ReaderViewController implements Initializable {
             if (tab.getUserData() == null) {
                 continue;
             }
-            if (tab.getUserData().equals(book.getShaCode())) {
+            BookReader reader = (BookReader) tab.getUserData();
+            if (reader.getBook().getShaCode().equals(book.getShaCode())) {
                 this.tabs.getSelectionModel().select(tab);
                 return;
             }
@@ -282,7 +305,7 @@ public class ReaderViewController implements Initializable {
         bookTab.setContent(reader.getView());
         bookTab.setOnClosed(closeEvent -> reader.close());
         bookTab.setClosable(true);
-        bookTab.setUserData(book.getShaCode());
+        bookTab.setUserData(reader);
 
         tabList.add(bookTab);
         this.tabs.getSelectionModel().select(bookTab);
@@ -495,7 +518,8 @@ public class ReaderViewController implements Initializable {
             if (tab.getUserData() == null) {
                 continue;
             }
-            if (tab.getUserData().equals(book.getShaCode())) {
+            BookReader reader = (BookReader)tab.getUserData();
+            if (reader.getBook().getShaCode().equals(book.getShaCode())) {
                 tabs.getTabs().remove(tab);
                 tab.getOnClosed().handle(null);
                 return;

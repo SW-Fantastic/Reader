@@ -5,9 +5,9 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="569.0" minWidth="876.0" prefHeight="569.0" prefWidth="980.0" styleClass="stage-main" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.swdc.reader.ui.ReaderViewController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="569.0" minWidth="876.0" prefHeight="569.0" prefWidth="980.0" styleClass="stage-main" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.swdc.reader.ui.ReaderViewController">
    <left>
-      <VBox alignment="TOP_CENTER" prefHeight="569.0" prefWidth="67.0" spacing="12.0" styleClass="side" BorderPane.alignment="CENTER">
+      <VBox id="leftTools" alignment="TOP_CENTER" prefHeight="569.0" prefWidth="67.0" spacing="12.0" styleClass="side" BorderPane.alignment="CENTER">
          <children>
             <ToggleButton id="main" mnemonicParsing="false" prefHeight="42.0" prefWidth="42.0" text="R" />
             <ToggleButton id="conf" mnemonicParsing="false" prefHeight="42.0" prefWidth="42.0" text="C" />

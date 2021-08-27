@@ -7,8 +7,10 @@ import javafx.beans.Observable;
 import javafx.beans.property.DoubleProperty;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.swdc.fx.font.FontSize;
@@ -50,8 +52,10 @@ public class MainView extends AbstractView {
         this.setIcon(configs,"gear");
 
         group.getToggles().add(configs);
-
         group.selectedToggleProperty().addListener(this::onToggleChange);
+
+        VBox leftTools = this.findById("leftTools");
+        leftTools.addEventFilter(KeyEvent.ANY,KeyEvent::consume);
 
         this.changeView();
     }

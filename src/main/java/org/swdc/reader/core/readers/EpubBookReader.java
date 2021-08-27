@@ -7,6 +7,9 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.Mnemonic;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.web.WebView;
@@ -131,11 +134,10 @@ public class EpubBookReader implements BookReader<String> {
         tools.setSpacing(16);
         tools.getStyleClass().add("reader-tools");
 
+
         Button prev = new Button("上一页");
         prev.setOnAction((e) -> this.goPreviousPage());
-
         Button showTools = new Button("选项");
-
         Button bookMark = new Button("书签");
         bookMark.setOnAction(e -> dialog.showMarks(this));
         Button contents = new Button("目录");
