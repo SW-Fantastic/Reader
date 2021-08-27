@@ -4,12 +4,9 @@ import info.monitorenter.cpdetector.io.CodepageDetectorProxy;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.Mnemonic;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.web.WebView;
@@ -161,6 +158,7 @@ public class EpubBookReader implements BookReader<String> {
         this.panel.setTop(tools);
         this.panel.setCenter(this.view);
         this.panel.getStyleClass().add("reader-content");
+        this.panel.setOnKeyPressed(KeyEvent::consume);
     }
 
     private void setPoolExecutor(ThreadPoolExecutor poolExecutor) {
@@ -197,7 +195,7 @@ public class EpubBookReader implements BookReader<String> {
     }
 
     @Override
-    public Parent getView() {
+    public BorderPane getView() {
         return panel;
     }
 

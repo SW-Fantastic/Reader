@@ -1,11 +1,12 @@
 package org.swdc.reader.core;
 
 import javafx.scene.Parent;
+import javafx.scene.layout.BorderPane;
 import org.swdc.reader.entity.Book;
 
 public interface BookReader<T> {
 
-    Parent getView();
+    BorderPane getView();
 
     void renderPage();
 
@@ -22,5 +23,9 @@ public interface BookReader<T> {
     String getLocation();
 
     String getChapterName();
+
+    default boolean viewScrollable() {
+        return false;
+    }
 
 }

@@ -247,7 +247,7 @@ public class ReaderViewController implements Initializable {
             if(ev.isConsumed()) {
                 return;
             }
-            ev.consume();
+
             Tab tab = this.tabs.getSelectionModel().getSelectedItem();
             if (tab.getUserData() == null) {
                 return;
@@ -255,8 +255,10 @@ public class ReaderViewController implements Initializable {
             BookReader reader = (BookReader) tab.getUserData();
             if (ev.getCode() == KeyCode.LEFT) {
                 reader.goPreviousPage();
+                ev.consume();
             } else if (ev.getCode() == KeyCode.RIGHT) {
                 reader.goNextPage();
+                ev.consume();
             }
         });
     }

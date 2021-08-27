@@ -14,9 +14,9 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="511.0" prefWidth="773.0" styleClass="content" xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.swdc.reader.ui.ReaderViewController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="511.0" prefWidth="773.0" styleClass="content" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.swdc.reader.ui.ReaderViewController">
    <center>
-      <TabPane fx:id="tabs" prefHeight="200.0" prefWidth="200.0" styleClass="tab-outher" BorderPane.alignment="CENTER">
+      <TabPane fx:id="tabs" focusTraversable="false" prefHeight="200.0" prefWidth="200.0" styleClass="tab-outher" BorderPane.alignment="CENTER">
         <tabs>
           <Tab closable="false" text="书库">
                <content>

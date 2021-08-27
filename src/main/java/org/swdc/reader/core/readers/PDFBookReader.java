@@ -1,17 +1,16 @@
 package org.swdc.reader.core.readers;
 
 import info.monitorenter.cpdetector.io.CodepageDetectorProxy;
-import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
@@ -145,6 +144,7 @@ public class PDFBookReader implements BookReader<Image> {
         this.panel.setTop(tools);
         this.panel.setCenter(this.pane);
         this.panel.getStyleClass().add("reader-content");
+        this.panel.setOnKeyPressed(KeyEvent::consume);
     }
 
     private void create() {
@@ -188,7 +188,7 @@ public class PDFBookReader implements BookReader<Image> {
 
 
     @Override
-    public Parent getView() {
+    public BorderPane getView() {
         if (this.pane == null) {
             this.create();
         }
