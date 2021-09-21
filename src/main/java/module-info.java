@@ -32,6 +32,7 @@ module reader {
 
     requires jmimemagic;
 
+    requires jchmlib;
 
     exports org.swdc.reader to javafx.graphics;
 

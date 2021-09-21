@@ -298,7 +298,10 @@ public class ReaderViewController implements Initializable {
             }
         }
 
-        Toast.showMessage("正在载入《" + book.getTitle() + "》....");
+        try{
+            Toast.showMessage("正在载入《" + book.getTitle() + "》....");
+        } catch (Exception e) {
+        }
 
         readerView.getView().setDisable(true);
         BookReader reader = desc.createReader(book);

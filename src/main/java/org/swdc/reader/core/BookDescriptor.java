@@ -2,10 +2,7 @@ package org.swdc.reader.core;
 
 import javafx.stage.FileChooser;
 import org.swdc.dependency.annotations.ImplementBy;
-import org.swdc.reader.core.readers.EpubBookDescriptor;
-import org.swdc.reader.core.readers.MobiBookDescriptor;
-import org.swdc.reader.core.readers.PDFBookDescriptor;
-import org.swdc.reader.core.readers.TextBookDescriptor;
+import org.swdc.reader.core.readers.*;
 import org.swdc.reader.entity.Book;
 
 /**
@@ -16,6 +13,7 @@ import org.swdc.reader.entity.Book;
         TextBookDescriptor.class,
         EpubBookDescriptor.class,
         PDFBookDescriptor.class,
+        ChmBookDescriptor.class,
         MobiBookDescriptor.class})
 public interface BookDescriptor {
 

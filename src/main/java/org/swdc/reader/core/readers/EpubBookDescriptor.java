@@ -36,8 +36,11 @@ public class EpubBookDescriptor implements BookDescriptor {
 
     @Override
     public boolean support(Book file) {
-        return file.getName().endsWith("epub") &&
-                file.getMimeData().equals("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+        return file.getName()
+                .toLowerCase()
+                .endsWith("epub") &&
+                file.getMimeData()
+                        .equals("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
     }
 
 
