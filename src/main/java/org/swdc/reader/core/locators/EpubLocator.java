@@ -15,6 +15,7 @@ import org.swdc.reader.entity.Book;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.*;
 import java.util.function.BiConsumer;
 
@@ -66,7 +67,9 @@ public class EpubLocator implements BookLocator<String> {
 
             fin.close();
             this.availbale = true;
-        } catch (IOException e) {
+        } catch (MalformedURLException ignored){
+            System.err.println(ignored);
+        }catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
