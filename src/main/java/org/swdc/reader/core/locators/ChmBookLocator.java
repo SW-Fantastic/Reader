@@ -1,15 +1,9 @@
 package org.swdc.reader.core.locators;
 
-import javafx.css.CssParser;
-import javafx.css.Stylesheet;
 import org.jchmlib.ChmEnumerator;
 import org.jchmlib.ChmFile;
 import org.jchmlib.ChmStopEnumeration;
 import org.jchmlib.ChmUnitInfo;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.swdc.reader.core.URLManager;
 import org.swdc.reader.entity.Book;
 
@@ -17,8 +11,6 @@ import java.io.*;
 import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.security.Permission;
 import java.util.*;
 
@@ -136,6 +128,10 @@ public class ChmBookLocator implements BookLocator<String> {
         }
     }
 
+    public ChmFile getChmFile() {
+        return chmFile;
+    }
+
     private Deque<String> prevHistory = new ArrayDeque<>();
 
     private Deque<String> nextHistory = new ArrayDeque<>();
@@ -148,6 +144,8 @@ public class ChmBookLocator implements BookLocator<String> {
 
     private File file;
 
+    private Boolean available = false;
+
     public ChmBookLocator(Book book, File assets) {
         try {
 
@@ -158,6 +156,7 @@ public class ChmBookLocator implements BookLocator<String> {
             this.chmFile.enumerate(ChmFile.CHM_ENUMERATE_ALL,indexer);
 
             this.file = bookFile;
+            this.available = true;
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -173,7 +172,7 @@ public class ChmBookLocator implements BookLocator<String> {
             String prev = prevHistory.removeFirst();
             nextHistory.addFirst(prev);
             url = prev;
-            return prev;
+            return location();
         }
         url = indexer.getIndexPath();
         return location();
@@ -181,10 +180,20 @@ public class ChmBookLocator implements BookLocator<String> {
 
 
     public void location(String location) {
+        if (!location.equals(url)) {
+            this.prevHistory.addFirst(this.url);
+        }
         url = location;
     }
 
+    public File getFile() {
+        return file;
+    }
+
     public String location() {
+        if (url == null && indexer.getIndexPath() == null) {
+            url = chmFile.getHomeFile();
+        }
         return "vchm://" + Base64.getEncoder()
                 .encodeToString(file.getAbsolutePath().getBytes(StandardCharsets.UTF_8))
                 + "|" +  url;
@@ -220,27 +229,27 @@ public class ChmBookLocator implements BookLocator<String> {
 
     @Override
     public String getTitle() {
-        return null;
+       return "";
     }
 
     @Override
     public String getLocation() {
-        return null;
+        return url;
     }
 
     @Override
     public String currentPage() {
-        return null;
+        return url;
     }
 
     @Override
     public void finalizeResources() {
-
+        this.available = false;
     }
 
     @Override
     public Boolean isAvailable() {
-        return null;
+        return available;
     }
 
 }

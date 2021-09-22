@@ -4,6 +4,7 @@ import info.monitorenter.cpdetector.io.CodepageDetectorProxy;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
@@ -172,7 +173,7 @@ public class TextBookReader implements BookReader<String> {
     }
 
     @Override
-    public BorderPane getView() {
+    public Node getView() {
         return panel;
     }
 

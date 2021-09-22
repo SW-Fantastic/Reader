@@ -4,6 +4,7 @@ import info.monitorenter.cpdetector.io.CodepageDetectorProxy;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
@@ -188,7 +189,7 @@ public class PDFBookReader implements BookReader<Image> {
 
 
     @Override
-    public BorderPane getView() {
+    public Node getView() {
         if (this.pane == null) {
             this.create();
         }

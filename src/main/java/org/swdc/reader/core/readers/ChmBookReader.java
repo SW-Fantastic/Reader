@@ -1,33 +1,29 @@
 package org.swdc.reader.core.readers;
 
 import info.monitorenter.cpdetector.io.CodepageDetectorProxy;
-import jakarta.inject.Inject;
-import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
+import javafx.scene.Node;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import org.jchmlib.ChmTopicsTree;
 import org.swdc.reader.core.BookReader;
 import org.swdc.reader.core.configs.EpubConfig;
 import org.swdc.reader.core.configs.TextConfig;
 import org.swdc.reader.core.ext.RenderResolver;
 import org.swdc.reader.core.locators.ChmBookLocator;
-import org.swdc.reader.core.locators.EpubLocator;
 import org.swdc.reader.entity.Book;
-import org.swdc.reader.entity.ContentsItem;
-import org.swdc.reader.services.HelperServices;
 import org.swdc.reader.ui.dialogs.reader.TOCAndFavoriteDialog;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLStreamHandler;
-import java.net.URLStreamHandlerFactory;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -37,18 +33,16 @@ public class ChmBookReader implements BookReader<String> {
     private TextConfig textConfig;
     private List<RenderResolver> resolvers;
     private WebView view = new WebView();
-    // 章节名
-    private TextField chapterName = new TextField();
-    // 页码和跳转
-    TextField jump = new TextField();
     private BorderPane panel = new BorderPane();
     private String data;
     private Book book;
     private TOCAndFavoriteDialog dialog;
 
+    private TreeItem<ChmTopicsTree> topicRoot;
+    private TreeView<ChmTopicsTree> topic;
+
     private ThreadPoolExecutor poolExecutor;
-
-
+    private SplitPane splitPane;
 
     public static class Builder {
 
@@ -104,26 +98,6 @@ public class ChmBookReader implements BookReader<String> {
             reader.setPoolExecutor(executor);
             reader.setLocator(new ChmBookLocator(this.book,this.assets));
 
-            //executor.submit(() -> {
-                /*EpubLocator locator = new EpubLocator(resolvers,book,epubConfig,config,assets);
-                reader.setLocator(locator);
-
-                Platform.runLater(() -> {
-                    reader.goNextPage();
-                });
-
-                locator.indexContents((toc, idx) -> {
-                    String title = toc.getTitle();
-                    if (title == null || title.isEmpty()) {
-                        title = "第 " + idx  + "章";
-                    }
-                    ContentsItem item = new ContentsItem();
-                    item.setTitle(title);
-                    item.setLocation(toc.getResource().getHref());
-                    item.setLocated(book);
-                    dialog.buildTableOfContent(item);
-                });*/
-           // });
 
             reader.goNextPage();
             return reader;
@@ -134,38 +108,43 @@ public class ChmBookReader implements BookReader<String> {
     public ChmBookReader(){
 
         HBox tools = new HBox();
-        tools.setAlignment(Pos.CENTER);
+        tools.setAlignment(Pos.CENTER_LEFT);
         tools.setPadding(new Insets(8,4,8,4));
         tools.setSpacing(16);
         tools.getStyleClass().add("reader-tools");
 
         Button prev = new Button("上一页");
         prev.setOnAction((e) -> this.goPreviousPage());
-        Button showTools = new Button("选项");
-        Button bookMark = new Button("书签");
-        bookMark.setOnAction(e -> dialog.showMarks(this));
-        Button contents = new Button("目录");
-        contents.setOnAction((e) -> dialog.showTableOfContent(this));
-
-        Button jumpTo = new Button("跳转");
-        jumpTo.setOnAction((e) -> {
-            String target = jump.getText();
-            try {
-                Integer num = Integer.valueOf(target);
-                this.goTo(num);
-            }catch (Exception ex) {
-                jump.setText(locator.getLocation());
-            }
-        });
         Button next = new Button("下一页");
         next.setOnAction((e) -> this.goNextPage());
 
-        chapterName.setPrefWidth(240);
-        tools.getChildren().addAll(prev,contents,showTools,chapterName,jump,jumpTo,bookMark,next);
+        tools.getChildren().addAll(prev,next);
         this.panel.setTop(tools);
         this.panel.setCenter(this.view);
         this.panel.getStyleClass().add("reader-content");
         this.panel.setOnKeyPressed(KeyEvent::consume);
+
+        this.topic = new TreeView<>();
+        this.topicRoot = new TreeItem<>();
+        this.topic.setRoot(topicRoot);
+        this.topic.setShowRoot(false);
+        this.topic.setMaxWidth(240);
+        this.topicRoot.setExpanded(true);
+
+        this.topic.setOnMouseClicked(e -> {
+            TreeItem<ChmTopicsTree> item = this.topic.getSelectionModel().getSelectedItem();
+            if (item == null || item.getValue() == null) {
+                return;
+            }
+            String path = "vchm://" + Base64.getEncoder()
+                    .encodeToString(locator.getFile().getAbsolutePath().getBytes(StandardCharsets.UTF_8))
+                    + "|" + item.getValue().path;
+            view.getEngine().load(path);
+        });
+
+        this.splitPane = new SplitPane();
+        this.splitPane.getItems().add(this.topic);
+        this.splitPane.getItems().add(this.panel);
 
         this.view.getEngine().locationProperty().addListener((obs,oldVal, newVal) -> {
             try {
@@ -176,6 +155,29 @@ public class ChmBookReader implements BookReader<String> {
 
             }
         });
+    }
+
+    private void parseTopic(TreeItem<ChmTopicsTree> item,ChmTopicsTree val) {
+        if (val == null) {
+            val = locator.getChmFile().getTopicsTree();
+        }
+        if (item == null) {
+            item = topicRoot;
+        }
+        if (val == null && item == topicRoot) {
+            this.splitPane.getItems().remove(topic);
+            return;
+        }
+        List<ChmTopicsTree> children = val.children;
+        ObservableList<TreeItem<ChmTopicsTree>> items = item.getChildren();
+        items.clear();
+        for (ChmTopicsTree tree: children) {
+            TreeItem<ChmTopicsTree> node = new TreeItem<>(tree,new Label(tree.title));
+            items.add(node);
+            if (tree.children != null && tree.children.size() > 0) {
+                parseTopic(node,tree);
+            }
+        }
     }
 
     private void setPoolExecutor(ThreadPoolExecutor poolExecutor) {
@@ -209,11 +211,12 @@ public class ChmBookReader implements BookReader<String> {
 
     public void setLocator(ChmBookLocator locator) {
         this.locator = locator;
+        parseTopic(null,null);
     }
 
     @Override
-    public BorderPane getView() {
-        return panel;
+    public Node getView() {
+        return splitPane;
     }
 
     @Override
@@ -221,8 +224,6 @@ public class ChmBookReader implements BookReader<String> {
         if (this.locator == null) {
             return;
         }
-        chapterName.setText(locator.getTitle());
-        jump.setText(locator.getLocation());
         view.getEngine().load(locator.location());
     }
 

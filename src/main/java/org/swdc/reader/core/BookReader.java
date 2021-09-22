@@ -1,12 +1,12 @@
 package org.swdc.reader.core;
 
-import javafx.scene.Parent;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.Node;
+import javafx.scene.layout.Pane;
 import org.swdc.reader.entity.Book;
 
 public interface BookReader<T> {
 
-    BorderPane getView();
+    Node getView();
 
     void renderPage();
 
