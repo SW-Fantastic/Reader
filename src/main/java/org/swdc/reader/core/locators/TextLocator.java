@@ -161,7 +161,6 @@ public class TextLocator implements BookLocator<String> {
             sb.append("</style></head><body><div>");
 
             int totalSize = 0;
-            boolean complete = false;
             while (totalSize < pageSize && (line = reader.readLine()) != null) {
                 totalSize = totalSize + line.length();
                 sb.append("<p>").append(line).append("</p>");

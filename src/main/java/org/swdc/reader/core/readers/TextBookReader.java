@@ -20,6 +20,7 @@ import org.swdc.reader.ui.dialogs.reader.TOCAndFavoriteDialog;
 
 import java.io.File;
 import java.util.List;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public class TextBookReader implements BookReader<String> {
@@ -35,6 +36,8 @@ public class TextBookReader implements BookReader<String> {
     private BorderPane panel = new BorderPane();
     private String data;
     private Book book;
+
+    private Executor executor;
 
     private TOCAndFavoriteDialog tocAndFavoriteDialog;
 
@@ -89,6 +92,7 @@ public class TextBookReader implements BookReader<String> {
             TextBookReader reader = new TextBookReader();
             reader.setTocDialog(this.dialog);
             reader.setBook(this.book);
+            reader.setExecutor(exec);
 
             exec.submit(() -> {
                 reader.setLocator(new TextLocator(resolvers,book,this.proxy,this.config,this.assets));
@@ -142,6 +146,9 @@ public class TextBookReader implements BookReader<String> {
         this.panel.setOnKeyPressed(KeyEvent::consume);
     }
 
+    public void setExecutor(Executor executor) {
+        this.executor = executor;
+    }
 
     protected void setBook(Book book) {
         this.book = book;
@@ -182,27 +189,33 @@ public class TextBookReader implements BookReader<String> {
         if (this.locator == null) {
             return;
         }
-        chapterName.setText(locator.getTitle());
-        jump.setText(locator.getLocation());
-        view.getEngine().loadContent(data);
+        Platform.runLater(() ->{
+            chapterName.setText(locator.getTitle());
+            jump.setText(locator.getLocation());
+            view.getEngine().loadContent(data);
+        });
     }
 
     public void goNextPage() {
         if (this.locator == null) {
             return;
         }
-        this.data = locator.nextPage();
-        this.renderPage();
-        this.tocAndFavoriteDialog.buildTableOfContents(this);
+        executor.execute(() -> {
+            this.data = locator.nextPage();
+            this.renderPage();
+            this.tocAndFavoriteDialog.buildTableOfContents(this);
+        });
     }
 
     public void goPreviousPage() {
         if (this.locator == null) {
             return;
         }
-        this.data = locator.prevPage();
-        this.renderPage();
-        this.tocAndFavoriteDialog.buildTableOfContents(this);
+        executor.execute(() -> {
+            this.data = locator.prevPage();
+            this.renderPage();
+            this.tocAndFavoriteDialog.buildTableOfContents(this);
+        });
     }
 
     @Override

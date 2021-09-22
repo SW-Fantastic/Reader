@@ -1,6 +1,7 @@
 package org.swdc.reader.core.readers;
 
 import info.monitorenter.cpdetector.io.CodepageDetectorProxy;
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -25,6 +26,7 @@ import org.swdc.reader.ui.dialogs.reader.TOCAndFavoriteDialog;
 
 import java.io.File;
 import java.util.List;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public class PDFBookReader implements BookReader<Image> {
@@ -42,6 +44,8 @@ public class PDFBookReader implements BookReader<Image> {
     private Image data;
     private Book book;
     private TOCAndFavoriteDialog dialog;
+
+    private Executor executor;
 
     public static class Builder{
 
@@ -92,6 +96,7 @@ public class PDFBookReader implements BookReader<Image> {
             PDFBookReader reader = new PDFBookReader();
             reader.setBook(book);
             reader.setDialog(this.dialog);
+            reader.setExecutor(this.executor);
             PDFLocator locator = new PDFLocator(book,config,assets);
             executor.submit(() -> {
                 locator.indexOutlines((location, title) -> {
@@ -160,6 +165,9 @@ public class PDFBookReader implements BookReader<Image> {
         panel.setCenter(pane);
     }
 
+    public void setExecutor(Executor executor) {
+        this.executor = executor;
+    }
 
     private void onResize(ObservableValue value, Object oldVal, Object newVal) {
         if (canvas == null || locator == null || pane == null || panel == null || data == null) {
@@ -198,21 +206,23 @@ public class PDFBookReader implements BookReader<Image> {
 
     @Override
     public void renderPage() {
-        if (this.pane == null) {
-            this.create();
-        }
-        pane.setHvalue((panel.getWidth() / 2) - (data.getWidth() / 2));
-        pane.setVvalue(0);
-        // 计算画布当前宽度的时候，让图片等比例缩放为当前宽度时候的高度
-        double height = (canvas.getWidth() * data.getHeight())/ data.getWidth();
-        canvas.setHeight(height);
-        GraphicsContext context = canvas.getGraphicsContext2D();
-        context.setFill(Color.LIGHTGRAY);
-        context.clearRect(0,0,canvas.getWidth(), canvas.getHeight());
-        context.drawImage(data,0,0,canvas.getWidth(), height);
+        Platform.runLater(() -> {
+            if (this.pane == null) {
+                this.create();
+            }
+            pane.setHvalue((panel.getWidth() / 2) - (data.getWidth() / 2));
+            pane.setVvalue(0);
+            // 计算画布当前宽度的时候，让图片等比例缩放为当前宽度时候的高度
+            double height = (canvas.getWidth() * data.getHeight())/ data.getWidth();
+            canvas.setHeight(height);
+            GraphicsContext context = canvas.getGraphicsContext2D();
+            context.setFill(Color.LIGHTGRAY);
+            context.clearRect(0,0,canvas.getWidth(), canvas.getHeight());
+            context.drawImage(data,0,0,canvas.getWidth(), height);
 
-        this.jump.setText(locator.getLocation());
-        this.chapterName.setText(locator.getTitle());
+            this.jump.setText(locator.getLocation());
+            this.chapterName.setText(locator.getTitle());
+        });
     }
 
     @Override
@@ -220,8 +230,10 @@ public class PDFBookReader implements BookReader<Image> {
         if (this.locator == null) {
             return;
         }
-        this.data = this.locator.nextPage();
-        this.renderPage();
+        executor.execute(() -> {
+            this.data = this.locator.nextPage();
+            this.renderPage();
+        });
     }
 
     @Override
@@ -229,8 +241,10 @@ public class PDFBookReader implements BookReader<Image> {
         if (this.locator == null) {
             return;
         }
-        this.data = this.locator.prevPage();
-        this.renderPage();
+        executor.execute(() -> {
+            this.data = this.locator.prevPage();
+            this.renderPage();
+        });
     }
 
     @Override

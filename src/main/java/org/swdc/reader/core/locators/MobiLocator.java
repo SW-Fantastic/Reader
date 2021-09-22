@@ -5,6 +5,8 @@ import hu.webhejj.pdb.PalmDataBase;
 import hu.webhejj.pdb.PalmRecord;
 import hu.webhejj.pdb.mobi.MobiAdapter;
 import hu.webhejj.pdb.mobi.MobiHeaderRecord;
+import net.sf.jmimemagic.Magic;
+import net.sf.jmimemagic.MagicMatch;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -66,8 +68,7 @@ public class MobiLocator implements BookLocator<String> {
 
     public void indexTableOfContents(Consumer<Integer> pageIndexer) {
         int recordCount = adapter.getHeaderRecord().getRecordCount();
-        double totals = recordCount;
-        for (int index = 1; index < recordCount; ++index) {
+        for (int index = 1; index < recordCount / 2; ++index) {
             pageIndexer.accept(index);
         }
     }

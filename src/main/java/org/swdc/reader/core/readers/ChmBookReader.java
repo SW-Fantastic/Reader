@@ -149,7 +149,6 @@ public class ChmBookReader implements BookReader<String> {
             try {
                 String path = new URL(newVal).getPath();
                 locator.location(path);
-                System.err.println(path);
             } catch (Exception e) {
 
             }

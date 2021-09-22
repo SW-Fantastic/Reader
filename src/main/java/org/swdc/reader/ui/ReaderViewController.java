@@ -2,6 +2,7 @@ package org.swdc.reader.ui;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
@@ -20,6 +21,7 @@ import javafx.scene.input.Mnemonic;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
+import javafx.util.Pair;
 import org.controlsfx.control.PopOver;
 import org.slf4j.Logger;
 import org.swdc.dependency.EventEmitter;
@@ -46,9 +48,7 @@ import org.swdc.reader.ui.dialogs.mainview.*;
 import javax.swing.tree.TreeNode;
 import java.io.File;
 import java.net.URL;
-import java.util.Date;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ReaderViewController implements Initializable {
@@ -269,55 +269,71 @@ public class ReaderViewController implements Initializable {
     }
 
     public void openBook(Book book){
-        if (book == null) {
+
+       if (book == null) {
             return;
-        }
-        BookDescriptor desc = bookDescriptors
-                .stream()
-                .filter(d -> d.support(book)).findFirst()
-                .orElse(null);
+       }
 
-        if (desc == null) {
-            return;
-        }
+       readerView.getView().setDisable(true);
+       // 切换到线程池，防止卡UI
+       resources.getExecutor().execute(() -> {
 
-        File bookFile = bookServices.getFile(book);
-        if (!bookFile.exists())  {
-            Toast.showMessage("《" + book.getName() + "》 的文件不存在");
-            return;
-        }
+           BookDescriptor desc = bookDescriptors
+                   .stream()
+                   .filter(d -> d.support(book)).findFirst()
+                   .orElse(null);
 
-        List<Tab> tabList = tabs.getTabs();
-        for (Tab tab: tabList) {
-            if (tab.getUserData() == null) {
-                continue;
-            }
-            BookReader reader = (BookReader) tab.getUserData();
-            if (reader.getBook().getShaCode().equals(book.getShaCode())) {
-                this.tabs.getSelectionModel().select(tab);
-                return;
-            }
-        }
+           if (desc == null) {
+               Platform.runLater(() -> readerView.getView().setDisable(false));
+               return;
+           }
 
-        try{
-            Toast.showMessage("正在载入《" + book.getTitle() + "》....");
-        } catch (Exception e) {
-        }
+           File bookFile = bookServices.getFile(book);
+           if (!bookFile.exists())  {
+               Platform.runLater(() -> {
+                   Toast.showMessage("《" + book.getName() + "》 的文件不存在");
+                   readerView.getView().setDisable(false);
+               });
+               return;
+           }
 
-        readerView.getView().setDisable(true);
-        BookReader reader = desc.createReader(book);
+           Platform.runLater(() -> {
 
-        Tab bookTab = new Tab(book.getTitle());
-        Node node = reader.getView();
-        node.getStyleClass().add("read-tab");
-        bookTab.setContent(node);
-        bookTab.setOnClosed(closeEvent -> reader.close());
-        bookTab.setClosable(true);
-        bookTab.setUserData(reader);
 
-        tabList.add(bookTab);
-        this.tabs.getSelectionModel().select(bookTab);
-        readerView.getView().setDisable(false);
+               List<Tab> tabList = tabs.getTabs();
+               for (Tab tab: tabList) {
+                   if (tab.getUserData() == null) {
+                       continue;
+                   }
+                   BookReader reader = (BookReader) tab.getUserData();
+                   if (reader.getBook().getShaCode().equals(book.getShaCode())) {
+                       this.tabs.getSelectionModel().select(tab);
+                       readerView.getView().setDisable(false);
+                       return;
+                   }
+               }
+
+               try{
+                   Toast.showMessage("正在载入《" + book.getTitle() + "》....");
+               } catch (Exception e) {
+               }
+
+               BookReader reader = desc.createReader(book);
+
+               Tab bookTab = new Tab(book.getTitle());
+               Node node = reader.getView();
+               node.getStyleClass().add("read-tab");
+               bookTab.setContent(node);
+               bookTab.setOnClosed(closeEvent -> reader.close());
+               bookTab.setClosable(true);
+               bookTab.setUserData(reader);
+
+               tabList.add(bookTab);
+               this.tabs.getSelectionModel().select(bookTab);
+               readerView.getView().setDisable(false);
+           });
+
+       });
 
     }
 
@@ -507,14 +523,18 @@ public class ReaderViewController implements Initializable {
      */
     @EventListener(type = TypeSelectEvent.class)
     public void typeSelect(TypeSelectEvent event) {
-        BookType type = event.getMessage();
         books.clear();
-        if (type != null) {
-            type = typeServices.findTypeById(type.getId());
+        resources.getExecutor().execute(() -> {
+            BookType type = event.getMessage();
             if (type != null) {
-                books.addAll(type.getBooks());
+                type = typeServices.findTypeById(type.getId());
+                if (type != null) {
+                    Set<Book> bookset = type.getBooks();
+                    Platform.runLater(() -> books.addAll(bookset));
+                }
             }
-        }
+        });
+
     }
 
     @EventListener(type = BookWillRemoveEvent.class)

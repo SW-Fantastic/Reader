@@ -1,6 +1,7 @@
 package org.swdc.reader.core.readers;
 
 import info.monitorenter.cpdetector.io.CodepageDetectorProxy;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -20,6 +21,7 @@ import org.swdc.reader.ui.dialogs.reader.TOCAndFavoriteDialog;
 
 import java.io.File;
 import java.util.List;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public class MobiBookReader implements BookReader<String> {
@@ -37,6 +39,8 @@ public class MobiBookReader implements BookReader<String> {
     private String data;
     private Book book;
     private TOCAndFavoriteDialog dialog;
+
+    private Executor executor;
 
 
 
@@ -94,6 +98,7 @@ public class MobiBookReader implements BookReader<String> {
             reader.setLocator(locator);
             reader.setBook(book);
             reader.setDialog(dialog);
+            reader.setExecutor(executor);
 
             executor.submit(() -> {
                 locator.indexTableOfContents((idx) -> {
@@ -189,25 +194,35 @@ public class MobiBookReader implements BookReader<String> {
         if (this.locator == null) {
             return;
         }
-        chapterName.setText(locator.getTitle());
-        jump.setText(locator.getLocation());
-        view.getEngine().loadContent(data);
+        Platform.runLater(() ->{
+            chapterName.setText(locator.getTitle());
+            jump.setText(locator.getLocation());
+            view.getEngine().loadContent(data);
+        });
     }
 
     public void goNextPage() {
         if (this.locator == null) {
             return;
         }
-        this.data = locator.nextPage();
-        this.renderPage();
+        executor.execute(() -> {
+            this.data = locator.nextPage();
+            this.renderPage();
+        });
+    }
+
+    public void setExecutor(Executor executor) {
+        this.executor = executor;
     }
 
     public void goPreviousPage() {
         if (this.locator == null) {
             return;
         }
-        this.data = locator.prevPage();
-        this.renderPage();
+        executor.execute(() -> {
+            this.data = locator.prevPage();
+            this.renderPage();
+        });
     }
 
     @Override
@@ -215,8 +230,10 @@ public class MobiBookReader implements BookReader<String> {
         if (this.locator == null || page == null) {
             return;
         }
-        this.data = locator.toPage(page.toString());
-        this.renderPage();
+        executor.execute(() -> {
+            this.data = locator.toPage(page.toString());
+            this.renderPage();
+        });
     }
 
     @Override

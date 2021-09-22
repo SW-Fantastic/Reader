@@ -166,6 +166,7 @@ public class EpubBookReader implements BookReader<String> {
         this.poolExecutor = poolExecutor;
     }
 
+
     public Book getBook() {
         return book;
     }
@@ -205,25 +206,31 @@ public class EpubBookReader implements BookReader<String> {
         if (this.locator == null) {
             return;
         }
-        chapterName.setText(locator.getTitle());
-        jump.setText(locator.getLocation());
-        view.getEngine().loadContent(data);
+        Platform.runLater(() -> {
+            chapterName.setText(locator.getTitle());
+            jump.setText(locator.getLocation());
+            view.getEngine().loadContent(data);
+        });
     }
 
     public void goNextPage() {
         if (this.locator == null) {
             return;
         }
-        this.data = locator.nextPage();
-        this.renderPage();
+        poolExecutor.execute(() -> {
+            this.data = locator.nextPage();
+            this.renderPage();
+        });
     }
 
     public void goPreviousPage() {
         if (this.locator == null) {
             return;
         }
-        this.data = locator.prevPage();
-        this.renderPage();
+        poolExecutor.execute(() -> {
+            this.data = locator.prevPage();
+            this.renderPage();
+        });
     }
 
     @Override

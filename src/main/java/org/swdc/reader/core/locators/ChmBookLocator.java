@@ -118,7 +118,6 @@ public class ChmBookLocator implements BookLocator<String> {
             }
 
             this.infoMap.put(chmUnitInfo.getPath(),chmUnitInfo);
-            System.err.println(indexPath);
 
         }
 
