@@ -30,8 +30,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class ChmBookReader implements BookReader<String> {
 
     private ChmBookLocator locator;
-    private TextConfig textConfig;
-    private List<RenderResolver> resolvers;
+
     private WebView view = new WebView();
     private BorderPane panel = new BorderPane();
     private String data;

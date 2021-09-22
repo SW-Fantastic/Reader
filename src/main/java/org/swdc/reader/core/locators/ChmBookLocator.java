@@ -20,7 +20,6 @@ public class ChmBookLocator implements BookLocator<String> {
 
     static {
         URLManager.register("vchm",handler);
-        URLManager.setup();
     }
 
     public static class ChmURLConnection extends URLConnection {

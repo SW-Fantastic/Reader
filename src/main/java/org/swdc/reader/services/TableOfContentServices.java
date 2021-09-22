@@ -22,7 +22,7 @@ public class TableOfContentServices {
     public ContentsItem create(String title, String location, Book book) {
 
         try {
-            ContentsItem item = repository.getContentItemByLocation(location);
+            ContentsItem item = repository.getContentItemByLocation(location,book.getId());
             if (item == null) {
                 throw new NullPointerException();
             }

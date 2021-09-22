@@ -161,15 +161,12 @@ public class TextLocator implements BookLocator<String> {
             sb.append("</style></head><body><div>");
 
             int totalSize = 0;
-            while ((line = reader.readLine()) != null) {
-                if (totalSize < pageSize) {
-                    totalSize = totalSize + line.length();
-                    sb.append("<p>").append(line).append("</p>");
-                    continue;
-                }
+            boolean complete = false;
+            while (totalSize < pageSize && (line = reader.readLine()) != null) {
+                totalSize = totalSize + line.length();
+                sb.append("<p>").append(line).append("</p>");
                 this.chapterName = "第" + currentPage + "页";
                 this.locationTitleMap.put(currentPage, this.chapterName);
-                break;
             }
 
             sb.append("</div></body></html>");

@@ -31,7 +31,7 @@ public class TextBookReader implements BookReader<String> {
     // 章节名
     private TextField chapterName = new TextField();
     // 页码和跳转
-    TextField jump = new TextField();
+    private TextField jump = new TextField();
     private BorderPane panel = new BorderPane();
     private String data;
     private Book book;

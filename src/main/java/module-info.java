@@ -88,6 +88,13 @@ module reader {
             swdc.application.fx,
             swdc.application.dependency,
             swdc.application.configs;
-    opens org.swdc.reader.ui.cells to javafx.fxml, swdc.application.configs, swdc.application.dependency, swdc.application.fx;
+
+    opens org.swdc.reader.ui.cells to
+            javafx.fxml,
+            swdc.application.configs,
+            swdc.application.dependency,
+            swdc.application.fx;
+
+    provides java.net.spi.URLStreamHandlerProvider with org.swdc.reader.core.URLManager;
 
 }
