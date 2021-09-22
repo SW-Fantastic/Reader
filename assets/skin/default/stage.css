@@ -546,6 +546,9 @@
   -fx-text-fill: #FFF;
   -fx-background-color: #91c788;
 }
+.stage-main .read-tab {
+  -fx-background-color: #feffde;
+}
 .stage-main .slider .thumb {
   -fx-background-color: #feffde;
   -fx-effect: dropshadow(three-pass-box, #b9dca4, 10, 0, 0, 0);

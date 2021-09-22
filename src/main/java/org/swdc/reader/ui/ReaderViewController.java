@@ -9,6 +9,7 @@ import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -298,13 +299,18 @@ public class ReaderViewController implements Initializable {
             }
         }
 
-        Toast.showMessage("正在载入《" + book.getTitle() + "》....");
+        try{
+            Toast.showMessage("正在载入《" + book.getTitle() + "》....");
+        } catch (Exception e) {
+        }
 
         readerView.getView().setDisable(true);
         BookReader reader = desc.createReader(book);
 
         Tab bookTab = new Tab(book.getTitle());
-        bookTab.setContent(reader.getView());
+        Node node = reader.getView();
+        node.getStyleClass().add("read-tab");
+        bookTab.setContent(node);
         bookTab.setOnClosed(closeEvent -> reader.close());
         bookTab.setClosable(true);
         bookTab.setUserData(reader);

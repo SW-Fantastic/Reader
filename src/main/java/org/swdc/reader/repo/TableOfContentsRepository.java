@@ -18,7 +18,7 @@ public interface TableOfContentsRepository extends JPARepository<ContentsItem, L
     @SQLQuery("From ContentsItem Where located.id = :bookId")
     List<ContentsItem> getContentItemsOfBook(@Param("bookId") Long bookId);
 
-    @SQLQuery("From ContentsItem Where location = :location")
-    ContentsItem getContentItemByLocation(@Param("location") String location);
+    @SQLQuery("From ContentsItem Where location = :location AND located.id = :book")
+    ContentsItem getContentItemByLocation(@Param("location") String location, @Param("book")Long book);
 
 }

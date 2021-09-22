@@ -60,7 +60,7 @@ public class BookServices {
             MagicMatch magicMatch = Magic.getMagicMatch(file.toFile(),true,false);
             book.setMimeData(magicMatch.getMimeType());
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            book.setMimeData("unknown");
         }
 
         return bookRepository.save(book);
