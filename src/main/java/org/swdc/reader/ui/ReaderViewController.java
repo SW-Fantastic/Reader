@@ -523,14 +523,18 @@ public class ReaderViewController implements Initializable {
      */
     @EventListener(type = TypeSelectEvent.class)
     public void typeSelect(TypeSelectEvent event) {
-        books.clear();
         resources.getExecutor().execute(() -> {
-            BookType type = event.getMessage();
-            if (type != null) {
-                type = typeServices.findTypeById(type.getId());
+            synchronized (ReaderViewController.class) {
+                Platform.runLater(() -> books.clear());
+                BookType type = event.getMessage();
                 if (type != null) {
-                    Set<Book> bookset = type.getBooks();
-                    Platform.runLater(() -> books.addAll(bookset));
+                    type = typeServices.findTypeById(type.getId());
+                    if (type != null) {
+                        Set<Book> bookset = type.getBooks().stream()
+                                .sorted(Comparator.comparingLong(Book::getId))
+                                .collect(Collectors.toCollection(LinkedHashSet::new));
+                        Platform.runLater(() -> books.addAll(bookset));
+                    }
                 }
             }
         });

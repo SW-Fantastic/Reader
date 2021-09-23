@@ -10,6 +10,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.web.WebView;
 import org.swdc.dependency.annotations.MultipleImplement;
 import org.swdc.reader.core.BookReader;
@@ -126,9 +127,20 @@ public class EpubBookReader implements BookReader<String> {
 
     public EpubBookReader(){
 
+        HBox  left = new HBox();
+        left.setAlignment(Pos.CENTER_LEFT);
+        left.setSpacing(8);
+
+        HBox right = new HBox();
+        right.setAlignment(Pos.CENTER_RIGHT);
+        right.setSpacing(8);
+
+        HBox center = new HBox();
+        HBox.setHgrow(center, Priority.ALWAYS);
+
         HBox tools = new HBox();
-        tools.setAlignment(Pos.CENTER);
-        tools.setPadding(new Insets(8,4,8,4));
+        tools.setAlignment(Pos.CENTER_LEFT);
+        tools.setPadding(new Insets(8,12,8,12));
         tools.setSpacing(16);
         tools.getStyleClass().add("reader-tools");
 
@@ -155,7 +167,9 @@ public class EpubBookReader implements BookReader<String> {
         next.setOnAction((e) -> this.goNextPage());
 
         chapterName.setPrefWidth(240);
-        tools.getChildren().addAll(prev,contents,showTools,chapterName,jump,jumpTo,bookMark,next);
+        left.getChildren().addAll(prev,chapterName,jump,jumpTo,next);
+        right.getChildren().addAll(contents,showTools,bookMark);
+        tools.getChildren().addAll(left,center,right);
         this.panel.setTop(tools);
         this.panel.setCenter(this.view);
         this.panel.getStyleClass().add("reader-content");
