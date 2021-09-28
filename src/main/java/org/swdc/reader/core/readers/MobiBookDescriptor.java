@@ -10,6 +10,7 @@ import org.swdc.reader.entity.Book;
 import org.swdc.reader.services.HelperServices;
 import org.swdc.reader.ui.dialogs.reader.TOCAndFavoriteDialog;
 
+import java.io.File;
 import java.util.List;
 
 @MultipleImplement(BookDescriptor.class)
@@ -31,6 +32,11 @@ public class MobiBookDescriptor implements BookDescriptor {
 
     @Override
     public boolean support(Book file) {
+        return file.getName().toLowerCase().endsWith("mobi");
+    }
+
+    @Override
+    public boolean support(File file) {
         return file.getName().toLowerCase().endsWith("mobi");
     }
 

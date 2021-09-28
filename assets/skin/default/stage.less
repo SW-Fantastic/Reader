@@ -23,7 +23,6 @@
 
     -fx-font-family: 'kinemarub';
     -fx-font-size: 13px;
-
     -fx-background-color: @primary;
 
     .primary-btn() {
@@ -208,7 +207,7 @@
         }
 
     }
-}
+    }
 
     .prop-sheet {
         -fx-background: rgba(255,255,255,0.2);
@@ -301,13 +300,13 @@
     .slider .thumb{
         -fx-background-color:@primary;
         -fx-effect:dropshadow(three-pass-box, @selection,10,0,0,0);
-      }
-      .slider .track {
+    }
+    .slider .track {
         -fx-background-color:@selection;
         -fx-border-radius: 99;
         -fx-border-width: 0.4px;
         -fx-border-color:@accent;
-      }
+    }
 
     .tree-tag {
 
@@ -368,5 +367,16 @@
         }
     }
 
-    
+    .progress-bar{
+        .track {
+            -fx-background-color:@primary;
+            -fx-background-radius: 999;
+            -fx-effect: innershadow(three-pass-box, @accent, 6, 0, 0, 2);
+        }
+        .bar{
+            -fx-background-radius: 999;
+            -fx-background-color:@accent;
+        }
+    }
+
 }

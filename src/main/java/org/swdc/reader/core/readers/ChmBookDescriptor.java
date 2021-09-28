@@ -8,6 +8,8 @@ import org.swdc.reader.core.BookReader;
 import org.swdc.reader.entity.Book;
 import org.swdc.reader.services.HelperServices;
 
+import java.io.File;
+
 @MultipleImplement(BookDescriptor.class)
 public class ChmBookDescriptor implements BookDescriptor {
 
@@ -18,6 +20,11 @@ public class ChmBookDescriptor implements BookDescriptor {
 
     @Override
     public boolean support(Book file) {
+        return file.getName().toLowerCase().endsWith("chm");
+    }
+
+    @Override
+    public boolean support(File file) {
         return file.getName().toLowerCase().endsWith("chm");
     }
 

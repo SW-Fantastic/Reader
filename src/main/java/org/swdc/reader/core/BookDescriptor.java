@@ -5,6 +5,8 @@ import org.swdc.dependency.annotations.ImplementBy;
 import org.swdc.reader.core.readers.*;
 import org.swdc.reader.entity.Book;
 
+import java.io.File;
+
 /**
  * 这个类是描述支持的文件类型的组件类
  * 他提供支持的文件类型以及对应的Reader对象。
@@ -18,6 +20,8 @@ import org.swdc.reader.entity.Book;
 public interface BookDescriptor {
 
     boolean support(Book file);
+
+    boolean support(File file);
 
     <T extends BookReader> T createReader(Book book);
 

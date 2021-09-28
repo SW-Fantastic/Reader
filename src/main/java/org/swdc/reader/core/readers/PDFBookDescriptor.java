@@ -9,6 +9,8 @@ import org.swdc.reader.entity.Book;
 import org.swdc.reader.services.HelperServices;
 import org.swdc.reader.ui.dialogs.reader.TOCAndFavoriteDialog;
 
+import java.io.File;
+
 @MultipleImplement(BookDescriptor.class)
 public class PDFBookDescriptor implements BookDescriptor {
 
@@ -25,6 +27,11 @@ public class PDFBookDescriptor implements BookDescriptor {
     public boolean support(Book target) {
         return target.getMimeData().equals("application/pdf") &&
                 target.getName().toLowerCase().endsWith("pdf");
+    }
+
+    @Override
+    public boolean support(File file) {
+        return file.getName().toLowerCase().endsWith("pdf");
     }
 
     @Override

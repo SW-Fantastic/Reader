@@ -12,6 +12,7 @@ import org.swdc.reader.entity.Book;
 import org.swdc.reader.services.HelperServices;
 import org.swdc.reader.ui.dialogs.reader.TOCAndFavoriteDialog;
 
+import java.io.File;
 import java.util.List;
 
 @MultipleImplement(BookDescriptor.class)
@@ -43,6 +44,12 @@ public class EpubBookDescriptor implements BookDescriptor {
                         .equals("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
     }
 
+    @Override
+    public boolean support(File file) {
+        return file.getName()
+                .toLowerCase()
+                .endsWith("epub") ;
+    }
 
     @Override
     public EpubBookReader createReader(Book book) {

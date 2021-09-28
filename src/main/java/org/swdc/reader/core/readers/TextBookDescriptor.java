@@ -10,6 +10,7 @@ import org.swdc.reader.entity.Book;
 import org.swdc.reader.services.HelperServices;
 import org.swdc.reader.ui.dialogs.reader.TOCAndFavoriteDialog;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -33,6 +34,14 @@ public class TextBookDescriptor implements BookDescriptor {
     @Override
     public boolean support(Book target) {
         if (target.getName().toLowerCase().endsWith("txt") && target.getMimeData().toLowerCase().equals("text/plain")) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean support(File target) {
+        if (target.getName().toLowerCase().endsWith("txt")) {
             return true;
         }
         return false;

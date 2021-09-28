@@ -7,6 +7,18 @@
     -fx-background-color: @primary;
     -fx-font-size: 13px;
 
+    .progress-bar{
+        .track {
+            -fx-background-color:@primary;
+            -fx-background-radius: 999;
+            -fx-effect: innershadow(three-pass-box, @accent, 6, 0, 0, 2);
+        }
+        .bar{
+            -fx-background-radius: 999;
+            -fx-background-color:@accent;
+        }
+    }
+
     .text-field{
         -fx-background-color: @primaryLight;
         -fx-border-style: solid;

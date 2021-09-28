@@ -3,6 +3,15 @@
   -fx-background-color: #feffde;
   -fx-font-size: 13px;
 }
+.dialog-pane .progress-bar .track {
+  -fx-background-color: #feffde;
+  -fx-background-radius: 999;
+  -fx-effect: innershadow(three-pass-box, #91c788, 6, 0, 0, 2);
+}
+.dialog-pane .progress-bar .bar {
+  -fx-background-radius: 999;
+  -fx-background-color: #91c788;
+}
 .dialog-pane .text-field {
   -fx-background-color: #fdfffc;
   -fx-border-style: solid;

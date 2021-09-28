@@ -3,11 +3,15 @@ package org.swdc.reader.ui.dialogs.mainview;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.ComboBoxTableCell;
@@ -20,6 +24,7 @@ import org.swdc.dependency.annotations.EventListener;
 import org.swdc.fx.FXResources;
 import org.swdc.fx.StageCloseEvent;
 import org.swdc.fx.view.Toast;
+import org.swdc.reader.core.BookDescriptor;
 import org.swdc.reader.entity.Book;
 import org.swdc.reader.entity.BookType;
 import org.swdc.reader.events.TreeRefreshEvent;
@@ -75,9 +80,15 @@ public class MultipleImportDialogController implements Initializable {
     @FXML
     private TableColumn<Book,Void> editColumn;
 
+    @FXML
+    private ProgressBar progress;
+
     private ObservableList<BookType> typeList = FXCollections.observableArrayList();
 
     private ObservableList<Book> externalBooks = FXCollections.observableArrayList();
+
+    @Inject
+    private List<BookDescriptor> bookDescriptors;
 
     private File folder;
 
@@ -134,17 +145,37 @@ public class MultipleImportDialogController implements Initializable {
 
     @FXML
     public void importAll() {
-        this.view.getView().setDisable(true);
-        List<Book> removed = new ArrayList<>();
-        for (Book item: externalBooks) {
-            if (this.doImport(item)) {
+        this.view.disableView(true);
+
+        DoubleProperty progress = this.progress.progressProperty();
+        progress.setValue(0.0);
+
+        resources.getExecutor().submit(() -> {
+            List<Book> removed = new ArrayList<>();
+            for (int idx =0; idx < externalBooks.size(); idx ++) {
+                Book item = externalBooks.get(idx);
+                if (!this.doImport(item)) {
+                    Platform.runLater(() -> {
+                        progress.setValue(0.0);
+                        view.disableView(false);
+                    });
+                    return;
+                }
+                int current = idx;
                 removed.add(item);
+                Platform.runLater(() -> {
+                    progress.setValue((current + 1)  / (double)externalBooks.size());
+                });
             }
-        }
-        externalBooks.removeAll(removed);
-        this.view.getView().setDisable(false);
-        this.view.emit(new TypeListRefreshEvent(""));
-        this.view.emit(new TreeRefreshEvent(""));
+            Platform.runLater(() -> {
+                externalBooks.removeAll(removed);
+                this.view.disableView(false);
+                this.view.emit(new TypeListRefreshEvent(""));
+                this.view.emit(new TreeRefreshEvent(""));
+            });
+        });
+
+
     }
 
     /**
@@ -174,8 +205,10 @@ public class MultipleImportDialogController implements Initializable {
             return false;
         }
         if (target.getType() == null) {
-            Alert alert = this.view.alert("提示","请为文档《" + target.getName() + "》选择一个分类，双击表格可以进行编辑。", Alert.AlertType.ERROR);
-            alert.showAndWait();
+            Platform.runLater(() -> {
+                Alert alert = this.view.alert("提示","请为文档《" + target.getName() + "》选择一个分类，双击表格可以进行编辑。", Alert.AlertType.ERROR);
+                alert.showAndWait();
+            });
             return false;
         }
         try {
@@ -184,6 +217,8 @@ public class MultipleImportDialogController implements Initializable {
             if (!Files.exists(bookFolder)) {
                 bookFolder = Files.createDirectories(bookFolder);
             }
+
+
             Path from = this.folder.toPath().resolve(target.getName());
             Path to = bookFolder.resolve(target.getName());
             if (!from.equals(to)) {
@@ -207,8 +242,11 @@ public class MultipleImportDialogController implements Initializable {
 
             bookServices.createBook(book);
 
-            this.view.emit(new TypeListRefreshEvent(""));
-            this.view.emit(new TreeRefreshEvent(""));
+            Platform.runLater(() -> {
+                this.view.emit(new TypeListRefreshEvent(""));
+                this.view.emit(new TreeRefreshEvent(""));
+            });
+
             return true;
         } catch (Exception e) {
             logger.error("导入失败",e);
@@ -222,17 +260,46 @@ public class MultipleImportDialogController implements Initializable {
         }
 
         this.externalBooks.clear();
-        this.view.getView().setDisable(true);
+        this.view.disableView(true);
         Toast.showMessage("载入中，请稍候。");
+
+        ReadOnlyBooleanProperty prop = this.view.getStage().showingProperty();
+        DoubleProperty progress = this.progress.progressProperty();
+        progress.setValue(0.0);
+
         resources.getExecutor().submit(() -> {
             this.folder = folder;
             List<Book> books = new ArrayList<>();
             File[] files = this.folder.listFiles();
-            for (File file: files) {
+            for (int idx = 0; idx < files.length; idx++) {
                 try {
+
+                    File file = files[idx];
+
+                    int current = idx;
+                    Platform.runLater(() -> {
+                        progress.setValue((current + 1)  / (double)files.length);
+                    });
+
+
+                    BookDescriptor desc = bookDescriptors
+                            .stream()
+                            .filter(d -> d.support(file)).findFirst()
+                            .orElse(null);
+
+                    if (desc == null) {
+                        continue;
+                    }
 
                     if (bookServices.isBookFileExist(file)) {
                         continue;
+                    }
+
+                    if (!prop.getValue()) {
+                        // 窗口被关闭了，及时终止本task以释放此线程。
+                        books.clear();
+                        logger.info(" stage was closed, stopping multiple import");
+                        break;
                     }
 
                     Book book = new Book();
@@ -254,7 +321,7 @@ public class MultipleImportDialogController implements Initializable {
 
             Platform.runLater(() -> {
                 externalBooks.addAll(books);
-                this.view.getView().setDisable(false);
+                this.view.disableView(false);
             });
         });
 

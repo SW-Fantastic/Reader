@@ -76,7 +76,7 @@ public class BookServices {
             byte[] data = Files.readAllBytes(file);
             return DigestUtils.sha256Hex(data);
         } catch (Exception e) {
-            throw new RuntimeException("sha计算失败");
+            return "";
         }
     }
 
