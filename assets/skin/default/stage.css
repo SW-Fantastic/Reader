@@ -624,3 +624,12 @@
   -fx-border-width: 0 0 2 0;
   -fx-border-style: solid;
 }
+.stage-main .progress-bar .track {
+  -fx-background-color: #feffde;
+  -fx-background-radius: 999;
+  -fx-effect: innershadow(three-pass-box, #91c788, 6, 0, 0, 2);
+}
+.stage-main .progress-bar .bar {
+  -fx-background-radius: 999;
+  -fx-background-color: #91c788;
+}

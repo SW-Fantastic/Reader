@@ -10,6 +10,7 @@ import java.util.List;
  * 注册Entities类。
  */
 public class EMFProviderImpl extends EMFProvider {
+
     @Override
     public List<Class> registerEntities() {
         return Arrays.asList(
@@ -20,4 +21,5 @@ public class EMFProviderImpl extends EMFProvider {
             ContentsItem.class
         );
     }
+
 }

@@ -1,5 +1,6 @@
 package org.swdc.reader;
 
+import org.swdc.data.EMFProviderFactory;
 import org.swdc.dependency.DependencyContext;
 import org.swdc.dependency.EnvironmentLoader;
 import org.swdc.fx.FXApplication;
@@ -24,8 +25,13 @@ public class ReaderApplication extends FXApplication {
 
     @Override
     public void onStarted(DependencyContext dependencyContext) {
+
+        EMFProviderFactory factory = dependencyContext.getByClass(EMFProviderFactory.class);
+        factory.create();
+
         MainView view = dependencyContext.getByClass(MainView.class);
         view.show();
+
     }
 
     @Override
