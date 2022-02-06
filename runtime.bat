@@ -1,11 +1,11 @@
 @echo off
 
-SET PATH=%PATH%;D:\Basis-soft\Java-14\bin\
+SET PATH=%PATH%;D:\Basis-soft\JDK16\bin
 
-rem 注意，这个是使用jdk14的jpackage打包的脚本，
-rem 所以运行前请在此环境准备jdk14以及jdk14打包需要的WIX
-rem wix需要放入PATH环境变量中。
-rem 运行此脚本打包前需要运行maven的package。
+:: 注意，这个是使用jdk16的jpackage打包的脚本，
+:: 所以运行前请在此环境准备jdk16以及jdk16打包需要的WIX
+:: wix需要放入PATH环境变量中。
+:: 运行此脚本打包前需要运行maven的package。
 
 echo cleaning...
 
@@ -32,9 +32,12 @@ echo deploy application....
 
 rem 执行打包，注意，打包之后的lib里面会附带很多javafx的包，这些应该删掉，他们都已经在jre里面了，多了的话无法启动
 cd deploy
-jpackage --runtime-image runtime  --type app-image -n %name% -p ../target/lib --icon ../icon.ico -m %moduleName%/%mainClass%
-rem 复制应用jar包
-copy ..\target\*.jar "./%name%/app/mods/"
+copy ..\target\*.jar ..\target\lib
+jpackage --runtime-image runtime --type app-image -n %name% -p ../target/lib --icon ../icon.ico -m %moduleName%/%mainClass%
+del /a /f /q %name%\app\mods\javafx-*.jar %name%\app\mods\epub*.jar %name%\app\mods\jchm*.jar %name%\app\mods\kxml*.jar %name%\app\mods\mobj*.jar
+copy ..\libs\*.jar %name%\app\mods
+echo coping resources...
+xcopy /E/I/Y ..\assets\ %name%\assets\
 echo done.
 
 cd ../
