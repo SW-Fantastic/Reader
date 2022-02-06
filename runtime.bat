@@ -1,6 +1,7 @@
 @echo off
 
-SET PATH=%PATH%;D:\Basis-soft\JDK16\bin
+SET JAVA_HOME=D:\Basis-soft\JDK16
+SET PATH=%JAVA_HOME%\bin;%PATH%
 
 :: 注意，这个是使用jdk16的jpackage打包的脚本，
 :: 所以运行前请在此环境准备jdk16以及jdk16打包需要的WIX
