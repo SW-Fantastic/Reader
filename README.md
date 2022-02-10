@@ -44,4 +44,9 @@ include RSS （Feeds）。
  - [x] 标签功能（Tags）
  - [x] 书籍数据索引功能（index tree from metadata） 
  - [x] 文本内容可以通过键盘左右方向键快速翻页，回车可以重定向焦点。（key-board support）
- - [x] 增加i18n语言切换（i18n language，Chinese English）
+ - [ ] 增加i18n语言切换（i18n language，Chinese English）
+
+#### Bug记录 
+
+ - [x] 主分类选中时首次切换到标签或者作者等位于Tree中的选项，将会导致表格空白。
+ - [x] 书籍属性中，tag标签在窗口关闭后未被清空。

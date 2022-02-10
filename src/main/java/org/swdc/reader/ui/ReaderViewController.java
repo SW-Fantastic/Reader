@@ -535,6 +535,15 @@ public class ReaderViewController implements Initializable {
                                 .collect(Collectors.toCollection(LinkedHashSet::new));
                         Platform.runLater(() -> books.addAll(bookset));
                     }
+                } else {
+                    TreeItem<DetailTreeData> treeSelection = detailsTree.getSelectionModel().getSelectedItem();
+                    if (treeSelection != null) {
+                        DetailTreeData target = treeSelection.getValue();
+                        if (target == null) {
+                            return;
+                        }
+                        Platform.runLater(() -> target.call(this.bookServices));
+                    }
                 }
             }
         });

@@ -66,7 +66,9 @@ public class AutoComplete<T> {
         });
 
         this.autoList.setOnKeyPressed(e -> {
-            if (e.getCode() == KeyCode.ENTER || e.getCode() == KeyCode.BACK_SPACE || e.getCode() == KeyCode.SPACE) {
+            if (e.getCode() == KeyCode.ENTER ||
+                    e.getCode() == KeyCode.BACK_SPACE ||
+                    e.getCode() == KeyCode.SPACE) {
                 field.setText("");
                 this.hide();
             }
@@ -75,6 +77,7 @@ public class AutoComplete<T> {
 
     public void hide() {
         this.popOver.hide(Duration.ZERO);
+        field.setText("");
     }
 
     public void bind(ObservableList<T> list) {

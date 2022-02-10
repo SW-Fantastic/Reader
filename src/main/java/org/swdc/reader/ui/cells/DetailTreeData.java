@@ -5,6 +5,14 @@ import org.swdc.reader.services.BookServices;
 import java.lang.reflect.Field;
 import java.util.function.Consumer;
 
+/**
+ * 这个是放在首页的Tree中的数据类。
+ * 它的作用只有一个，就是通过本类的对象提供的callback进行
+ * 书籍的加载。
+ *
+ * 和分类列表不同，到底加载什么全看Callback怎么写，这个
+ * 灵活度是非常高的。
+ */
 public class DetailTreeData {
 
     /**

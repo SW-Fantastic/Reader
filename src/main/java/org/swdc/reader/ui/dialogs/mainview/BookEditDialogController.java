@@ -202,6 +202,7 @@ public class BookEditDialogController implements Initializable {
         txtName.setText("");
         txtAuthor.setText("");
         txtPublisher.setText("");
+
         this.tags.clear();
     }
 
