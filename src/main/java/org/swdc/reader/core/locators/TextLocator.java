@@ -56,7 +56,6 @@ public class TextLocator implements BookLocator<String> {
 
     private final int pageSize = 1200;
 
-    private TextConfig config;
 
     private BufferedReader reader;
 
@@ -70,11 +69,10 @@ public class TextLocator implements BookLocator<String> {
 
     private FXResources resources;
 
-    public TextLocator(List<? extends RenderResolver> resolvers, Book book, CodepageDetectorProxy codepageDetectorProxy, TextConfig config,File assets) {
+    public TextLocator(List<? extends RenderResolver> resolvers, Book book, CodepageDetectorProxy codepageDetectorProxy,File assets) {
         this.resolvers = resolvers;
         File bookFile = new File(assets.getAbsolutePath() + "/library/" + book.getName());
         this.bookEntity = book;
-        this.config = config;
         try {
             try {
                 charset = codepageDetectorProxy.detectCodepage(bookFile.toURI().toURL());
@@ -170,11 +168,6 @@ public class TextLocator implements BookLocator<String> {
 
             sb.append("</div></body></html>");
             locationTextMap.put(currentPage, sb.toString());
-            ContentsItem item = new ContentsItem();
-            item.setLocated(bookEntity);
-            item.setLocation(currentPage + "");
-            item.setTitle(chapterName);
-            //config.emit(new ContentItemFoundEvent(item,config));
 
             String content = sb.toString();
             Document document = Jsoup.parse(content);

@@ -4,20 +4,16 @@ import jakarta.inject.Inject;
 import javafx.stage.FileChooser;
 import org.swdc.dependency.annotations.MultipleImplement;
 import org.swdc.reader.core.BookDescriptor;
-import org.swdc.reader.core.configs.TextConfig;
 import org.swdc.reader.core.ext.RenderResolver;
 import org.swdc.reader.entity.Book;
 import org.swdc.reader.services.HelperServices;
 import org.swdc.reader.ui.dialogs.reader.TOCAndFavoriteDialog;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.util.List;
 
 @MultipleImplement(BookDescriptor.class)
-public class TextBookDescriptor implements BookDescriptor {
-
-    private FileChooser.ExtensionFilter filter = null;
+public class UMDBookDescriptor implements BookDescriptor {
 
     @Inject
     private HelperServices helperServices;
@@ -28,38 +24,34 @@ public class TextBookDescriptor implements BookDescriptor {
     @Inject
     private TOCAndFavoriteDialog tocDialog;
 
+    private FileChooser.ExtensionFilter filter;
+
     @Override
-    public boolean support(Book target) {
-        if (target.getName().toLowerCase().endsWith("txt") && target.getMimeData().toLowerCase().equals("text/plain")) {
-            return true;
-        }
-        return false;
+    public boolean support(Book file) {
+        return file.getName().toLowerCase().endsWith("umd");
     }
 
     @Override
-    public boolean support(File target) {
-        if (target.getName().toLowerCase().endsWith("txt")) {
-            return true;
-        }
-        return false;
+    public boolean support(File file) {
+        return file.getName().toLowerCase().endsWith("umd");
     }
 
     @Override
-    public TextBookReader createReader(Book book) {
-        TextBookReader.Builder builder = new TextBookReader.Builder();
-        return builder.book(book)
-                .codeDet(helperServices.getCodepageDetectorProxy())
-                .resolvers(resolvers)
+    public UMDBookReader createReader(Book book) {
+        return new UMDBookReader.Builder()
+                .book(book)
                 .assetsFolder(helperServices.getAssetsFolder())
-                .tocDialog(tocDialog)
+                .resolvers(resolvers)
+                .codeDet(helperServices.getCodepageDetectorProxy())
                 .exec(helperServices.getExecutor())
+                .tocDialog(tocDialog)
                 .build();
     }
 
     @Override
     public FileChooser.ExtensionFilter getFilter() {
         if (filter == null) {
-            filter = new FileChooser.ExtensionFilter("文本格式","*.txt");
+            filter = new FileChooser.ExtensionFilter("Universal Mobile Document","*.umd");
         }
         return filter;
     }

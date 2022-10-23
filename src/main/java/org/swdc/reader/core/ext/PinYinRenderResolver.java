@@ -12,10 +12,7 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.swdc.dependency.annotations.MultipleImplement;
 import org.swdc.reader.core.configs.TextConfig;
-import org.swdc.reader.core.locators.BookLocator;
-import org.swdc.reader.core.locators.EpubLocator;
-import org.swdc.reader.core.locators.MobiLocator;
-import org.swdc.reader.core.locators.TextLocator;
+import org.swdc.reader.core.locators.*;
 
 /**
  * 拼音渲染器。
@@ -36,7 +33,8 @@ public class PinYinRenderResolver extends AbstractResolver {
         return config.getShowPinYin() &&
                 (clazz == TextLocator.class ||
                 clazz == EpubLocator.class ||
-                clazz == MobiLocator.class);
+                clazz == MobiLocator.class ||
+                clazz == UMDLocator.class);
     }
 
     @Override

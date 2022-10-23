@@ -9,10 +9,7 @@ import org.swdc.dependency.annotations.EventListener;
 import org.swdc.dependency.annotations.MultipleImplement;
 import org.swdc.reader.core.configs.EpubConfig;
 import org.swdc.reader.core.configs.TextConfig;
-import org.swdc.reader.core.locators.BookLocator;
-import org.swdc.reader.core.locators.EpubLocator;
-import org.swdc.reader.core.locators.MobiLocator;
-import org.swdc.reader.core.locators.TextLocator;
+import org.swdc.reader.core.locators.*;
 import org.swdc.reader.events.ConfigChangedEvent;
 import org.swdc.reader.services.HelperServices;
 
@@ -77,7 +74,8 @@ public class BaseTextRenderResolver extends AbstractResolver {
     public boolean support(Class<? extends BookLocator> clazz) {
         return (clazz == TextLocator.class ||
                 clazz == EpubLocator.class ||
-                clazz == MobiLocator.class);
+                clazz == MobiLocator.class ||
+                clazz == UMDLocator.class );
     }
 
     @Override

@@ -49,9 +49,7 @@ public class ChmBookLocator implements BookLocator<String> {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             outputStream.write(buffer.array());
 
-            ByteArrayInputStream bin = new ByteArrayInputStream(outputStream.toByteArray());
-
-            return bin;
+            return new ByteArrayInputStream(outputStream.toByteArray());
         }
 
         @Override

@@ -12,6 +12,7 @@ module reader {
     requires jakarta.inject;
     requires jakarta.annotation;
 
+    requires javafx.swing;
     requires javafx.graphics;
     requires javafx.controls;
     requires javafx.fxml;
@@ -33,6 +34,8 @@ module reader {
     requires jmimemagic;
 
     requires jchmlib;
+    requires umdTextFile;
+    requires djvu;
 
     exports org.swdc.reader to javafx.graphics;
 

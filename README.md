@@ -37,6 +37,8 @@ include RSS （Feeds）。
  - [x] PDF阅读的实现（Adobe PDF reader implement）
  - [x] EPublic阅读的实现（EPUB File Reader implement）
  - [x] MOBI文件的基础支撑（Mobi kindle format implement)
+ - [x] 早期UMD格式的支持（Universal Mobile document implement）
+ - [x] Djvu扫描格式的支持（Djvu scanned document implement）
  - [ ] Feed/RSS阅读（Feed RSS read implement）
 
 #### 细节功能 Details

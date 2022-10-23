@@ -16,7 +16,10 @@ import java.io.File;
         EpubBookDescriptor.class,
         PDFBookDescriptor.class,
         ChmBookDescriptor.class,
-        MobiBookDescriptor.class})
+        MobiBookDescriptor.class,
+        UMDBookDescriptor.class,
+        DjvuBookDescriptor.class
+})
 public interface BookDescriptor {
 
     boolean support(Book file);

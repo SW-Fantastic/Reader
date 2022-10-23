@@ -16,36 +16,39 @@ import org.swdc.reader.core.BookReader;
 import org.swdc.reader.core.configs.TextConfig;
 import org.swdc.reader.core.ext.RenderResolver;
 import org.swdc.reader.core.locators.TextLocator;
+import org.swdc.reader.core.locators.UMDLocator;
 import org.swdc.reader.entity.Book;
+import org.swdc.reader.entity.ContentsItem;
 import org.swdc.reader.ui.dialogs.reader.TOCAndFavoriteDialog;
 
 import java.io.File;
 import java.util.List;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 
-public class TextBookReader implements BookReader<String> {
+public class UMDBookReader implements BookReader<String> {
 
-    private TextConfig textConfig;
-    private TextLocator locator;
-    private List<RenderResolver> resolvers;
+    private TOCAndFavoriteDialog tocDialog;
+
+    private Book book;
+
+    private ExecutorService executor;
+
+    private UMDLocator locator;
+
+    private String text;
+
     private WebView view = new WebView();
     // 章节名
     private TextField chapterName = new TextField();
     // 页码和跳转
     private TextField jump = new TextField();
     private BorderPane panel = new BorderPane();
-    private String data;
-    private Book book;
-
-    private Executor executor;
-
-    private TOCAndFavoriteDialog tocAndFavoriteDialog;
-
 
     public static class Builder{
-        
+
         private List<RenderResolver> resolvers;
+        private TextConfig config;
         private Book book;
         private CodepageDetectorProxy proxy;
         private File assets;
@@ -54,6 +57,11 @@ public class TextBookReader implements BookReader<String> {
 
         public Builder book(Book book) {
             this.book = book;
+            return this;
+        }
+
+        public Builder config(TextConfig config) {
+            this.config = config;
             return this;
         }
 
@@ -82,30 +90,36 @@ public class TextBookReader implements BookReader<String> {
             return this;
         }
 
-        public TextBookReader build() {
+        public UMDBookReader build() {
 
-            TextBookReader reader = new TextBookReader();
+            UMDBookReader reader = new UMDBookReader();
             reader.setTocDialog(this.dialog);
             reader.setBook(this.book);
             reader.setExecutor(exec);
 
             exec.submit(() -> {
-                reader.setLocator(new TextLocator(resolvers,book,this.proxy,this.assets));
+                UMDLocator locator = new UMDLocator(resolvers,book,this.proxy,this.config,this.assets);
+                reader.setLocator(locator);
                 Platform.runLater(() -> {
                     reader.goNextPage();
+                });
+                locator.indexChapters((title, location) -> {
+                    ContentsItem item = new ContentsItem();
+                    item.setTitle(title);
+                    item.setLocated(book);
+                    item.setLocation(location);
+                    dialog.buildTableOfContent(item);
                 });
             });
 
             return reader;
         }
-        
+
     }
 
+    protected UMDBookReader() {
 
-    protected TextBookReader() {
-
-
-        HBox  left = new HBox();
+        HBox left = new HBox();
         left.setAlignment(Pos.CENTER_LEFT);
         left.setSpacing(8);
 
@@ -128,9 +142,9 @@ public class TextBookReader implements BookReader<String> {
         Button showTools = new Button("选项");
 
         Button bookMark = new Button("书签");
-        bookMark.setOnAction(e -> tocAndFavoriteDialog.showMarks(this));
+        bookMark.setOnAction(e -> tocDialog.showMarks(this));
         Button contents = new Button("目录");
-        contents.setOnAction((e) -> tocAndFavoriteDialog.showTableOfContent(this));
+        contents.setOnAction((e) -> tocDialog.showTableOfContent(this));
 
         Button jumpTo = new Button("跳转");
         jumpTo.setOnAction((e) -> {
@@ -155,37 +169,24 @@ public class TextBookReader implements BookReader<String> {
         this.panel.setOnKeyPressed(KeyEvent::consume);
     }
 
-    public void setExecutor(Executor executor) {
-        this.executor = executor;
-    }
-
-    protected void setBook(Book book) {
-        this.book = book;
-    }
-
-    public Book getBook() {
-        return book;
-    }
-
-    @Override
-    public String getLocation() {
-        if (this.locator == null) {
-            return null;
-        }
-        return this.locator.getLocation();
-    }
-
-    public void setLocator(TextLocator locator) {
+    public void setLocator(UMDLocator locator) {
         this.locator = locator;
     }
 
-    private void setTocDialog(TOCAndFavoriteDialog tocDialog) {
-        this.tocAndFavoriteDialog = tocDialog;
+    public UMDLocator getLocator() {
+        return locator;
     }
 
-    @Override
-    public String getChapterName() {
-        return this.locator.getTitle();
+    public void setExecutor(ExecutorService executor) {
+        this.executor = executor;
+    }
+
+    public void setTocDialog(TOCAndFavoriteDialog tocDialog) {
+        this.tocDialog = tocDialog;
+    }
+
+    public void setBook(Book book) {
+        this.book = book;
     }
 
     @Override
@@ -201,46 +202,60 @@ public class TextBookReader implements BookReader<String> {
         Platform.runLater(() ->{
             chapterName.setText(locator.getTitle());
             jump.setText(locator.getLocation());
-            view.getEngine().loadContent(data);
+            view.getEngine().loadContent(text);
         });
     }
 
+    @Override
     public void goNextPage() {
         if (this.locator == null) {
             return;
         }
         executor.execute(() -> {
-            this.data = locator.nextPage();
+            this.text = this.locator.nextPage();
             this.renderPage();
-            this.tocAndFavoriteDialog.buildTableOfContents(this);
         });
     }
 
+    @Override
     public void goPreviousPage() {
         if (this.locator == null) {
             return;
         }
         executor.execute(() -> {
-            this.data = locator.prevPage();
+            this.text = this.locator.prevPage();
             this.renderPage();
-            this.tocAndFavoriteDialog.buildTableOfContents(this);
         });
     }
 
     @Override
-    public <Integer> void goTo(Integer page) {
-        if (this.locator == null || page == null) {
+    public <T> void goTo(T location) {
+        if (this.locator == null || location == null) {
             return;
         }
-        this.data = locator.toPage(page.toString());
+        this.text = locator.toPage(location.toString());
         this.renderPage();
-        this.tocAndFavoriteDialog.buildTableOfContents(this);
     }
 
     @Override
     public void close() {
-        this.locator.finalizeResources();
+        locator.finalizeResources();
         this.locator = null;
         this.book = null;
+    }
+
+    @Override
+    public Book getBook() {
+        return book;
+    }
+
+    @Override
+    public String getLocation() {
+        return locator.getLocation();
+    }
+
+    @Override
+    public String getChapterName() {
+        return locator.getTitle();
     }
 }

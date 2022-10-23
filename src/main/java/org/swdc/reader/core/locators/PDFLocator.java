@@ -80,10 +80,6 @@ public class PDFLocator implements BookLocator<Image> {
             PDPageDestination  destination = (PDPageDestination) item.getDestination();
             String title = item.getTitle();
             Integer location = document.getPages().indexOf(destination.getPage());
-            ContentsItem contentsItem = new ContentsItem();
-            contentsItem.setLocated(bookEntity);
-            contentsItem.setLocation(location + "");
-            contentsItem.setTitle(title == null ? "Page：" + location : title);
             resolver.accept(location + "", title);
             if (item.hasChildren()) {
                 this.loadContentTree(item.getFirstChild(),resolver);
