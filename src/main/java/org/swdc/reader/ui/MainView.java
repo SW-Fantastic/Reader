@@ -66,11 +66,11 @@ public class MainView extends AbstractView {
         stage.setMinWidth(1000);
 
         BorderPane reader = (BorderPane)readerView.getView();
-        reader.prefHeightProperty().bind(stage.heightProperty().subtract(12));
+        reader.prefHeightProperty().bind(stage.heightProperty().subtract(48));
         reader.prefWidthProperty().bind(stage.widthProperty().subtract(84));
 
         BorderPane config = (BorderPane)configureView.getView();
-        config.prefHeightProperty().bind(stage.heightProperty().subtract(12));
+        config.prefHeightProperty().bind(stage.heightProperty().subtract(48));
         config.prefWidthProperty().bind(stage.widthProperty().subtract(84));
 
 
