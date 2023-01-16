@@ -525,15 +525,19 @@ public class ReaderViewController implements Initializable {
     public void typeSelect(TypeSelectEvent event) {
         resources.getExecutor().execute(() -> {
             synchronized (ReaderViewController.class) {
-                Platform.runLater(() -> books.clear());
-                BookType type = event.getMessage();
-                if (type != null) {
-                    type = typeServices.findTypeById(type.getId());
+                // 这个是脱管的Type，不能直接使用，需要重新加载
+                BookType unManagedType = event.getMessage();
+                if (unManagedType != null) {
+                    final BookType type = typeServices.findTypeById(unManagedType.getId());
                     if (type != null) {
                         Set<Book> bookset = type.getBooks().stream()
                                 .sorted(Comparator.comparingLong(Book::getId))
                                 .collect(Collectors.toCollection(LinkedHashSet::new));
-                        Platform.runLater(() -> books.addAll(bookset));
+                        Platform.runLater(() -> {
+                            books.clear();
+                            books.addAll(bookset);
+                            typeList.getSelectionModel().select(type);
+                        });
                     }
                 } else {
                     TreeItem<DetailTreeData> treeSelection = detailsTree.getSelectionModel().getSelectedItem();
