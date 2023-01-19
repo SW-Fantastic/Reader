@@ -122,7 +122,6 @@ public class BookEditDialogController implements Initializable {
         book = bookServices.save(book);
 
         this.view.emit(new TypeSelectEvent(type));
-        this.view.emit(new TypeSelectEvent(bookType));
         this.view.emit(new TreeRefreshEvent(null));
         this.onCancel();
     }

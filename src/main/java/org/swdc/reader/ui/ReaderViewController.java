@@ -536,7 +536,10 @@ public class ReaderViewController implements Initializable {
                         Platform.runLater(() -> {
                             books.clear();
                             books.addAll(bookset);
-                            typeList.getSelectionModel().select(type);
+                            BookType selType = typeList.getSelectionModel().getSelectedItem();
+                            if (!selType.getId().equals(type.getId())) {
+                                typeList.getSelectionModel().select(type);
+                            }
                         });
                     }
                 } else {
