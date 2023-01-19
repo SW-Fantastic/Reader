@@ -39,7 +39,7 @@ public class ConfigureView extends AbstractView {
         TabPane configTab = this.findById("configTab");
         Tab general = new Tab("首选项");
 
-        ObservableList confGenerals = ConfigViews.parseConfigs(config);
+        ObservableList confGenerals = ConfigViews.parseConfigs(resources,config);
         PropertySheet generalConfSheet = new PropertySheet(confGenerals);
         generalConfSheet.setPropertyEditorFactory(ConfigViews.factory(resources));
 
@@ -50,7 +50,7 @@ public class ConfigureView extends AbstractView {
 
         Tab textConfTab = new Tab("文本设置");
 
-        ObservableList confText = ConfigViews.parseConfigs(textConfig);
+        ObservableList confText = ConfigViews.parseConfigs(resources,textConfig);
         PropertySheet  textConfSheet = new PropertySheet(confText);
         textConfSheet.setPropertyEditorFactory(ConfigViews.factory(resources));
 
@@ -61,7 +61,7 @@ public class ConfigureView extends AbstractView {
 
         Tab epubConfTab = new Tab("Epub设置");
 
-        ObservableList confEpub = ConfigViews.parseConfigs(epubConfig);
+        ObservableList confEpub = ConfigViews.parseConfigs(resources,epubConfig);
         PropertySheet  epubConfSheet = new PropertySheet(confEpub);
         epubConfSheet.setPropertyEditorFactory(ConfigViews.factory(resources));
 
@@ -73,7 +73,7 @@ public class ConfigureView extends AbstractView {
 
         Tab pdfConfTab = new Tab("Adobe PDF设置");
 
-        ObservableList confPDF = ConfigViews.parseConfigs(pdfConfig);
+        ObservableList confPDF = ConfigViews.parseConfigs(resources,pdfConfig);
         PropertySheet  pdfConfSheet = new PropertySheet(confPDF);
         pdfConfSheet.setPropertyEditorFactory(ConfigViews.factory(resources));
 
