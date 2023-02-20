@@ -40,6 +40,8 @@ module reader {
     exports org.swdc.reader to javafx.graphics;
 
     opens icons;
+
+    exports org.swdc.reader.entity;
     opens org.swdc.reader.entity to
             swdc.application.data,
             swdc.application.dependency,
@@ -86,6 +88,7 @@ module reader {
             swdc.application.dependency,
             swdc.application.configs;
 
+    exports org.swdc.reader.services;
     opens org.swdc.reader.services to
             javafx.fxml,
             swdc.application.fx,

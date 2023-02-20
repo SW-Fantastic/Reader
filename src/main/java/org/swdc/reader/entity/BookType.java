@@ -14,7 +14,7 @@ public class BookType {
 
     private String name;
 
-    @OneToMany(mappedBy = "type",cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "type",cascade = CascadeType.REMOVE,fetch = FetchType.EAGER)
     private Set<Book> books;
 
     public Set<Book> getBooks() {
