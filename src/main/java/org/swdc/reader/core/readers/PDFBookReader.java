@@ -246,10 +246,8 @@ public class PDFBookReader implements BookReader<Image> {
         if (this.locator == null) {
             return;
         }
-        executor.execute(() -> {
-            this.data = this.locator.nextPage();
-            this.renderPage();
-        });
+        this.data = this.locator.nextPage();
+        this.renderPage();
     }
 
     @Override
@@ -257,10 +255,8 @@ public class PDFBookReader implements BookReader<Image> {
         if (this.locator == null) {
             return;
         }
-        executor.execute(() -> {
-            this.data = this.locator.prevPage();
-            this.renderPage();
-        });
+        this.data = this.locator.prevPage();
+        this.renderPage();
     }
 
     @Override

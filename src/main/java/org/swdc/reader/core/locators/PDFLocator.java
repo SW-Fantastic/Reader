@@ -1,6 +1,11 @@
 package org.swdc.reader.core.locators;
 
+import javafx.application.Platform;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
+import javafx.scene.image.PixelBuffer;
+import javafx.scene.image.PixelFormat;
+import javafx.scene.image.WritableImage;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.destination.PDPageDestination;
@@ -9,16 +14,18 @@ import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlin
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.swdc.pdfium.PdfiumBitmapImage;
+import org.swdc.pdfium.PdfiumDocument;
+import org.swdc.pdfium.PdfiumDocumentPage;
+import org.swdc.platforms.Unsafe;
 import org.swdc.reader.core.configs.PDFConfig;
 import org.swdc.reader.entity.Book;
-import org.swdc.reader.entity.ContentsItem;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.function.BiConsumer;
@@ -34,13 +41,15 @@ public class PDFLocator implements BookLocator<Image> {
 
     private PDDocument document;
 
+    private PdfiumDocument pdfiumDocument;
+
     private PDFRenderer renderer;
 
     private Integer location = -1;
 
     private PDFConfig config;
 
-    private Map<Integer, Image> locationDataMap = new WeakHashMap<>();
+    private Map<Integer, PixelBuffer<ByteBuffer>> locationDataMap = new HashMap<>();
 
     private Boolean available;
 
@@ -51,6 +60,7 @@ public class PDFLocator implements BookLocator<Image> {
         this.bookEntity = book;
         File file = new File(assetsFolder.getAbsolutePath() + "/library/" + book.getName());
         try {
+            this.pdfiumDocument = new PdfiumDocument(file);
             this.document = Loader.loadPDF(file);
             this.renderer = new PDFRenderer(document);
             this.available = true;
@@ -93,6 +103,12 @@ public class PDFLocator implements BookLocator<Image> {
 
     @Override
     public Image prevPage() {
+        if (locationDataMap.size() > config.getRenderMapSize()) {
+            for (PixelBuffer<ByteBuffer> buffer: locationDataMap.values()) {
+                Unsafe.free(buffer.getBuffer());
+            }
+            locationDataMap.clear();
+        }
         this.location --;
         if (this.location < 0) {
             return nextPage();
@@ -103,6 +119,9 @@ public class PDFLocator implements BookLocator<Image> {
     @Override
     public Image nextPage() {
         if (locationDataMap.size() > config.getRenderMapSize()) {
+            for (PixelBuffer<ByteBuffer> buffer: locationDataMap.values()) {
+                Unsafe.free(buffer.getBuffer());
+            }
             locationDataMap.clear();
         }
         if (location + 1 >= document.getNumberOfPages()) {
@@ -143,7 +162,11 @@ public class PDFLocator implements BookLocator<Image> {
     public void finalizeResources() {
         try {
             document.close();
+            pdfiumDocument.close();
             if (locationDataMap != null) {
+                for (PixelBuffer<ByteBuffer> buffer : locationDataMap.values()) {
+                    Unsafe.free(buffer.getBuffer());
+                }
                 locationDataMap.clear();
                 locationDataMap = null;
                 this.available = false;
@@ -158,24 +181,42 @@ public class PDFLocator implements BookLocator<Image> {
         return this.available;
     }
 
+    public static void fromArgbInt(int[] argb, ByteBuffer buffer) {
+        buffer.position(0);
+        for (int i = 0; i < argb.length; i++) {
+            buffer.put(4 * i   ,(byte) ((argb[i]      ) & 0xff));
+            buffer.put(4 * i + 1,(byte) ((argb[i] >>  8) & 0xff));
+            buffer.put(4 * i + 2,(byte) ((argb[i] >> 16) & 0xff));
+            buffer.put(4 * i + 3,(byte) ((argb[i] >> 24) & 0xff));
+        }
+    }
+
     private Image renderPage(Integer page) {
         try {
             if (locationDataMap.containsKey(page) && locationDataMap.get(page) != null) {
-                return locationDataMap.get(page);
+                chapter = "第" + page + "页";
+                PixelBuffer<ByteBuffer> theData = locationDataMap.get(page);
+                return new WritableImage(theData);
             }
-            BufferedImage image = renderer.renderImage(page, config.getRenderQuality());
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            ImageIO.write(image,"png",byteArrayOutputStream);
-            Image data = new Image(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
-            locationDataMap.put(page, data);
+
+            PdfiumDocumentPage pdfiumPage = pdfiumDocument.getPage(page);
+            PdfiumBitmapImage image = pdfiumPage.renderPage(config.getRenderQuality().intValue());
+            ByteBuffer imageBuf = image.getBuffer();
+
+            ByteBuffer renderedBuffer = Unsafe.memcpy(imageBuf);
+            PixelBuffer<ByteBuffer> pixelBuffer = new PixelBuffer<>(image.getWidth(), image.getHeight(), renderedBuffer, PixelFormat.getByteBgraPreInstance());
+            WritableImage theImage = new WritableImage(pixelBuffer);
+            renderedBuffer.position(0);
+
+            pdfiumPage.close();
+            image.close();
+
+            locationDataMap.put(page, pixelBuffer);
             chapter = "第" + page + "页";
-            return data;
+
+            return theImage;
         } catch (Exception ex) {
-            //log.error(ex);
-        } catch (OutOfMemoryError error) {
-            locationDataMap.clear();
-            System.gc();
-            return renderPage(page);
+            logger.error("",ex);
         }
         return null;
     }

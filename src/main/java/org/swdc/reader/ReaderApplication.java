@@ -4,9 +4,14 @@ import org.swdc.data.EMFProviderFactory;
 import org.swdc.dependency.DependencyContext;
 import org.swdc.dependency.EnvironmentLoader;
 import org.swdc.fx.FXApplication;
+import org.swdc.fx.FXResources;
 import org.swdc.fx.SWFXApplication;
+import org.swdc.pdfium.PdfiumPlatform;
+import org.swdc.platforms.NativePlatform;
 import org.swdc.reader.entity.EMFProviderImpl;
 import org.swdc.reader.ui.MainView;
+
+import java.io.File;
 
 /**
  * 应用启动和依赖控制的类
@@ -25,6 +30,9 @@ public class ReaderApplication extends FXApplication {
 
     @Override
     public void onStarted(DependencyContext dependencyContext) {
+
+        NativePlatform.initializePlatform(new File("platforms"));
+        PdfiumPlatform.initializePdfium(new File("platforms"));
 
         EMFProviderFactory factory = dependencyContext.getByClass(EMFProviderFactory.class);
         factory.create();

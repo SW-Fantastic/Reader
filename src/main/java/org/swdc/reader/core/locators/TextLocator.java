@@ -40,11 +40,6 @@ public class TextLocator implements BookLocator<String> {
     private Integer currentPage = 0;
 
     /**
-     * 当前适用的章节正则
-     */
-    private Pattern patternForChapter;
-
-    /**
      * 当前章节名
      */
     private String chapterName = "序章";
@@ -55,7 +50,6 @@ public class TextLocator implements BookLocator<String> {
     private String chapterNext=null;
 
     private final int pageSize = 1200;
-
 
     private BufferedReader reader;
 

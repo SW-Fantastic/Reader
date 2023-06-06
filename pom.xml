@@ -44,6 +44,16 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
+            <groupId>org.swdc.platforms</groupId>
+            <artifactId>platforms</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.swdc</groupId>
+            <artifactId>pdfium</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>com.lizardtech</groupId>
             <artifactId>djvu</artifactId>
             <version>1.0-SNAPSHOT</version>
