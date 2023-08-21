@@ -25,7 +25,7 @@ public class PDFBookDescriptor implements BookDescriptor {
 
     @Override
     public boolean support(Book target) {
-        return target.getMimeData().equals("application/pdf") &&
+        return target.getMimeData().equals("application/pdf") ||
                 target.getName().toLowerCase().endsWith("pdf");
     }
 

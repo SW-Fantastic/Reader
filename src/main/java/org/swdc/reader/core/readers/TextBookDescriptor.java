@@ -30,7 +30,7 @@ public class TextBookDescriptor implements BookDescriptor {
 
     @Override
     public boolean support(Book target) {
-        if (target.getName().toLowerCase().endsWith("txt") && target.getMimeData().toLowerCase().equals("text/plain")) {
+        if (target.getName().toLowerCase().endsWith("txt")) {
             return true;
         }
         return false;
