@@ -31,8 +31,8 @@ public class ReaderApplication extends FXApplication {
     @Override
     public void onStarted(DependencyContext dependencyContext) {
 
-        NativePlatform.initializePlatform(new File("platforms"));
-        PdfiumPlatform.initializePdfium(new File("platforms"));
+        FXResources resources = dependencyContext.getByClass(FXResources.class);
+        PdfiumPlatform.initializePdfium(resources.getAssetsFolder());
 
         EMFProviderFactory factory = dependencyContext.getByClass(EMFProviderFactory.class);
         factory.create();
