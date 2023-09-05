@@ -33,7 +33,7 @@ public class ReaderApplication extends FXApplication {
 
         FXResources resources = dependencyContext.getByClass(FXResources.class);
         PdfiumPlatform.initializePdfium(resources.getAssetsFolder());
-
+        NativePlatform.initializePlatform(resources.getAssetsFolder());
         EMFProviderFactory factory = dependencyContext.getByClass(EMFProviderFactory.class);
         factory.create();
 
