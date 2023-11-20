@@ -21,22 +21,22 @@
         <dependency>
             <groupId>org.swdc</groupId>
             <artifactId>application-component</artifactId>
-            <version>1.3-SNAPSHOT</version>
+            <version>1.3</version>
         </dependency>
         <dependency>
             <groupId>org.swdc</groupId>
             <artifactId>application-fx</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.swdc</groupId>
             <artifactId>application-configure</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <artifactId>swdata</artifactId>
             <groupId>org.swdc</groupId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.swdc</groupId>
@@ -46,17 +46,17 @@
         <dependency>
             <groupId>org.swdc.platforms</groupId>
             <artifactId>platforms</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.swdc</groupId>
             <artifactId>pdfium</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>com.lizardtech</groupId>
             <artifactId>djvu</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
         <dependency>

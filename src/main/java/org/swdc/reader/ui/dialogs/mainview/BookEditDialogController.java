@@ -11,6 +11,7 @@ import javafx.scene.layout.FlowPane;
 import org.swdc.dependency.annotations.EventListener;
 import org.swdc.fx.StageCloseEvent;
 import org.swdc.fx.font.FontawsomeService;
+import org.swdc.fx.view.ViewController;
 import org.swdc.reader.entity.Book;
 import org.swdc.reader.entity.BookTag;
 import org.swdc.reader.entity.BookType;
@@ -29,7 +30,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-public class BookEditDialogController implements Initializable {
+public class BookEditDialogController extends ViewController<BookEditDialog> {
 
     @FXML
     private ComboBox<BookType> typeCombo;
@@ -73,7 +74,7 @@ public class BookEditDialogController implements Initializable {
 
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void viewReady(URL location, ResourceBundle resources) {
         this.autoComplete = new AutoComplete<>(tagName,"name", (t,input) -> {
             return t.getName().startsWith(input);
         });
