@@ -102,6 +102,7 @@ module reader {
             swdc.application.dependency,
             swdc.application.fx;
 
-    provides java.net.spi.URLStreamHandlerProvider with org.swdc.reader.core.URLManager;
+    opens lang;
+
 
 }

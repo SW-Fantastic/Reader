@@ -18,10 +18,12 @@ import org.swdc.reader.core.ext.RenderResolver;
 import org.swdc.reader.core.locators.MobiLocator;
 import org.swdc.reader.entity.Book;
 import org.swdc.reader.entity.ContentsItem;
+import org.swdc.reader.ui.LanguageKeys;
 import org.swdc.reader.ui.dialogs.reader.TOCAndFavoriteDialog;
 
 import java.io.File;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -54,6 +56,13 @@ public class MobiBookReader implements BookReader<String> {
         private File assets;
         private ThreadPoolExecutor executor;
         private TOCAndFavoriteDialog dialog;
+
+        private ResourceBundle bundle;
+
+        public Builder bundle(ResourceBundle bundle) {
+            this.bundle = bundle;
+            return this;
+        }
 
         public Builder book(Book book) {
             this.book = book;
@@ -94,7 +103,7 @@ public class MobiBookReader implements BookReader<String> {
 
         public MobiBookReader build() {
 
-            MobiBookReader reader = new MobiBookReader();
+            MobiBookReader reader = new MobiBookReader(this.bundle);
             MobiLocator locator = new MobiLocator(resolvers,executor,book,config,this.assets);
             reader.setLocator(locator);
             reader.setBook(book);
@@ -105,7 +114,10 @@ public class MobiBookReader implements BookReader<String> {
                 locator.indexTableOfContents((idx) -> {
                     ContentsItem contentsItem = new ContentsItem();
                     contentsItem.setLocation(idx.toString());
-                    contentsItem.setTitle("第" + idx + "页");
+                    contentsItem.setTitle(
+                            bundle.getString(LanguageKeys.KEY_TXT_CHAPTER)
+                                    .replace("#pageNo",idx + "")
+                    );
                     contentsItem.setLocated(this.book);
                     dialog.buildTableOfContent(contentsItem);
                 });
@@ -117,7 +129,7 @@ public class MobiBookReader implements BookReader<String> {
 
     }
 
-    public MobiBookReader() {
+    public MobiBookReader(ResourceBundle bundle) {
 
 
         HBox  left = new HBox();
@@ -137,17 +149,17 @@ public class MobiBookReader implements BookReader<String> {
         tools.setSpacing(16);
         tools.getStyleClass().add("reader-tools");
 
-        Button prev = new Button("上一页");
+        Button prev = new Button(bundle.getString(LanguageKeys.KEY_TXT_PREV_PAGE));
         prev.setOnAction((e) -> this.goPreviousPage());
 
-        Button showTools = new Button("选项");
+        Button showTools = new Button(bundle.getString(LanguageKeys.KEY_TXT_OPT));
 
-        Button bookMark = new Button("书签");
+        Button bookMark = new Button(bundle.getString(LanguageKeys.KEY_TXT_MARK));
         bookMark.setOnAction(e -> dialog.showMarks(this));
-        Button contents = new Button("目录");
+        Button contents = new Button(bundle.getString(LanguageKeys.KEY_TXT_TOC));
         contents.setOnAction((e) -> dialog.showTableOfContent(this));
 
-        Button jumpTo = new Button("跳转");
+        Button jumpTo = new Button(bundle.getString(LanguageKeys.KEY_TXT_JUMP));
         jumpTo.setOnAction((e) -> {
             String target = jump.getText();
             try {
@@ -157,7 +169,7 @@ public class MobiBookReader implements BookReader<String> {
                 jump.setText(locator.getLocation());
             }
         });
-        Button next = new Button("下一页");
+        Button next = new Button(bundle.getString(LanguageKeys.KEY_TXT_NEXT_PAGE));
         next.setOnAction((e) -> this.goNextPage());
 
         chapterName.setPrefWidth(240);

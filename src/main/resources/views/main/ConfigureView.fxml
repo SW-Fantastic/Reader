@@ -22,7 +22,7 @@
             <Insets right="24.0" />
          </padding>
          <children>
-            <Button mnemonicParsing="false" onAction="#saveConfigures" prefHeight="33.0" prefWidth="77.0" styleClass="primary-button" text="保存">
+            <Button mnemonicParsing="false" onAction="#saveConfigures" prefHeight="33.0" prefWidth="77.0" styleClass="primary-button" text="%reader.save">
                <HBox.margin>
                   <Insets top="16.0" />
                </HBox.margin>

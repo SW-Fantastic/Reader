@@ -3,6 +3,7 @@ package org.swdc.reader.core.readers;
 import jakarta.inject.Inject;
 import javafx.stage.FileChooser;
 import org.swdc.dependency.annotations.MultipleImplement;
+import org.swdc.fx.FXResources;
 import org.swdc.reader.core.BookDescriptor;
 import org.swdc.reader.core.BookReader;
 import org.swdc.reader.core.configs.EpubConfig;
@@ -10,10 +11,12 @@ import org.swdc.reader.core.configs.TextConfig;
 import org.swdc.reader.core.ext.RenderResolver;
 import org.swdc.reader.entity.Book;
 import org.swdc.reader.services.HelperServices;
+import org.swdc.reader.ui.LanguageKeys;
 import org.swdc.reader.ui.dialogs.reader.TOCAndFavoriteDialog;
 
 import java.io.File;
 import java.util.List;
+import java.util.ResourceBundle;
 
 @MultipleImplement(BookDescriptor.class)
 public class EpubBookDescriptor implements BookDescriptor {
@@ -34,6 +37,9 @@ public class EpubBookDescriptor implements BookDescriptor {
 
     @Inject
     private TOCAndFavoriteDialog tocAndFavoriteDialog;
+
+    @Inject
+    private FXResources resources;
 
     @Override
     public boolean support(Book file) {
@@ -61,13 +67,15 @@ public class EpubBookDescriptor implements BookDescriptor {
                 .assetsFolder(helperServices.getAssetsFolder())
                 .tocDialog(tocAndFavoriteDialog)
                 .executor(helperServices.getExecutor())
+                .bundle(resources.getResourceBundle())
                 .build();
     }
 
     @Override
     public FileChooser.ExtensionFilter getFilter() {
         if (this.filter == null) {
-            this.filter = new FileChooser.ExtensionFilter("Epub电子出版格式","*.epub");
+            ResourceBundle bundle = resources.getResourceBundle();
+            this.filter = new FileChooser.ExtensionFilter(bundle.getString(LanguageKeys.KEY_EPUB_FORMAT),"*.epub");
         }
         return this.filter;
     }

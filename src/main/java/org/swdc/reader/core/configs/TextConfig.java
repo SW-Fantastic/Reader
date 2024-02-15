@@ -10,6 +10,7 @@ import org.swdc.fx.config.editors.CheckEditor;
 import org.swdc.fx.config.editors.ColorEditor;
 import org.swdc.fx.config.editors.FileSelectionEditor;
 import org.swdc.fx.config.editors.NumberEditor;
+import org.swdc.reader.ui.LanguageKeys;
 
 
 /**
@@ -20,60 +21,60 @@ public class TextConfig extends AbstractConfig {
 
     private String name = "Txt文档";
 
-    @PropEditor(name = "显示拼音",
-            description = "在文本上方标注拼音 。",
+    @PropEditor(name = LanguageKeys.CONF_PINYIN,
+            description = LanguageKeys.CONF_PINYIN_DESC,
             editor = CheckEditor.class)
     @Property("show-pinyin")
     private Boolean showPinYin;
 
-    @PropEditor(name = "字体大小",
-            description = "改变阅读的字体大小。",
+    @PropEditor(name = LanguageKeys.CONF_FONT_SIZE,
+            description = LanguageKeys.CONF_FONT_SIZE_DESC,
             editor = NumberEditor.class,
             resource = "16,24")
     @Property("font-size")
     private Integer fontSize;
 
-    @PropEditor(name = "背景图",
-            description = "阅读的时候的背景图片。",
+    @PropEditor(name = LanguageKeys.CONF_BG,
+            description = LanguageKeys.CONF_BG_DESC,
             editor = FileSelectionEditor.class,
             resource = "pageBg")
     @Property("background-image")
     private String backgroundImage;
 
 
-    @PropEditor(name = "字体样式",
-            description = "阅读的时候所使用的字体文件。",
+    @PropEditor(name = LanguageKeys.CONF_FONT_STYLE,
+            description = LanguageKeys.CONF_FONT_STYLE_DESC,
             editor = FileSelectionEditor.class,
             resource = "fonts")
     @Property("font-path")
     private String fontFileName;
 
-    @PropEditor(name = "文字颜色",
-            description = "文字的颜色。",
+    @PropEditor(name = LanguageKeys.CONF_FONT_COLOR,
+            description = LanguageKeys.CONF_FONT_COLOR_DESC,
             editor = ColorEditor.class)
     @Property("font-color")
     private String fontColor;
 
-    @PropEditor(name = "背景颜色",
-            description = "阅读器的背景色。",
+    @PropEditor(name = LanguageKeys.CONF_BG_COLOR,
+            description = LanguageKeys.CONF_BG_COLOR_DESC,
             editor = ColorEditor.class)
     @Property("background-color")
     private String backgroundColor;
 
-    @PropEditor(name = "启用背景图片",
-            description = "在阅读器中显示背景图片。",
+    @PropEditor(name = LanguageKeys.CONF_BG_ENABLE,
+            description = LanguageKeys.CONF_BG_ENABLE_DESC,
             editor = CheckEditor.class)
     @Property("enable-background")
     private Boolean enableBackgroundImage;
 
-    @PropEditor(name = "启用文字阴影",
-            description = "在阅读器中为文本添加阴影。",
+    @PropEditor(name = LanguageKeys.CONF_TEXT_SHADOW,
+            description = LanguageKeys.CONF_TEXT_SHADOW_DESC,
             editor = CheckEditor.class)
     @Property("enable-text-shadow")
     private Boolean enableTextShadow;
 
-    @PropEditor(name = "文本阴影颜色",
-            description = "文本阴影色。",
+    @PropEditor(name = LanguageKeys.CONF_SHADOW_COLOR,
+            description = LanguageKeys.CONF_SHADOW_COLOR_DESC,
             editor = ColorEditor.class)
     @Property("text-shadow-color")
     private String shadowColor;

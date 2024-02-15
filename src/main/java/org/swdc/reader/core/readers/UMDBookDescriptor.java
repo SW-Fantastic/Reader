@@ -3,6 +3,7 @@ package org.swdc.reader.core.readers;
 import jakarta.inject.Inject;
 import javafx.stage.FileChooser;
 import org.swdc.dependency.annotations.MultipleImplement;
+import org.swdc.fx.FXResources;
 import org.swdc.reader.core.BookDescriptor;
 import org.swdc.reader.core.ext.RenderResolver;
 import org.swdc.reader.entity.Book;
@@ -23,6 +24,9 @@ public class UMDBookDescriptor implements BookDescriptor {
 
     @Inject
     private TOCAndFavoriteDialog tocDialog;
+
+    @Inject
+    private FXResources resources;
 
     private FileChooser.ExtensionFilter filter;
 
@@ -45,6 +49,7 @@ public class UMDBookDescriptor implements BookDescriptor {
                 .codeDet(helperServices.getCodepageDetectorProxy())
                 .exec(helperServices.getExecutor())
                 .tocDialog(tocDialog)
+                .bundle(resources.getResourceBundle())
                 .build();
     }
 

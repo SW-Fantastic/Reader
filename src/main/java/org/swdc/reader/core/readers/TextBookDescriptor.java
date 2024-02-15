@@ -3,16 +3,19 @@ package org.swdc.reader.core.readers;
 import jakarta.inject.Inject;
 import javafx.stage.FileChooser;
 import org.swdc.dependency.annotations.MultipleImplement;
+import org.swdc.fx.FXResources;
 import org.swdc.reader.core.BookDescriptor;
 import org.swdc.reader.core.configs.TextConfig;
 import org.swdc.reader.core.ext.RenderResolver;
 import org.swdc.reader.entity.Book;
 import org.swdc.reader.services.HelperServices;
+import org.swdc.reader.ui.LanguageKeys;
 import org.swdc.reader.ui.dialogs.reader.TOCAndFavoriteDialog;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.ResourceBundle;
 
 @MultipleImplement(BookDescriptor.class)
 public class TextBookDescriptor implements BookDescriptor {
@@ -27,6 +30,9 @@ public class TextBookDescriptor implements BookDescriptor {
 
     @Inject
     private TOCAndFavoriteDialog tocDialog;
+
+    @Inject
+    private FXResources resources;
 
     @Override
     public boolean support(Book target) {
@@ -53,13 +59,17 @@ public class TextBookDescriptor implements BookDescriptor {
                 .assetsFolder(helperServices.getAssetsFolder())
                 .tocDialog(tocDialog)
                 .exec(helperServices.getExecutor())
+                .bundle(resources.getResourceBundle())
                 .build();
     }
 
     @Override
     public FileChooser.ExtensionFilter getFilter() {
         if (filter == null) {
-            filter = new FileChooser.ExtensionFilter("文本格式","*.txt");
+            ResourceBundle bundle = resources.getResourceBundle();
+            filter = new FileChooser.ExtensionFilter(bundle.getString(
+                    LanguageKeys.KEY_TXT_FORMAT
+            ),"*.txt");
         }
         return filter;
     }

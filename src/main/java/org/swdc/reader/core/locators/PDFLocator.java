@@ -20,6 +20,7 @@ import org.swdc.pdfium.PdfiumDocumentPage;
 import org.swdc.platforms.Unsafe;
 import org.swdc.reader.core.configs.PDFConfig;
 import org.swdc.reader.entity.Book;
+import org.swdc.reader.ui.LanguageKeys;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -27,6 +28,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.WeakHashMap;
 import java.util.function.BiConsumer;
 
@@ -55,9 +57,12 @@ public class PDFLocator implements BookLocator<Image> {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public PDFLocator(Book book, PDFConfig config,File assetsFolder) {
+    private ResourceBundle bundle;
+
+    public PDFLocator(ResourceBundle bundle,Book book, PDFConfig config,File assetsFolder) {
         this.config = config;
         this.bookEntity = book;
+        this.bundle = bundle;
         File file = new File(assetsFolder.getAbsolutePath() + "/library/" + book.getName());
         try {
             this.pdfiumDocument = new PdfiumDocument(file);
@@ -194,7 +199,8 @@ public class PDFLocator implements BookLocator<Image> {
     private Image renderPage(Integer page) {
         try {
             if (locationDataMap.containsKey(page) && locationDataMap.get(page) != null) {
-                chapter = "第" + page + "页";
+                chapter = bundle.getString(LanguageKeys.KEY_TXT_CHAPTER)
+                        .replace("#pageNo",page + "");
                 PixelBuffer<ByteBuffer> theData = locationDataMap.get(page);
                 return new WritableImage(theData);
             }
@@ -212,7 +218,8 @@ public class PDFLocator implements BookLocator<Image> {
             image.close();
 
             locationDataMap.put(page, pixelBuffer);
-            chapter = "第" + page + "页";
+            chapter = bundle.getString(LanguageKeys.KEY_TXT_CHAPTER)
+                    .replace("#pageNo",page + "");;
 
             return theImage;
         } catch (Exception ex) {

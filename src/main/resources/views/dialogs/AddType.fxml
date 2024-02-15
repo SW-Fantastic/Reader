@@ -7,13 +7,18 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="117.0" prefWidth="366.0" styleClass="dialog-pane" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.swdc.reader.ui.dialogs.mainview.AddTypeController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="134.0" prefWidth="401.0" styleClass="dialog-pane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.swdc.reader.ui.dialogs.mainview.AddTypeController">
    <center>
       <HBox alignment="CENTER" prefHeight="60.0" prefWidth="368.0" spacing="8.0" BorderPane.alignment="CENTER">
          <children>
-            <Label text="类型名称：" />
-            <TextField id="txtName" fx:id="txtName" prefHeight="29.0" prefWidth="278.0" />
+            <TextField id="txtName" fx:id="txtName" prefHeight="29.0" prefWidth="338.0" HBox.hgrow="ALWAYS">
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin></TextField>
          </children>
+         <BorderPane.margin>
+            <Insets left="12.0" right="12.0" />
+         </BorderPane.margin>
       </HBox>
    </center>
    <bottom>
@@ -22,9 +27,19 @@
             <Insets right="12.0" />
          </BorderPane.margin>
          <children>
-            <Button mnemonicParsing="false" onAction="#cancelClick" prefHeight="32.0" prefWidth="58.0" text="取消" />
-            <Button mnemonicParsing="false" onAction="#okClick" prefHeight="32.0" prefWidth="58.0" text="创建" />
+            <Button mnemonicParsing="false" onAction="#cancelClick" prefHeight="32.0" prefWidth="58.0" text="%reader.cancel" />
+            <Button mnemonicParsing="false" onAction="#okClick" prefHeight="32.0" prefWidth="58.0" text="%reader.save" />
          </children>
       </HBox>
    </bottom>
+   <top>
+      <HBox alignment="CENTER_LEFT" prefHeight="41.0" prefWidth="366.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label text="%reader.dialog.create-type-label" />
+         </children>
+         <padding>
+            <Insets left="12.0" />
+         </padding>
+      </HBox>
+   </top>
 </BorderPane>

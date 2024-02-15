@@ -6,12 +6,16 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
 import org.swdc.dependency.annotations.EventListener;
+import org.swdc.fx.FXResources;
 import org.swdc.fx.StageCloseEvent;
 import org.swdc.fx.view.Toast;
 import org.swdc.reader.entity.BookType;
 import org.swdc.reader.events.TreeRefreshEvent;
 import org.swdc.reader.events.TypeListRefreshEvent;
 import org.swdc.reader.services.TypeServices;
+import org.swdc.reader.ui.LanguageKeys;
+
+import java.util.ResourceBundle;
 
 public class EditTypeDialogController {
 
@@ -26,6 +30,9 @@ public class EditTypeDialogController {
     @Inject
     private TypeServices typeServices;
 
+    @Inject
+    private FXResources resources;
+
 
     @FXML
     public void onCancel() {
@@ -34,11 +41,18 @@ public class EditTypeDialogController {
 
     @FXML
     public void onDelete() {
-        Alert alert = this.view.alert("删除","的确要删除 " + type.getName() + " 吗？", Alert.AlertType.CONFIRMATION);
+        ResourceBundle bundle = resources.getResourceBundle();
+        Alert alert = this.view.alert(
+                bundle.getString(LanguageKeys.KEY_BOOK_WARN),
+                bundle.getString(LanguageKeys.KEY_DELETE_TYPE) +
+                        " < " + type.getName() + " > " +
+                        bundle.getString(LanguageKeys.KEY_QUESTION_SUBFIX),
+                Alert.AlertType.CONFIRMATION
+        );
         alert.showAndWait().ifPresent((buttonType -> {
             if (buttonType.equals(ButtonType.OK)) {
                 typeServices.remove(type.getId());
-                Toast.showMessage("分类已经删除。");
+                Toast.showMessage(bundle.getString(LanguageKeys.KEY_TYPE_DELETED));
                 this.view.emit(new TypeListRefreshEvent(""));
                 this.view.emit(new TreeRefreshEvent(null));
                 this.onCancel();
@@ -48,6 +62,7 @@ public class EditTypeDialogController {
 
     @FXML
     public void onRename() {
+
         String newName = txtName.getText();
         if (newName == null || newName.isEmpty() || newName.equals(type.getName())) {
             this.onCancel();
@@ -56,7 +71,9 @@ public class EditTypeDialogController {
         typeServices.rename(type.getId(),newName);
         this.onCancel();
 
-        Toast.showMessage("类型保存成功。");
+        ResourceBundle bundle = resources.getResourceBundle();
+
+        Toast.showMessage(bundle.getString(LanguageKeys.KEY_TYPE_SAVED));
         this.view.emit(new TypeListRefreshEvent(""));
     }
 

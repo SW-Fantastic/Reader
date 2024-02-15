@@ -9,11 +9,12 @@ import org.swdc.fx.font.FontSize;
 import org.swdc.fx.font.FontawsomeService;
 import org.swdc.fx.view.AbstractView;
 import org.swdc.fx.view.View;
+import org.swdc.reader.ui.LanguageKeys;
 
 import java.io.File;
 
 @View(viewLocation = "/views/dialogs/ImportFile.fxml",
-        title = "导入文件",dialog = true,resizeable = false)
+        title = LanguageKeys.IMPORT_FILE,dialog = true,resizeable = false)
 public class ImportFileDialog extends AbstractView {
 
     @Inject

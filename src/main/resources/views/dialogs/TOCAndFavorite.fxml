@@ -13,7 +13,7 @@
    <bottom>
       <HBox alignment="CENTER_RIGHT" prefHeight="57.0" prefWidth="382.0" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" onAction="#onClose" prefHeight="30.0" prefWidth="71.0" text="关闭">
+            <Button mnemonicParsing="false" onAction="#onClose" prefHeight="30.0" prefWidth="71.0" text="%reader.close">
                <opaqueInsets>
                   <Insets />
                </opaqueInsets>
@@ -29,7 +29,7 @@
    <center>
       <TabPane id="tabs" prefHeight="200.0" prefWidth="200.0" styleClass="toc-tab" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
         <tabs>
-          <Tab id="toc" text="目录">
+          <Tab id="toc" text="%reader.dialog.toc.contents">
                <content>
                   <BorderPane prefHeight="200.0" prefWidth="200.0">
                      <center>
@@ -37,7 +37,7 @@
                      </center></BorderPane>
                </content>
           </Tab>
-          <Tab id="marks" text="书签">
+          <Tab id="marks" text="%reader.dialog.toc.marks">
                <content>
                   <BorderPane prefHeight="200.0" prefWidth="200.0">
                      <center>
@@ -51,7 +51,7 @@
                                     <Insets right="16.0" />
                                  </HBox.margin>
                               </TextField>
-                              <Button mnemonicParsing="false" onAction="#saveMark" prefHeight="28.0" prefWidth="46.0" text="添加" />
+                              <Button mnemonicParsing="false" onAction="#saveMark" prefHeight="28.0" prefWidth="46.0" text="%reader.add" />
                            </children>
                            <BorderPane.margin>
                               <Insets />

@@ -7,6 +7,7 @@ import org.swdc.config.annotations.Property;
 import org.swdc.config.configs.PropertiesHandler;
 import org.swdc.fx.config.PropEditor;
 import org.swdc.fx.config.editors.ColorEditor;
+import org.swdc.reader.ui.LanguageKeys;
 
 /**
  * Created by lenovo on 2019/6/13.
@@ -16,8 +17,8 @@ public class EpubConfig extends AbstractConfig {
 
     private String name = "EPUB电子出版物";
 
-    @PropEditor(name = "链接颜色",
-            description = "EPUB文档可以存在超链接，这里可以指定超链接字体的颜色。",
+    @PropEditor(name = LanguageKeys.CONF_EPUB_LINK,
+            description = LanguageKeys.CONF_EPUB_LINK_DESC,
             editor = ColorEditor.class)
     @Property("link-color")
     private String linkColor;

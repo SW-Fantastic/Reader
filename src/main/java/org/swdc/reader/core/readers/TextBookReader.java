@@ -17,14 +17,18 @@ import org.swdc.reader.core.configs.TextConfig;
 import org.swdc.reader.core.ext.RenderResolver;
 import org.swdc.reader.core.locators.TextLocator;
 import org.swdc.reader.entity.Book;
+import org.swdc.reader.ui.LanguageKeys;
 import org.swdc.reader.ui.dialogs.reader.TOCAndFavoriteDialog;
 
 import java.io.File;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public class TextBookReader implements BookReader<String> {
+
+    private ResourceBundle bundle;
 
     private TextConfig textConfig;
     private TextLocator locator;
@@ -51,6 +55,8 @@ public class TextBookReader implements BookReader<String> {
         private File assets;
         private TOCAndFavoriteDialog dialog;
         private ThreadPoolExecutor exec;
+
+        private ResourceBundle bundle;
 
         public Builder book(Book book) {
             this.book = book;
@@ -82,15 +88,20 @@ public class TextBookReader implements BookReader<String> {
             return this;
         }
 
+        public Builder bundle(ResourceBundle bundle) {
+            this.bundle = bundle;
+            return this;
+        }
+
         public TextBookReader build() {
 
-            TextBookReader reader = new TextBookReader();
+            TextBookReader reader = new TextBookReader(this.bundle);
             reader.setTocDialog(this.dialog);
             reader.setBook(this.book);
             reader.setExecutor(exec);
 
             exec.submit(() -> {
-                reader.setLocator(new TextLocator(resolvers,book,this.proxy,this.assets));
+                reader.setLocator(new TextLocator(bundle,resolvers,book,this.proxy,this.assets));
                 Platform.runLater(() -> {
                     reader.goNextPage();
                 });
@@ -102,8 +113,7 @@ public class TextBookReader implements BookReader<String> {
     }
 
 
-    protected TextBookReader() {
-
+    protected TextBookReader(ResourceBundle bundle) {
 
         HBox  left = new HBox();
         left.setAlignment(Pos.CENTER_LEFT);
@@ -122,17 +132,17 @@ public class TextBookReader implements BookReader<String> {
         tools.setSpacing(16);
         tools.getStyleClass().add("reader-tools");
 
-        Button prev = new Button("上一页");
+        Button prev = new Button(bundle.getString(LanguageKeys.KEY_TXT_PREV_PAGE));
         prev.setOnAction((e) -> this.goPreviousPage());
 
-        Button showTools = new Button("选项");
+        Button showTools = new Button(bundle.getString(LanguageKeys.KEY_TXT_OPT));
 
-        Button bookMark = new Button("书签");
+        Button bookMark = new Button(bundle.getString(LanguageKeys.KEY_TXT_MARK));
         bookMark.setOnAction(e -> tocAndFavoriteDialog.showMarks(this));
-        Button contents = new Button("目录");
+        Button contents = new Button(bundle.getString(LanguageKeys.KEY_TXT_TOC));
         contents.setOnAction((e) -> tocAndFavoriteDialog.showTableOfContent(this));
 
-        Button jumpTo = new Button("跳转");
+        Button jumpTo = new Button(bundle.getString(LanguageKeys.KEY_TXT_JUMP));
         jumpTo.setOnAction((e) -> {
             String target = jump.getText();
             try {
@@ -142,7 +152,7 @@ public class TextBookReader implements BookReader<String> {
                 jump.setText(locator.getLocation());
             }
         });
-        Button next = new Button("下一页");
+        Button next = new Button(bundle.getString(LanguageKeys.KEY_TXT_NEXT_PAGE));
         next.setOnAction((e) -> this.goNextPage());
 
         chapterName.setPrefWidth(240);
@@ -153,6 +163,8 @@ public class TextBookReader implements BookReader<String> {
         this.panel.setCenter(this.view);
         this.panel.getStyleClass().add("reader-content");
         this.panel.setOnKeyPressed(KeyEvent::consume);
+
+        this.bundle = bundle;
     }
 
     public void setExecutor(Executor executor) {

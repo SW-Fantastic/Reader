@@ -15,11 +15,11 @@
    <center>
       <TableView fx:id="externBookTable" prefHeight="200.0" prefWidth="200.0" styleClass="books-table" BorderPane.alignment="CENTER">
         <columns>
-          <TableColumn fx:id="titleColumn" prefWidth="75.0" text="文件名" />
-          <TableColumn fx:id="typeColumn" prefWidth="75.0" text="分类" />
-            <TableColumn fx:id="authorColumn" prefWidth="75.0" text="作者" />
-            <TableColumn fx:id="publisherColumn" prefWidth="75.0" text="出版发行" />
-            <TableColumn fx:id="editColumn" prefWidth="75.0" text="操作" />
+          <TableColumn fx:id="titleColumn" prefWidth="75.0" text="%reader.main.table.doc-title" />
+          <TableColumn fx:id="typeColumn" prefWidth="75.0" text="%reader.main.table.category" />
+            <TableColumn fx:id="authorColumn" prefWidth="75.0" text="%reader.main.table.author" />
+            <TableColumn fx:id="publisherColumn" prefWidth="75.0" text="%reader.main.table.publisher" />
+            <TableColumn fx:id="editColumn" prefWidth="75.0" text="%reader.main.table.operation" />
         </columns>
          <columnResizePolicy>
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -36,7 +36,7 @@
                <children>
                   <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
                      <children>
-                        <Label text="状态">
+                        <Label text="%reader.status">
                            <VBox.margin>
                               <Insets bottom="8.0" top="8.0" />
                            </VBox.margin>
@@ -51,8 +51,8 @@
                   </VBox>
                </children>
             </HBox>
-            <Button id="cancel" mnemonicParsing="false" onAction="#cancel" prefHeight="36.0" prefWidth="89.0" text="取消" />
-            <Button id="importall" layoutX="610.0" layoutY="31.0" mnemonicParsing="false" onAction="#importAll" prefHeight="36.0" prefWidth="89.0" text="导入全部" />
+            <Button id="cancel" mnemonicParsing="false" onAction="#cancel" prefHeight="36.0" prefWidth="89.0" text="%reader.cancel" />
+            <Button id="importall" layoutX="610.0" layoutY="31.0" mnemonicParsing="false" onAction="#importAll" prefHeight="36.0" prefWidth="89.0" text="%reader.dialog.batch-import.import-all" />
          </children>
          <opaqueInsets>
             <Insets />

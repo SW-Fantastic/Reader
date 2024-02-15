@@ -15,6 +15,8 @@ import org.swdc.reader.core.configs.EpubConfig;
 import org.swdc.reader.core.configs.PDFConfig;
 import org.swdc.reader.core.configs.TextConfig;
 
+import java.util.ResourceBundle;
+
 
 @View(viewLocation = "/views/main/ConfigureView.fxml")
 public class ConfigureView extends AbstractView {
@@ -36,8 +38,11 @@ public class ConfigureView extends AbstractView {
 
     @PostConstruct
     public void init() {
+
+        ResourceBundle bundle = resources.getResourceBundle();
+
         TabPane configTab = this.findById("configTab");
-        Tab general = new Tab("首选项");
+        Tab general = new Tab(bundle.getString(LanguageKeys.KEY_CONF_PREF));
 
         ObservableList confGenerals = ConfigViews.parseConfigs(resources,config);
         PropertySheet generalConfSheet = new PropertySheet(confGenerals);
@@ -48,7 +53,7 @@ public class ConfigureView extends AbstractView {
         general.setContent(generalConfSheet);
         configTab.getTabs().add(general);
 
-        Tab textConfTab = new Tab("文本设置");
+        Tab textConfTab = new Tab(bundle.getString(LanguageKeys.KEY_CONF_TEXT));
 
         ObservableList confText = ConfigViews.parseConfigs(resources,textConfig);
         PropertySheet  textConfSheet = new PropertySheet(confText);
@@ -59,7 +64,7 @@ public class ConfigureView extends AbstractView {
         textConfTab.setContent(textConfSheet);
         configTab.getTabs().add(textConfTab);
 
-        Tab epubConfTab = new Tab("Epub设置");
+        Tab epubConfTab = new Tab(bundle.getString(LanguageKeys.KEY_CONF_EPUB));
 
         ObservableList confEpub = ConfigViews.parseConfigs(resources,epubConfig);
         PropertySheet  epubConfSheet = new PropertySheet(confEpub);
@@ -71,7 +76,7 @@ public class ConfigureView extends AbstractView {
         configTab.getTabs().add(epubConfTab);
 
 
-        Tab pdfConfTab = new Tab("Adobe PDF设置");
+        Tab pdfConfTab = new Tab(bundle.getString(LanguageKeys.KEY_CONF_PDF));
 
         ObservableList confPDF = ConfigViews.parseConfigs(resources,pdfConfig);
         PropertySheet  pdfConfSheet = new PropertySheet(confPDF);

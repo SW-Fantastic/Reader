@@ -16,9 +16,9 @@
    <bottom>
       <HBox alignment="CENTER_RIGHT" prefHeight="59.0" prefWidth="397.0" spacing="8.0" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" onAction="#onCancel" prefHeight="32.0" prefWidth="58.0" styleClass="btn-txt" text="取消" />
-            <Button layoutX="328.0" layoutY="21.0" mnemonicParsing="false" onAction="#onDelete" prefHeight="32.0" prefWidth="58.0" styleClass="btn-txt" text="删除" />
-            <Button mnemonicParsing="false" onAction="#onModify" prefHeight="32.0" prefWidth="58.0" styleClass="btn-txt" text="保存">
+            <Button mnemonicParsing="false" onAction="#onCancel" prefHeight="32.0" prefWidth="58.0" styleClass="btn-txt" text="%reader.cancel" />
+            <Button layoutX="328.0" layoutY="21.0" mnemonicParsing="false" onAction="#onDelete" prefHeight="32.0" prefWidth="58.0" styleClass="btn-txt" text="%reader.delete" />
+            <Button mnemonicParsing="false" onAction="#onModify" prefHeight="32.0" prefWidth="58.0" styleClass="btn-txt" text="%reader.save">
                <HBox.margin>
                   <Insets right="12.0" />
                </HBox.margin>
@@ -41,25 +41,25 @@
             <RowConstraints maxHeight="61.0" minHeight="10.0" prefHeight="44.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label text="标题" GridPane.rowIndex="1" />
+            <Label text="%reader.dialog.info.title" GridPane.rowIndex="1" />
             <TextField id="txtTitle" fx:id="txtName" editable="false" prefHeight="30.0" prefWidth="300.0" styleClass="txt" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <GridPane.margin>
                   <Insets right="18.0" />
                </GridPane.margin>
             </TextField>
-            <Label text="分类" GridPane.rowIndex="2" />
+            <Label text="%reader.dialog.info.category" GridPane.rowIndex="2" />
             <ComboBox id="cbxType" fx:id="typeCombo" prefHeight="30.0" prefWidth="300.0" styleClass="cbx-types" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2">
                <GridPane.margin>
                   <Insets right="18.0" />
                </GridPane.margin>
             </ComboBox>
-            <Label text="作者" GridPane.rowIndex="3" />
+            <Label text="%reader.dialog.info.author" GridPane.rowIndex="3" />
             <TextField id="txtAuthor" fx:id="txtAuthor" prefHeight="30.0" styleClass="txt" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <GridPane.margin>
                   <Insets right="18.0" />
                </GridPane.margin>
             </TextField>
-            <Label text="出版社" GridPane.rowIndex="4" />
+            <Label text="%reader.dialog.info.publisher" GridPane.rowIndex="4" />
             <TextField id="txtPublisher" fx:id="txtPublisher" prefHeight="30.0" styleClass="txt" GridPane.columnIndex="1" GridPane.rowIndex="4">
                <GridPane.margin>
                   <Insets right="18.0" />
@@ -67,13 +67,13 @@
             </TextField>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="12.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
                <children>
-                  <Label text="标签" />
+                  <Label text="%reader.dialog.info.tags" />
                   <TextField id="txtTag" fx:id="tagName" prefHeight="30.0" prefWidth="139.0" styleClass="txt" HBox.hgrow="ALWAYS">
                      <HBox.margin>
                         <Insets />
                      </HBox.margin>
                   </TextField>
-                  <Button id="tagAdd" minHeight="32.0" minWidth="32.0" mnemonicParsing="false" onAction="#setupTags" onMouseClicked="#setupTags" onTouchPressed="#setupTags" prefHeight="32.0" prefWidth="44.0" styleClass="btn-without-bg" text="添加">
+                  <Button id="tagAdd" minHeight="32.0" minWidth="32.0" mnemonicParsing="false" onAction="#setupTags" onMouseClicked="#setupTags" onTouchPressed="#setupTags" prefHeight="32.0" prefWidth="44.0" styleClass="btn-without-bg" text="%reader.add">
                      <HBox.margin>
                         <Insets right="12.0" />
                      </HBox.margin>

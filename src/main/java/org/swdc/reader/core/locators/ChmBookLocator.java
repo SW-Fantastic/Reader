@@ -4,88 +4,18 @@ import org.jchmlib.ChmEnumerator;
 import org.jchmlib.ChmFile;
 import org.jchmlib.ChmStopEnumeration;
 import org.jchmlib.ChmUnitInfo;
-import org.swdc.reader.core.URLManager;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.swdc.reader.entity.Book;
 
 import java.io.*;
-import java.net.*;
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
-import java.security.Permission;
+import java.nio.file.Path;
 import java.util.*;
 
 public class ChmBookLocator implements BookLocator<String> {
-
-    private static ChmURLHandler handler = new ChmURLHandler();
-
-    static {
-        URLManager.register("vchm",handler);
-    }
-
-    public static class ChmURLConnection extends URLConnection {
-
-        private ChmFile chmFile;
-
-        private String path;
-
-        public ChmURLConnection(URL url, ChmFile file,String path) {
-            super(url);
-            this.chmFile = file;
-            this.path = path;
-        }
-
-        @Override
-        public void connect() throws IOException {
-
-        }
-
-        @Override
-        public InputStream getInputStream() throws IOException {
-            ChmUnitInfo info = chmFile.resolveObject(path);
-            if (info == null) {
-                return InputStream.nullInputStream();
-            }
-            ByteBuffer buffer = this.chmFile.retrieveObject(info,0,info.getLength());
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            outputStream.write(buffer.array());
-
-            return new ByteArrayInputStream(outputStream.toByteArray());
-        }
-
-        @Override
-        public OutputStream getOutputStream() throws IOException {
-            return OutputStream.nullOutputStream();
-        }
-
-        @Override
-        public Permission getPermission() throws IOException {
-            return null;
-        }
-    }
-
-    private static class ChmURLHandler implements URLManager.URLHandler {
-
-        @Override
-        public URLStreamHandler accept() {
-            return new URLStreamHandler() {
-                @Override
-                protected URLConnection openConnection(URL u) throws IOException {
-                    String realPath = u.getHost().substring(0,u.getHost().lastIndexOf("|"));
-                    String path = new String(Base64.getDecoder().decode(realPath.getBytes(StandardCharsets.UTF_8)));
-
-                    File chm = new File(path);
-                    if (!chm.exists()) {
-                        throw new FileNotFoundException(chm.getAbsolutePath() + "不存在");
-                    }
-                    ChmFile file = new ChmFile(chm.getAbsolutePath());
-                    URL contentURL = new URL("vchm://" + u.getPath());
-
-                    return new ChmURLConnection(contentURL,file,u.getPath());
-                }
-            };
-        }
-
-    }
 
     private static class ChmIndexer implements ChmEnumerator {
 
@@ -168,32 +98,17 @@ public class ChmBookLocator implements BookLocator<String> {
             String prev = prevHistory.removeFirst();
             nextHistory.addFirst(prev);
             url = prev;
-            return location();
+            return toPage(url);
         }
         url = indexer.getIndexPath();
-        return location();
+        return toPage(url);
     }
 
-
-    public void location(String location) {
-        if (!location.equals(url)) {
-            this.prevHistory.addFirst(this.url);
-        }
-        url = location;
-    }
 
     public File getFile() {
         return file;
     }
 
-    public String location() {
-        if (url == null && indexer.getIndexPath() == null) {
-            url = chmFile.getHomeFile();
-        }
-        return "vchm://" + Base64.getEncoder()
-                .encodeToString(file.getAbsolutePath().getBytes(StandardCharsets.UTF_8))
-                + "|" +  url;
-    }
 
     public String nextLocation() {
         if (nextHistory.size() > 0) {
@@ -203,7 +118,7 @@ public class ChmBookLocator implements BookLocator<String> {
             return next;
         }
         url = indexer.getIndexPath();
-        return location();
+        return toPage(url);
     }
 
     @Override
@@ -219,7 +134,55 @@ public class ChmBookLocator implements BookLocator<String> {
 
     @Override
     public String toPage(String location) {
-        throw new RuntimeException("此功能不可用");
+
+        if (location == null && indexer.getIndexPath() == null) {
+            url = chmFile.getHomeFile();
+        } else if (!location.equals(url)) {
+            this.prevHistory.addFirst(this.url);
+            url = location;
+        } else {
+            url = location;
+        }
+
+        ChmUnitInfo info = indexer.infoMap.get(url);
+        if (info == null) {
+            return "";
+        }
+        ByteBuffer buffer = this.chmFile.retrieveObject(info,0,info.getLength());
+        String text = new String(buffer.array());
+        Document document = Jsoup.parse(text);
+
+        Elements elements = document.select("img,a,script,link");
+        for (Element element: elements) {
+            String src = "";
+            if (element.hasAttr("src")) {
+                src = elements.attr("src");
+            } else if (element.hasAttr("href")) {
+                src = elements.attr("href");
+            }
+            if (src.startsWith("http")) {
+                src = "";
+            }
+            if (!src.isBlank() && !src.startsWith("data")) {
+                String path = Path.of(url).getParent().resolve(src).normalize()
+                        .toString().replace(File.separator,"/");
+                ChmUnitInfo srcInfo = chmFile.resolveObject(path);
+                ByteBuffer srcData = chmFile.retrieveObject(srcInfo,0,info.getLength());
+                if (element.tagName().equalsIgnoreCase("img")) {
+                    String base64Image = "data:image/png;base64," + Base64.getEncoder().encodeToString(srcData.array());
+                    element.attr("src",base64Image);
+                } else if (element.tagName().equalsIgnoreCase("script")) {
+                    element.text(new String(srcData.array()));
+                    element.removeAttr("src");
+                } else if (element.tagName().equalsIgnoreCase("link")) {
+                    if (element.hasAttr("type") && element.attr("type").equalsIgnoreCase("stylesheet")) {
+                        element.text(new String(srcData.array()));
+                        element.tagName("style");
+                    }
+                }
+            }
+        }
+        return document.toString();
     }
 
 

@@ -8,6 +8,7 @@ import org.swdc.fx.view.View;
 import org.swdc.reader.core.BookReader;
 import org.swdc.reader.entity.Book;
 import org.swdc.reader.entity.ContentsItem;
+import org.swdc.reader.ui.LanguageKeys;
 
 import java.util.List;
 
@@ -22,7 +23,7 @@ import java.util.List;
  *
  */
 @View(viewLocation = "/views/dialogs/TOCAndFavorite.fxml",
-        title = "目录和书签",dialog = true,resizeable = false)
+        title = LanguageKeys.CONTENT_AND_MARKS,dialog = true,resizeable = false)
 public class TOCAndFavoriteDialog extends AbstractView {
 
 

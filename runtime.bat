@@ -1,6 +1,6 @@
-@echo off
 
-SET JAVA_HOME=D:\Basis-soft\JDK16
+
+SET JAVA_HOME=D:\Program Files (x86)\Java SDK\jdk-21
 SET PATH=%JAVA_HOME%\bin;%PATH%
 
 :: 注意，这个是使用jdk16的jpackage打包的脚本，
@@ -20,7 +20,7 @@ set moduleName="reader"
 rem 定义启动类全限定名
 set mainClass="org.swdc.reader.Launcher"
 rem 定义javafx的jmod所在位置
-set javafxJmodPath="D:\javafx15"
+set javafxJmodPath="D:\SDK\javafx-jmods-21.0.1"
 rem 应用的图标
 set iconName="icon.ico"
 

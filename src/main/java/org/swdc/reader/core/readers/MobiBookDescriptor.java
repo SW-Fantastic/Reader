@@ -3,15 +3,18 @@ package org.swdc.reader.core.readers;
 import jakarta.inject.Inject;
 import javafx.stage.FileChooser;
 import org.swdc.dependency.annotations.MultipleImplement;
+import org.swdc.fx.FXResources;
 import org.swdc.reader.core.BookDescriptor;
 import org.swdc.reader.core.configs.TextConfig;
 import org.swdc.reader.core.ext.RenderResolver;
 import org.swdc.reader.entity.Book;
 import org.swdc.reader.services.HelperServices;
+import org.swdc.reader.ui.LanguageKeys;
 import org.swdc.reader.ui.dialogs.reader.TOCAndFavoriteDialog;
 
 import java.io.File;
 import java.util.List;
+import java.util.ResourceBundle;
 
 @MultipleImplement(BookDescriptor.class)
 public class MobiBookDescriptor implements BookDescriptor {
@@ -29,6 +32,9 @@ public class MobiBookDescriptor implements BookDescriptor {
 
     @Inject
     private TOCAndFavoriteDialog tocAndFavoriteDialog;
+
+    @Inject
+    private FXResources resources;
 
     @Override
     public boolean support(Book file) {
@@ -49,13 +55,15 @@ public class MobiBookDescriptor implements BookDescriptor {
                 .executor(helperServices.getExecutor())
                 .resolvers(resolvers)
                 .dialog(tocAndFavoriteDialog)
+                .bundle(resources.getResourceBundle())
                 .build();
     }
 
     @Override
     public FileChooser.ExtensionFilter getFilter() {
         if (filter == null) {
-            filter = new FileChooser.ExtensionFilter("Kindle文档","*.mobi");
+            ResourceBundle bundle = resources.getResourceBundle();
+            filter = new FileChooser.ExtensionFilter(bundle.getString(LanguageKeys.KEY_MOBI_FORMAT),"*.mobi");
         }
         return filter;
     }

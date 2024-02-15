@@ -3,6 +3,7 @@ package org.swdc.reader.core.readers;
 import jakarta.inject.Inject;
 import javafx.stage.FileChooser;
 import org.swdc.dependency.annotations.MultipleImplement;
+import org.swdc.fx.FXResources;
 import org.swdc.reader.core.BookDescriptor;
 import org.swdc.reader.core.BookReader;
 import org.swdc.reader.entity.Book;
@@ -17,6 +18,9 @@ public class ChmBookDescriptor implements BookDescriptor {
 
     @Inject
     private HelperServices helperServices;
+
+    @Inject
+    private FXResources resources;
 
     @Override
     public boolean support(Book file) {
@@ -33,6 +37,7 @@ public class ChmBookDescriptor implements BookDescriptor {
         return new ChmBookReader.Builder()
                 .book(book)
                 .assetsFolder(helperServices.getAssetsFolder())
+                .bundle(resources.getResourceBundle())
                 .build();
     }
 

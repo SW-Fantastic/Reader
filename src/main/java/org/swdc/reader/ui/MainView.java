@@ -18,7 +18,7 @@ import org.swdc.fx.font.FontawsomeService;
 import org.swdc.fx.view.AbstractView;
 import org.swdc.fx.view.View;
 
-@View(viewLocation = "/views/main/Main.fxml",title = "幻想藏书阁")
+@View(viewLocation = "/views/main/Main.fxml",title = LanguageKeys.APP_NAME)
 public class MainView extends AbstractView {
 
     @Inject

@@ -18,17 +18,17 @@
    <center>
       <TabPane fx:id="tabs" focusTraversable="false" prefHeight="200.0" prefWidth="200.0" styleClass="tab-outher" BorderPane.alignment="CENTER">
         <tabs>
-          <Tab closable="false" text="书库">
+          <Tab closable="false" text="%reader.main.tab.library">
                <content>
                   <BorderPane prefHeight="200.0" prefWidth="200.0">
                      <center>
                         <TableView id="bookTableView" fx:id="bookTableView" prefHeight="200.0" prefWidth="200.0" styleClass="books-table" BorderPane.alignment="CENTER">
                            <columns>
-                              <TableColumn id="title" fx:id="titleColumn" prefWidth="133.0" text="文档名" />
-                              <TableColumn fx:id="authorColumn" prefWidth="75.0" text="作者" />
-                              <TableColumn fx:id="publisherColumn" prefWidth="101.0" text="来源" />
-                              <TableColumn fx:id="createColumn" prefWidth="108.0" text="收录日期" />
-                              <TableColumn fx:id="editColumn" editable="false" maxWidth="151.0" minWidth="112.0" prefWidth="112.0" resizable="false" sortable="false" text="操作" />
+                              <TableColumn id="title" fx:id="titleColumn" prefWidth="133.0" text="%reader.main.table.doc-title" />
+                              <TableColumn fx:id="authorColumn" prefWidth="75.0" text="%reader.main.table.author" />
+                              <TableColumn fx:id="publisherColumn" prefWidth="101.0" text="%reader.main.table.source" />
+                              <TableColumn fx:id="createColumn" prefWidth="108.0" text="%reader.main.table.date" />
+                              <TableColumn fx:id="editColumn" editable="false" maxWidth="151.0" minWidth="112.0" prefWidth="112.0" resizable="false" sortable="false" text="%reader.main.table.operation" />
                            </columns>
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

@@ -19,10 +19,12 @@ import org.swdc.reader.core.locators.TextLocator;
 import org.swdc.reader.core.locators.UMDLocator;
 import org.swdc.reader.entity.Book;
 import org.swdc.reader.entity.ContentsItem;
+import org.swdc.reader.ui.LanguageKeys;
 import org.swdc.reader.ui.dialogs.reader.TOCAndFavoriteDialog;
 
 import java.io.File;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -55,6 +57,8 @@ public class UMDBookReader implements BookReader<String> {
         private TOCAndFavoriteDialog dialog;
         private ThreadPoolExecutor exec;
 
+        private ResourceBundle bundle;
+
         public Builder book(Book book) {
             this.book = book;
             return this;
@@ -67,6 +71,11 @@ public class UMDBookReader implements BookReader<String> {
 
         public Builder exec(ThreadPoolExecutor executor) {
             this.exec = executor;
+            return this;
+        }
+
+        public Builder bundle(ResourceBundle bundle) {
+            this.bundle = bundle;
             return this;
         }
 
@@ -92,7 +101,7 @@ public class UMDBookReader implements BookReader<String> {
 
         public UMDBookReader build() {
 
-            UMDBookReader reader = new UMDBookReader();
+            UMDBookReader reader = new UMDBookReader(bundle);
             reader.setTocDialog(this.dialog);
             reader.setBook(this.book);
             reader.setExecutor(exec);
@@ -117,7 +126,7 @@ public class UMDBookReader implements BookReader<String> {
 
     }
 
-    protected UMDBookReader() {
+    protected UMDBookReader(ResourceBundle bundle) {
 
         HBox left = new HBox();
         left.setAlignment(Pos.CENTER_LEFT);
@@ -136,17 +145,17 @@ public class UMDBookReader implements BookReader<String> {
         tools.setSpacing(16);
         tools.getStyleClass().add("reader-tools");
 
-        Button prev = new Button("上一页");
+        Button prev = new Button(bundle.getString(LanguageKeys.KEY_TXT_PREV_PAGE));
         prev.setOnAction((e) -> this.goPreviousPage());
 
-        Button showTools = new Button("选项");
+        Button showTools = new Button(bundle.getString(LanguageKeys.KEY_TXT_OPT));
 
-        Button bookMark = new Button("书签");
+        Button bookMark = new Button(bundle.getString(LanguageKeys.KEY_TXT_MARK));
         bookMark.setOnAction(e -> tocDialog.showMarks(this));
-        Button contents = new Button("目录");
+        Button contents = new Button(bundle.getString(LanguageKeys.KEY_TXT_TOC));
         contents.setOnAction((e) -> tocDialog.showTableOfContent(this));
 
-        Button jumpTo = new Button("跳转");
+        Button jumpTo = new Button(bundle.getString(LanguageKeys.KEY_TXT_JUMP));
         jumpTo.setOnAction((e) -> {
             String target = jump.getText();
             try {
@@ -156,7 +165,7 @@ public class UMDBookReader implements BookReader<String> {
                 jump.setText(locator.getLocation());
             }
         });
-        Button next = new Button("下一页");
+        Button next = new Button(bundle.getString(LanguageKeys.KEY_TXT_NEXT_PAGE));
         next.setOnAction((e) -> this.goNextPage());
 
         chapterName.setPrefWidth(240);

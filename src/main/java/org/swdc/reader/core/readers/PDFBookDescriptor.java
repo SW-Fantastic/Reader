@@ -3,6 +3,7 @@ package org.swdc.reader.core.readers;
 import jakarta.inject.Inject;
 import javafx.stage.FileChooser;
 import org.swdc.dependency.annotations.MultipleImplement;
+import org.swdc.fx.FXResources;
 import org.swdc.reader.core.BookDescriptor;
 import org.swdc.reader.core.configs.PDFConfig;
 import org.swdc.reader.entity.Book;
@@ -23,6 +24,9 @@ public class PDFBookDescriptor implements BookDescriptor {
     @Inject
     private TOCAndFavoriteDialog dialog;
 
+    @Inject
+    private FXResources resources;
+
     @Override
     public boolean support(Book target) {
         return target.getMimeData().equals("application/pdf") ||
@@ -41,7 +45,9 @@ public class PDFBookDescriptor implements BookDescriptor {
                 .config(config)
                 .assetsFolder(helperServices.getAssetsFolder())
                 .executor(helperServices.getExecutor())
-                .tocDialog(dialog).build();
+                .bundle(resources.getResourceBundle())
+                .tocDialog(dialog)
+                .build();
     }
 
     @Override

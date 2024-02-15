@@ -3,6 +3,7 @@ package org.swdc.reader.core.readers;
 import jakarta.inject.Inject;
 import javafx.stage.FileChooser;
 import org.swdc.dependency.annotations.MultipleImplement;
+import org.swdc.fx.FXResources;
 import org.swdc.reader.core.BookDescriptor;
 import org.swdc.reader.core.BookReader;
 import org.swdc.reader.core.ext.RenderResolver;
@@ -25,6 +26,9 @@ public class DjvuBookDescriptor implements BookDescriptor {
     @Inject
     private TOCAndFavoriteDialog tocDialog;
 
+    @Inject
+    private FXResources resources;
+
     private FileChooser.ExtensionFilter filter;
 
     @Override
@@ -45,6 +49,7 @@ public class DjvuBookDescriptor implements BookDescriptor {
                 .resolvers(resolvers)
                 .executor(helperServices.getExecutor())
                 .tocDialog(tocDialog)
+                .bundle(resources.getResourceBundle())
                 .build();
     }
 

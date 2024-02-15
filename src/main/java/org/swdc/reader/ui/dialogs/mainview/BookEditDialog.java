@@ -8,9 +8,10 @@ import org.swdc.fx.font.FontawsomeService;
 import org.swdc.fx.view.AbstractView;
 import org.swdc.fx.view.View;
 import org.swdc.reader.entity.Book;
+import org.swdc.reader.ui.LanguageKeys;
 
 @View(viewLocation = "/views/dialogs/BookEditDialog.fxml",
-        title = "书籍信息",dialog = true,resizeable = false)
+        title = LanguageKeys.BOOK_DETAILS,dialog = true,resizeable = false)
 public class BookEditDialog extends AbstractView {
 
     @Inject

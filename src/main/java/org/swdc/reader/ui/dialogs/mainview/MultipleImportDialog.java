@@ -5,11 +5,12 @@ import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import org.swdc.fx.view.AbstractView;
 import org.swdc.fx.view.View;
+import org.swdc.reader.ui.LanguageKeys;
 
 import java.io.File;
 
 @View(viewLocation = "/views/dialogs/MultipleImportDialog.fxml",
-        title = "批量导入文件",dialog = true,resizeable = false)
+        title = LanguageKeys.BOOK_BATCH_IMPORT,dialog = true,resizeable = false)
 public class MultipleImportDialog extends AbstractView {
 
     public void showWithFolder(File folder) {

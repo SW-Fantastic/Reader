@@ -23,16 +23,16 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label text="文档名：" />
+            <Label text="%reader.dialog.import-file.file-name" />
             <TextField fx:id="fileName" editable="false" prefHeight="29.0" prefWidth="301.0" GridPane.columnIndex="1">
                <GridPane.margin>
                   <Insets left="8.0" right="32.0" />
                </GridPane.margin>
             </TextField>
-            <Label text="文档分类：" GridPane.rowIndex="1" />
+            <Label text="%reader.dialog.import-file.category" GridPane.rowIndex="1" />
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="8.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <children>
-                  <ComboBox fx:id="typeComb" prefHeight="32.0" prefWidth="247.0" promptText="选择类型.." styleClass="cbx-types">
+                  <ComboBox fx:id="typeComb" prefHeight="32.0" prefWidth="247.0" promptText="%reader.dialog.import-file.category-select" styleClass="cbx-types">
                      <HBox.margin>
                         <Insets right="8.0" />
                      </HBox.margin></ComboBox>
@@ -55,8 +55,8 @@
    <bottom>
       <HBox alignment="CENTER_RIGHT" prefHeight="59.0" prefWidth="403.0" spacing="12.0" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" onAction="#onCancel" prefHeight="33.0" prefWidth="68.0" styleClass="normal-button" text="取消" />
-            <Button mnemonicParsing="false" onAction="#onSave" prefHeight="33.0" prefWidth="68.0" styleClass="primary-button" text="确定">
+            <Button mnemonicParsing="false" onAction="#onCancel" prefHeight="33.0" prefWidth="68.0" styleClass="normal-button" text="%reader.cancel" />
+            <Button mnemonicParsing="false" onAction="#onSave" prefHeight="33.0" prefWidth="68.0" styleClass="primary-button" text="%reader.save">
                <HBox.margin>
                   <Insets right="24.0" />
                </HBox.margin>

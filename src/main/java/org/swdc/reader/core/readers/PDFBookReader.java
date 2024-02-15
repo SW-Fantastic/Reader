@@ -23,10 +23,12 @@ import org.swdc.reader.core.ext.RenderResolver;
 import org.swdc.reader.core.locators.PDFLocator;
 import org.swdc.reader.entity.Book;
 import org.swdc.reader.entity.ContentsItem;
+import org.swdc.reader.ui.LanguageKeys;
 import org.swdc.reader.ui.dialogs.reader.TOCAndFavoriteDialog;
 
 import java.io.File;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -48,7 +50,11 @@ public class PDFBookReader implements BookReader<Image> {
 
     private Executor executor;
 
+    private ResourceBundle bundle;
+
     public static class Builder{
+
+        private ResourceBundle bundle;
 
         private List<RenderResolver> resolvers;
         private PDFConfig config;
@@ -93,12 +99,17 @@ public class PDFBookReader implements BookReader<Image> {
             return this;
         }
 
+        public Builder bundle(ResourceBundle resourceBundle) {
+            this.bundle = resourceBundle;
+            return this;
+        }
+
         public PDFBookReader build() {
-            PDFBookReader reader = new PDFBookReader();
+            PDFBookReader reader = new PDFBookReader(bundle);
             reader.setBook(book);
             reader.setDialog(this.dialog);
             reader.setExecutor(this.executor);
-            PDFLocator locator = new PDFLocator(book,config,assets);
+            PDFLocator locator = new PDFLocator(bundle,book,config,assets);
             executor.submit(() -> {
                 locator.indexOutlines((location, title) -> {
                     String realTitle = title == null ? "第" + location + "页" : title;
@@ -116,7 +127,7 @@ public class PDFBookReader implements BookReader<Image> {
 
     }
 
-    public PDFBookReader() {
+    public PDFBookReader(ResourceBundle bundle) {
 
 
         HBox  left = new HBox();
@@ -136,17 +147,17 @@ public class PDFBookReader implements BookReader<Image> {
         tools.setSpacing(16);
         tools.getStyleClass().add("reader-tools");
 
-        Button prev = new Button("上一页");
+        Button prev = new Button(bundle.getString(LanguageKeys.KEY_TXT_PREV_PAGE));
         prev.setOnAction((e) -> this.goPreviousPage());
 
-        Button showTools = new Button("选项");
+        Button showTools = new Button(bundle.getString(LanguageKeys.KEY_TXT_OPT));
 
-        Button bookMark = new Button("书签");
+        Button bookMark = new Button(bundle.getString(LanguageKeys.KEY_TXT_MARK));
         bookMark.setOnAction(e -> dialog.showMarks(this));
-        Button contents = new Button("目录");
+        Button contents = new Button(bundle.getString(LanguageKeys.KEY_TXT_TOC));
         contents.setOnAction((e) -> dialog.showTableOfContent(this));
 
-        Button jumpTo = new Button("跳转");
+        Button jumpTo = new Button(bundle.getString(LanguageKeys.KEY_TXT_JUMP));
         jumpTo.setOnAction((e) -> {
             String target = jump.getText();
             try {
@@ -156,7 +167,7 @@ public class PDFBookReader implements BookReader<Image> {
                 jump.setText(locator.getLocation());
             }
         });
-        Button next = new Button("下一页");
+        Button next = new Button(bundle.getString(LanguageKeys.KEY_TXT_NEXT_PAGE));
         next.setOnAction((e) -> this.goNextPage());
 
         chapterName.setPrefWidth(240);
@@ -167,6 +178,8 @@ public class PDFBookReader implements BookReader<Image> {
         this.panel.setCenter(this.pane);
         this.panel.getStyleClass().add("reader-content");
         this.panel.setOnKeyPressed(KeyEvent::consume);
+
+        this.bundle = bundle;
     }
 
     private void create() {

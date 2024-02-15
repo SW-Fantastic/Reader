@@ -10,14 +10,12 @@ import org.swdc.reader.core.configs.TextConfig;
 import org.swdc.reader.core.ext.RenderResolver;
 import org.swdc.reader.entity.Book;
 import org.swdc.reader.entity.ContentsItem;
+import org.swdc.reader.ui.LanguageKeys;
 
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -61,10 +59,11 @@ public class TextLocator implements BookLocator<String> {
 
     private Charset charset;
 
-    private FXResources resources;
+    private ResourceBundle resources;
 
-    public TextLocator(List<? extends RenderResolver> resolvers, Book book, CodepageDetectorProxy codepageDetectorProxy,File assets) {
+    public TextLocator(ResourceBundle resources , List<? extends RenderResolver> resolvers, Book book, CodepageDetectorProxy codepageDetectorProxy, File assets) {
         this.resolvers = resolvers;
+        this.resources = resources;
         File bookFile = new File(assets.getAbsolutePath() + "/library/" + book.getName());
         this.bookEntity = book;
         try {
@@ -106,7 +105,7 @@ public class TextLocator implements BookLocator<String> {
             StringWriter swr = new StringWriter();
             e.printStackTrace(new PrintWriter(swr));
             this.currentPage --;
-            this.chapterName = "读取出现异常";
+            this.chapterName = resources.getString(LanguageKeys.KEY_TXT_ERROR);
             available = false;
             return swr.toString();
         }
@@ -125,7 +124,6 @@ public class TextLocator implements BookLocator<String> {
         } else {
             reader = new BufferedReader(new InputStreamReader(new FileInputStream(bookFile)));
         }
-        //config.emit(new ContentsModeChangeEvent(config));
     }
 
     @Override
@@ -156,7 +154,8 @@ public class TextLocator implements BookLocator<String> {
             while (totalSize < pageSize && (line = reader.readLine()) != null) {
                 totalSize = totalSize + line.length();
                 sb.append("<p>").append(line).append("</p>");
-                this.chapterName = "第" + currentPage + "页";
+                this.chapterName = resources.getString(LanguageKeys.KEY_TXT_CHAPTER)
+                        .replace("#pageNo",currentPage + "");
                 this.locationTitleMap.put(currentPage, this.chapterName);
             }
 
@@ -176,7 +175,7 @@ public class TextLocator implements BookLocator<String> {
             StringWriter swr = new StringWriter();
             e.printStackTrace(new PrintWriter(swr));
             this.currentPage --;
-            this.chapterName = "读取出现异常";
+            this.chapterName = resources.getString(LanguageKeys.KEY_TXT_ERROR);
             available = false;
             return swr.toString();
         }
@@ -202,24 +201,15 @@ public class TextLocator implements BookLocator<String> {
         if (page <= 0) {
             return toPage("1");
         }
-        double totals = Math.abs(page - currentPage);
         if (page > currentPage) {
             while (page > currentPage) {
-                double target = 1 - ((page - currentPage) / totals);
-                //BookProcessEvent processEvent = new BookProcessEvent(target, "正在加载页面",config);
-                //config.emit(processEvent);
                 this.nextPage();
             }
         } else if (page < currentPage) {
             while (page < currentPage) {
-                double target = 1 - ((currentPage - page) / totals);
-                //BookProcessEvent processEvent = new BookProcessEvent(target, "正在加载页面",config);
-                //config.emit(processEvent);
                 this.prevPage();
             }
         }
-        //BookProcessEvent processEvent = new BookProcessEvent(1.0, "",config);
-        //config.emit(processEvent);
         return currentPage();
     }
 

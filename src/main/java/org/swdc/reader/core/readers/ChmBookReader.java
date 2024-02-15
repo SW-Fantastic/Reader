@@ -18,6 +18,7 @@ import org.swdc.reader.core.configs.TextConfig;
 import org.swdc.reader.core.ext.RenderResolver;
 import org.swdc.reader.core.locators.ChmBookLocator;
 import org.swdc.reader.entity.Book;
+import org.swdc.reader.ui.LanguageKeys;
 import org.swdc.reader.ui.dialogs.reader.TOCAndFavoriteDialog;
 
 import java.io.File;
@@ -25,6 +26,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public class ChmBookReader implements BookReader<String> {
@@ -53,6 +55,7 @@ public class ChmBookReader implements BookReader<String> {
         private TOCAndFavoriteDialog dialog;
         private ThreadPoolExecutor executor;
 
+        private ResourceBundle bundle;
 
         public ChmBookReader.Builder book(Book book) {
             this.book = book;
@@ -67,6 +70,11 @@ public class ChmBookReader implements BookReader<String> {
 
         public ChmBookReader.Builder tocDialog(TOCAndFavoriteDialog dialog) {
             this.dialog = dialog;
+            return this;
+        }
+
+        public Builder bundle(ResourceBundle bundle) {
+            this.bundle = bundle;
             return this;
         }
 
@@ -91,7 +99,7 @@ public class ChmBookReader implements BookReader<String> {
         }
 
         public ChmBookReader build() {
-            ChmBookReader reader = new ChmBookReader();
+            ChmBookReader reader = new ChmBookReader(bundle);
             reader.setBook(book);
             reader.setDialog(this.dialog);
             reader.setPoolExecutor(executor);
@@ -104,7 +112,7 @@ public class ChmBookReader implements BookReader<String> {
 
     }
 
-    public ChmBookReader(){
+    public ChmBookReader(ResourceBundle resourceBundle){
 
         HBox tools = new HBox();
         tools.setAlignment(Pos.CENTER_LEFT);
@@ -112,9 +120,9 @@ public class ChmBookReader implements BookReader<String> {
         tools.setSpacing(16);
         tools.getStyleClass().add("reader-tools");
 
-        Button prev = new Button("上一页");
+        Button prev = new Button(resourceBundle.getString(LanguageKeys.KEY_TXT_PREV_PAGE));
         prev.setOnAction((e) -> this.goPreviousPage());
-        Button next = new Button("下一页");
+        Button next = new Button(resourceBundle.getString(LanguageKeys.KEY_TXT_NEXT_PAGE));
         next.setOnAction((e) -> this.goNextPage());
 
         tools.getChildren().addAll(prev,next);
@@ -135,10 +143,13 @@ public class ChmBookReader implements BookReader<String> {
             if (item == null || item.getValue() == null) {
                 return;
             }
-            String path = "vchm://" + Base64.getEncoder()
-                    .encodeToString(locator.getFile().getAbsolutePath().getBytes(StandardCharsets.UTF_8))
-                    + "|" + item.getValue().path;
-            view.getEngine().load(path);
+            String content = locator.toPage(item.getValue().path);
+            if (content.isBlank()) {
+                return;
+            }
+            view.getEngine().loadContent(
+                    content
+            );
         });
 
         this.splitPane = new SplitPane();
@@ -148,7 +159,13 @@ public class ChmBookReader implements BookReader<String> {
         this.view.getEngine().locationProperty().addListener((obs,oldVal, newVal) -> {
             try {
                 String path = new URL(newVal).getPath();
-                locator.location(path);
+                String content = locator.toPage(path);
+                if (content.isBlank()) {
+                    return;
+                }
+                view.getEngine().loadContent(
+                        content
+                );
             } catch (Exception e) {
 
             }
@@ -222,7 +239,9 @@ public class ChmBookReader implements BookReader<String> {
         if (this.locator == null) {
             return;
         }
-        view.getEngine().load(locator.location());
+        view.getEngine().loadContent(
+                locator.toPage(locator.currentPage())
+        );
     }
 
     public void goNextPage() {

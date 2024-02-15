@@ -7,6 +7,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import org.slf4j.Logger;
 import org.swdc.dependency.event.Events;
+import org.swdc.fx.FXResources;
 import org.swdc.fx.font.FontSize;
 import org.swdc.fx.font.FontawsomeService;
 import org.swdc.fx.view.AbstractView;
@@ -19,6 +20,7 @@ import org.swdc.reader.ui.cells.TypeCell;
 import org.swdc.reader.ui.dialogs.mainview.EditTypeDialog;
 
 import java.util.List;
+import java.util.ResourceBundle;
 
 @View(viewLocation = "/views/main/ReaderView.fxml")
 public class ReaderView extends AbstractView {
@@ -31,6 +33,9 @@ public class ReaderView extends AbstractView {
 
     @Inject
     private Logger logger;
+
+    @Inject
+    private FXResources resources;
 
     @PostConstruct
     public void init(){
@@ -57,15 +62,17 @@ public class ReaderView extends AbstractView {
 
         ContextMenu menuTypes = new ContextMenu();
 
-        MenuItem create = new MenuItem("创建分类");
+        ResourceBundle resourceBundle = resources.getResourceBundle();
+
+        MenuItem create = new MenuItem(resourceBundle.getString(LanguageKeys.KEY_MENU_ADD_TYPE));
         create.setOnAction((e) -> ReaderViewController.class.cast(this.getController()).showAddType());
 
-        MenuItem remove = new MenuItem("删除分类");
+        MenuItem remove = new MenuItem(resourceBundle.getString(LanguageKeys.KEY_MENU_DELETE_TYPE));
         remove.setOnAction((e) -> ReaderViewController.class.cast(this.getController()).showRemoveType());
-        MenuItem edit = new MenuItem("修改分类 ");
+        MenuItem edit = new MenuItem(resourceBundle.getString(LanguageKeys.KEY_MENU_EDIT_TYPE));
         edit.setOnAction((e) -> ReaderViewController.class.cast(this.getController()).showEditType());
 
-        MenuItem openFile = new MenuItem("导入文档");
+        MenuItem openFile = new MenuItem(resourceBundle.getString(LanguageKeys.KEY_MENU_IMPORT));
 
         menuTypes.getItems().addAll(create,remove,edit,openFile);
         typeListView.setContextMenu(menuTypes);

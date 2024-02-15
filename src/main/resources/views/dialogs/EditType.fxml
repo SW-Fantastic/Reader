@@ -19,7 +19,7 @@
    <top>
       <HBox alignment="CENTER_LEFT" prefHeight="45.0" prefWidth="387.0" BorderPane.alignment="CENTER">
          <children>
-            <Label text="修改分类：">
+            <Label text="%reader.dialog.edit-type-label">
                <HBox.margin>
                   <Insets left="12.0" />
                </HBox.margin>
@@ -30,9 +30,9 @@
    <bottom>
       <HBox alignment="CENTER_RIGHT" prefHeight="60.0" prefWidth="387.0" spacing="8.0" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" onAction="#onCancel" prefHeight="33.0" prefWidth="75.0" text="取消" />
-            <Button mnemonicParsing="false" onAction="#onRename" prefHeight="33.0" prefWidth="75.0" text="修改" />
-            <Button layoutX="215.0" layoutY="18.0" mnemonicParsing="false" onAction="#onDelete" prefHeight="33.0" prefWidth="75.0" text="删除" />
+            <Button mnemonicParsing="false" onAction="#onCancel" prefHeight="33.0" prefWidth="75.0" text="%reader.cancel" />
+            <Button mnemonicParsing="false" onAction="#onRename" prefHeight="33.0" prefWidth="75.0" text="%reader.modify" />
+            <Button layoutX="215.0" layoutY="18.0" mnemonicParsing="false" onAction="#onDelete" prefHeight="33.0" prefWidth="75.0" text="%reader.delete" />
          </children>
          <BorderPane.margin>
             <Insets />

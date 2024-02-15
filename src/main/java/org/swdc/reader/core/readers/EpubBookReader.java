@@ -20,10 +20,12 @@ import org.swdc.reader.core.ext.RenderResolver;
 import org.swdc.reader.core.locators.EpubLocator;
 import org.swdc.reader.entity.Book;
 import org.swdc.reader.entity.ContentsItem;
+import org.swdc.reader.ui.LanguageKeys;
 import org.swdc.reader.ui.dialogs.reader.TOCAndFavoriteDialog;
 
 import java.io.File;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.concurrent.ThreadPoolExecutor;
 
 @MultipleImplement(BookReader.class)
@@ -56,8 +58,15 @@ public class EpubBookReader implements BookReader<String> {
         private TOCAndFavoriteDialog dialog;
         private ThreadPoolExecutor executor;
 
+        private ResourceBundle bundle;
+
         public Builder book(Book book) {
             this.book = book;
+            return this;
+        }
+
+        public Builder bundle(ResourceBundle bundle) {
+            this.bundle = bundle;
             return this;
         }
 
@@ -93,7 +102,7 @@ public class EpubBookReader implements BookReader<String> {
         }
 
         public EpubBookReader build() {
-            EpubBookReader reader = new EpubBookReader();
+            EpubBookReader reader = new EpubBookReader(bundle);
             reader.setBook(book);
             reader.setDialog(this.dialog);
             reader.setPoolExecutor(executor);
@@ -109,7 +118,7 @@ public class EpubBookReader implements BookReader<String> {
                 locator.indexContents((toc, idx) -> {
                     String title = toc.getTitle();
                     if (title == null || title.isEmpty()) {
-                        title = "第 " + idx  + "章";
+                        title = bundle.getString(LanguageKeys.KEY_TXT_CHAPTER).replace("#pageNo",idx + "");
                     }
                     ContentsItem item = new ContentsItem();
                     item.setTitle(title);
@@ -125,7 +134,7 @@ public class EpubBookReader implements BookReader<String> {
 
     }
 
-    public EpubBookReader(){
+    public EpubBookReader(ResourceBundle bundle){
 
         HBox  left = new HBox();
         left.setAlignment(Pos.CENTER_LEFT);
@@ -145,15 +154,15 @@ public class EpubBookReader implements BookReader<String> {
         tools.getStyleClass().add("reader-tools");
 
 
-        Button prev = new Button("上一页");
+        Button prev = new Button(bundle.getString(LanguageKeys.KEY_TXT_PREV_PAGE));
         prev.setOnAction((e) -> this.goPreviousPage());
-        Button showTools = new Button("选项");
-        Button bookMark = new Button("书签");
+        Button showTools = new Button(bundle.getString(LanguageKeys.KEY_TXT_OPT));
+        Button bookMark = new Button(bundle.getString(LanguageKeys.KEY_TXT_MARK));
         bookMark.setOnAction(e -> dialog.showMarks(this));
-        Button contents = new Button("目录");
+        Button contents = new Button(bundle.getString(LanguageKeys.KEY_TXT_TOC));
         contents.setOnAction((e) -> dialog.showTableOfContent(this));
 
-        Button jumpTo = new Button("跳转");
+        Button jumpTo = new Button(bundle.getString(LanguageKeys.KEY_TXT_JUMP));
         jumpTo.setOnAction((e) -> {
             String target = jump.getText();
             try {
@@ -163,7 +172,7 @@ public class EpubBookReader implements BookReader<String> {
                 jump.setText(locator.getLocation());
             }
         });
-        Button next = new Button("下一页");
+        Button next = new Button(bundle.getString(LanguageKeys.KEY_TXT_NEXT_PAGE));
         next.setOnAction((e) -> this.goNextPage());
 
         chapterName.setPrefWidth(240);

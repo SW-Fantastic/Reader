@@ -153,6 +153,7 @@ public class ReaderViewController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
         createColumn.setCellValueFactory(new PropertyValueFactory<>("createDate"));
         authorColumn.setCellValueFactory(new PropertyValueFactory<>("author"));
@@ -160,23 +161,22 @@ public class ReaderViewController implements Initializable {
         editColumn.setCellFactory((col) -> new BookControlCell(iconService, this.readerView));
         bookTableView.setItems(books);
 
-
         ContextMenu menu = new ContextMenu();
 
         BooleanProperty menuItemEnabled = new SimpleBooleanProperty();
-        MenuItem open = new MenuItem("打开");
+        MenuItem open = new MenuItem(resources.getString(LanguageKeys.KEY_MENU_OPEN));
         open.disableProperty().bindBidirectional(menuItemEnabled);
         open.setOnAction((e) -> this.openBook(this.bookTableView.getSelectionModel().getSelectedItem()));
-        MenuItem edit = new MenuItem("编辑文档信息");
+        MenuItem edit = new MenuItem(resources.getString(LanguageKeys.KEY_MENU_EDIT));
         edit.disableProperty().bindBidirectional(menuItemEnabled);
         edit.setOnAction((e) -> editDialog.showWithBook(this.bookTableView.getSelectionModel().getSelectedItem()));
-        MenuItem remove = new MenuItem("删除");
+        MenuItem remove = new MenuItem(resources.getString(LanguageKeys.KEY_MENU_DELETE));
         remove.disableProperty().bindBidirectional(menuItemEnabled);
         remove.setOnAction((e) -> this.tableCellRemoveClicked(
                 new BookControlCell.BookRemoveEvent(this.bookTableView.getSelectionModel().getSelectedItem())
         ));
 
-        MenuItem add = new MenuItem("导入");
+        MenuItem add = new MenuItem(resources.getString(LanguageKeys.KEY_MENU_IMPORT_BOOK));
         add.setOnAction((e) -> this.showOpenFile());
 
         menu.getItems().addAll(open,edit,remove,new SeparatorMenuItem(),add);
@@ -196,13 +196,25 @@ public class ReaderViewController implements Initializable {
 
 
         root = new TreeItem<>();
-        this.tags = new TreeItem<>(new DetailTreeData(null,"书签",null));
+        this.tags = new TreeItem<>(new DetailTreeData(
+                null,
+                resources.getString(LanguageKeys.KEY_TREE_TAGS),
+                null
+        ));
         root.getChildren().add(tags);
 
-        this.author = new TreeItem<>(new DetailTreeData(null,"作者",null));
+        this.author = new TreeItem<>(new DetailTreeData(
+                null,
+                resources.getString(LanguageKeys.KEY_TREE_AUTHOR),
+                null
+        ));
         root.getChildren().add(author);
 
-        this.publisher = new TreeItem<>(new DetailTreeData(null,"出版发行",null));
+        this.publisher = new TreeItem<>(new DetailTreeData(
+                null,
+                resources.getString(LanguageKeys.KEY_TREE_PUBLISHER),
+                null
+        ));
         root.getChildren().add(publisher);
 
         this.typeList.setOnMouseClicked(e ->{
@@ -274,6 +286,7 @@ public class ReaderViewController implements Initializable {
             return;
        }
 
+       ResourceBundle bundle = resources.getResourceBundle();
        readerView.getView().setDisable(true);
        // 切换到线程池，防止卡UI
        resources.getExecutor().execute(() -> {
@@ -291,7 +304,10 @@ public class ReaderViewController implements Initializable {
            File bookFile = bookServices.getFile(book);
            if (!bookFile.exists())  {
                Platform.runLater(() -> {
-                   Toast.showMessage("《" + book.getName() + "》 的文件不存在");
+                   Toast.showMessage(bundle.getString(
+                           LanguageKeys.KEY_FILE_NOT_FOUND)
+                           .replace("#fileName",bookFile.getName())
+                   );
                    readerView.getView().setDisable(false);
                });
                return;
@@ -314,7 +330,10 @@ public class ReaderViewController implements Initializable {
                }
 
                try{
-                   Toast.showMessage("正在载入《" + book.getTitle() + "》....");
+                   Toast.showMessage(bundle.getString(
+                                   LanguageKeys.KEY_FILE_LOAD)
+                           .replace("#fileName",book.getTitle())
+                   );
                } catch (Exception e) {
                }
 
@@ -393,8 +412,9 @@ public class ReaderViewController implements Initializable {
 
     @FXML
     public void showOpenFolder() {
+        ResourceBundle bundle = resources.getResourceBundle();
         DirectoryChooser directoryChooser = new DirectoryChooser();
-        directoryChooser.setTitle("打开文件夹");
+        directoryChooser.setTitle(bundle.getString(LanguageKeys.KEY_IMPORT_FROM_FOLDER));
         File folder = directoryChooser.showDialog(mainView.getStage());
         multipleImportDialog.showWithFolder(folder);
     }
@@ -405,11 +425,18 @@ public class ReaderViewController implements Initializable {
         if (type == null) {
             return;
         }
-        Alert alert = this.mainView.alert("删除","的确要删除 " + type.getName() + " 吗？", Alert.AlertType.CONFIRMATION);
+        ResourceBundle bundle = resources.getResourceBundle();
+        Alert alert = mainView.alert(
+                bundle.getString(LanguageKeys.KEY_BOOK_WARN),
+                bundle.getString(LanguageKeys.KEY_DELETE_TYPE) +
+                        " < " + type.getName() + " > " +
+                        bundle.getString(LanguageKeys.KEY_QUESTION_SUBFIX),
+                Alert.AlertType.CONFIRMATION
+        );
         alert.showAndWait().ifPresent((buttonType -> {
             if (buttonType.equals(ButtonType.OK)) {
                 typeServices.remove(type.getId());
-                Toast.showMessage("分类已经删除。");
+                Toast.showMessage(bundle.getString(LanguageKeys.KEY_TYPE_DELETED));
                 this.mainView.emit(new TypeListRefreshEvent(""));
                 this.mainView.emit(new TreeRefreshEvent(null));
             }
@@ -477,7 +504,14 @@ public class ReaderViewController implements Initializable {
         if (bookType == null) {
             return;
         }
-        Alert alert = this.readerView.alert("删除","确实要删除《" + target.getName() + "》 吗?", Alert.AlertType.CONFIRMATION);
+
+        ResourceBundle bundle = resources.getResourceBundle();
+
+        Alert alert = this.readerView.alert(
+                bundle.getString(LanguageKeys.KEY_DELETE),
+                bundle.getString(LanguageKeys.KEY_FILE_DELETE).replace("#fileName",target.getTitle()),
+                Alert.AlertType.CONFIRMATION
+        );
         alert.showAndWait().ifPresent((type) -> {
             if (type.equals(ButtonType.OK)) {
                 this.readerView.emit(new BookWillRemoveEvent(target));

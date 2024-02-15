@@ -10,12 +10,12 @@ import javafx.scene.control.TextField;
 import org.swdc.dependency.annotations.EventListener;
 import org.swdc.fx.FXResources;
 import org.swdc.fx.StageCloseEvent;
-import org.swdc.reader.core.BookDescriptor;
 import org.swdc.reader.entity.Book;
 import org.swdc.reader.entity.BookType;
 import org.swdc.reader.events.TypeListRefreshEvent;
 import org.swdc.reader.services.BookServices;
 import org.swdc.reader.services.TypeServices;
+import org.swdc.reader.ui.LanguageKeys;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,6 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Date;
 import java.util.List;
+import java.util.ResourceBundle;
 
 public class ImportFileDialogController {
 
@@ -69,9 +70,14 @@ public class ImportFileDialogController {
     public void onSave() {
         try {
 
+            ResourceBundle bundle = resources.getResourceBundle();
             BookType type = typeComb.getSelectionModel().getSelectedItem();
             if (type == null) {
-                Alert errModal = this.dialog.alert("错误","请指定文档的分类！", Alert.AlertType.ERROR);
+                Alert errModal = this.dialog.alert(
+                        bundle.getString(LanguageKeys.KEY_BOOK_ERROR),
+                        bundle.getString(LanguageKeys.KEY_IMPORT_FILE_NO_TYPE),
+                        Alert.AlertType.ERROR
+                );
                 errModal.show();
                 return;
             }

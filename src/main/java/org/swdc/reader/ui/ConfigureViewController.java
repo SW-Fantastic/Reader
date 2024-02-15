@@ -2,6 +2,7 @@ package org.swdc.reader.ui;
 
 import jakarta.inject.Inject;
 import org.slf4j.Logger;
+import org.swdc.fx.FXResources;
 import org.swdc.fx.view.Toast;
 import org.swdc.reader.ApplicationConfig;
 import org.swdc.reader.core.configs.EpubConfig;
@@ -29,16 +30,19 @@ public class ConfigureViewController {
     @Inject
     private Logger logger;
 
+    @Inject
+    private FXResources resources;
+
     public void saveConfigures() {
         try {
             config.save();
             textConfig.save();
             epubConfig.save();
             pdfConfig.save();
-            Toast.showMessage("配置保存成功。");
+            Toast.showMessage(resources.getResourceBundle().getString(LanguageKeys.KEY_CONF_SAVED));
             view.emit(new ConfigChangedEvent(null));
         } catch (Exception e) {
-            logger.error("存储配置失败",e);
+            logger.error(resources.getResourceBundle().getString(LanguageKeys.KEY_CONF_SAVE_FAILED),e);
         }
     }
 

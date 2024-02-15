@@ -19,7 +19,7 @@
 
 .stage-main {
 
-    
+
 
     -fx-font-family: 'kinemarub';
     -fx-font-size: 13px;
@@ -173,40 +173,39 @@
               -fx-text-fill: @secondary;
             }
         }
-      .table-row-cell{
-        -fx-table-cell-border-color:@nothing;
-        -fx-font-size: 14;
-        .text {
-            -fx-fill:@accent;
-        }
-        .cell {
-            -fx-alignment: center;
-            .button {
-                -fx-background-color: @nothing;
-                -fx-text-fill: @accent;
-                &:hover {
-                    -fx-effect: dropshadow(three-pass-box, @accent, 12, 0.0, 0, 3);
-                }
-            }
-        }
-
-        -fx-background-color:@primary;
-        &:empty {
-           -fx-text-fill:@accent;
-        }
-        &:selected:filled {
-            -fx-background-color:@selection;
+        .table-row-cell{
+            -fx-table-cell-border-color:@nothing;
+            -fx-font-size: 14;
             .text {
-                -fx-fill:#FFF;
+                -fx-fill:@accent;
             }
             .cell {
+                -fx-alignment: center;
                 .button {
-                    -fx-text-fill:#FFF;
+                    -fx-background-color: @nothing;
+                    -fx-text-fill: @accent;
+                    &:hover {
+                        -fx-effect: dropshadow(three-pass-box, @accent, 12, 0.0, 0, 3);
+                    }
+                }
+            }
+
+            -fx-background-color:@primary;
+            &:empty {
+               -fx-text-fill:@accent;
+            }
+            &:selected:filled {
+                -fx-background-color:@selection;
+                .text {
+                    -fx-fill:#FFF;
+                }
+                .cell {
+                    .button {
+                        -fx-text-fill:#FFF;
+                    }
                 }
             }
         }
-
-    }
     }
 
     .prop-sheet {
