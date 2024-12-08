@@ -6,7 +6,6 @@ import org.swdc.dependency.EnvironmentLoader;
 import org.swdc.fx.FXApplication;
 import org.swdc.fx.FXResources;
 import org.swdc.fx.SWFXApplication;
-import org.swdc.pdfium.PdfiumPlatform;
 import org.swdc.platforms.NativePlatform;
 import org.swdc.reader.entity.EMFProviderImpl;
 import org.swdc.reader.ui.MainView;
@@ -32,7 +31,7 @@ public class ReaderApplication extends FXApplication {
     public void onStarted(DependencyContext dependencyContext) {
 
         FXResources resources = dependencyContext.getByClass(FXResources.class);
-        PdfiumPlatform.initializePdfium(resources.getAssetsFolder());
+        //PdfiumPlatform.initializePdfium(resources.getAssetsFolder());
         NativePlatform.initializePlatform(resources.getAssetsFolder());
         EMFProviderFactory factory = dependencyContext.getByClass(EMFProviderFactory.class);
         factory.create();

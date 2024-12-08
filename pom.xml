@@ -50,7 +50,7 @@
         </dependency>
         <dependency>
             <groupId>org.swdc</groupId>
-            <artifactId>pdfium</artifactId>
+            <artifactId>pdfium4j</artifactId>
             <version>1.0</version>
         </dependency>
         <dependency>

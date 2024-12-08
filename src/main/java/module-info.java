@@ -7,7 +7,7 @@ module reader {
     requires swdc.application.fx;
     requires swdc.application.configs;
     requires swdc.application.data;
-    requires swdc.google.pdfium;
+    requires swdc.pdfium4j;
     requires swdc.platform;
 
     requires jakarta.inject;

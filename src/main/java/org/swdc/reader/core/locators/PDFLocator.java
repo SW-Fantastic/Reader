@@ -14,9 +14,10 @@ import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlin
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.swdc.pdfium.PdfiumBitmapImage;
-import org.swdc.pdfium.PdfiumDocument;
-import org.swdc.pdfium.PdfiumDocumentPage;
+import org.swdc.pdfium.PDFBitmap;
+import org.swdc.pdfium.PDFDocument;
+import org.swdc.pdfium.PDFPage;
+import org.swdc.pdfium.PDFPageRotate;
 import org.swdc.platforms.Unsafe;
 import org.swdc.reader.core.configs.PDFConfig;
 import org.swdc.reader.entity.Book;
@@ -43,7 +44,9 @@ public class PDFLocator implements BookLocator<Image> {
 
     private PDDocument document;
 
-    private PdfiumDocument pdfiumDocument;
+    //private PdfiumDocument pdfiumDocument;
+    private PDFDocument pdfiumDocument;
+
 
     private PDFRenderer renderer;
 
@@ -65,7 +68,7 @@ public class PDFLocator implements BookLocator<Image> {
         this.bundle = bundle;
         File file = new File(assetsFolder.getAbsolutePath() + "/library/" + book.getName());
         try {
-            this.pdfiumDocument = new PdfiumDocument(file);
+            this.pdfiumDocument = new PDFDocument(file);
             this.document = Loader.loadPDF(file);
             this.renderer = new PDFRenderer(document);
             this.available = true;
@@ -205,17 +208,24 @@ public class PDFLocator implements BookLocator<Image> {
                 return new WritableImage(theData);
             }
 
-            PdfiumDocumentPage pdfiumPage = pdfiumDocument.getPage(page);
-            PdfiumBitmapImage image = pdfiumPage.renderPage(config.getRenderQuality().intValue());
-            ByteBuffer imageBuf = image.getBuffer();
+            PDFPage pdfiumPage = pdfiumDocument.getPage(page);
+            PDFBitmap bitmap = pdfiumPage.renderPage(config.getRenderQuality().intValue(), PDFPageRotate.NO_ROTATE);
+            byte[] data = bitmap.getBuffer();
+            ByteBuffer renderedBuffer = Unsafe.malloc(data.length);
+            renderedBuffer.put(data);
 
-            ByteBuffer renderedBuffer = Unsafe.memcpy(imageBuf);
-            PixelBuffer<ByteBuffer> pixelBuffer = new PixelBuffer<>(image.getWidth(), image.getHeight(), renderedBuffer, PixelFormat.getByteBgraPreInstance());
+            PixelBuffer<ByteBuffer> pixelBuffer = new PixelBuffer<>(
+                    bitmap.getWidth(),
+                    bitmap.getHeight(),
+                    renderedBuffer,
+                    PixelFormat.getByteBgraPreInstance()
+            );
+
             WritableImage theImage = new WritableImage(pixelBuffer);
             renderedBuffer.position(0);
 
             pdfiumPage.close();
-            image.close();
+            bitmap.close();
 
             locationDataMap.put(page, pixelBuffer);
             chapter = bundle.getString(LanguageKeys.KEY_TXT_CHAPTER)
